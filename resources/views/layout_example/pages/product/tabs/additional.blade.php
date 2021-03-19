@@ -1,0 +1,21 @@
+{{--Дополнительная информация--}}
+<div class="Tabs-block" id="addit">
+    <div class="Product-props">
+        <div class="Product-prop">
+            <strong>Lorem
+            </strong><span> Pfizer</span>
+        </div>
+        <div class="Product-prop">
+            <strong>ipsum
+            </strong><span> Lorem ipsum dolor sit</span>
+        </div>
+        <div class="Product-prop">
+            <strong>dolor sit
+            </strong><span> 5 ans</span>
+        </div>
+        <div class="Product-prop">
+            <strong>psum dolo
+            </strong><span> 2–3 jours</span>
+        </div>
+    </div>
+</div>
