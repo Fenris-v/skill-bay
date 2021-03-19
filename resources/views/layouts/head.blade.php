@@ -22,16 +22,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
     <link href="/favicon.ico" rel="shortcut icon">
-    <link rel="preload" href="/assets/fonts/Roboto/Roboto-Regular.woff" as="font">
-    <link rel="preload" href="/assets/fonts/Roboto/Roboto-Italic.woff" as="font">
-    <link rel="preload" href="/assets/fonts/Roboto/Roboto-Bold.woff" as="font">
-    <link rel="preload" href="/assets/fonts/Roboto/Roboto-Bold_Italic.woff" as="font">
-    <link rel="preload" href="/assets/fonts/Roboto/Roboto-Light.woff" as="font">
-    <link rel="preload" href="/assets/fonts/Roboto/Roboto-Light_Italic.woff" as="font">
-    <link rel="stylesheet" href="{{ mix('/assets/css/fonts.css') }}">
-    <link rel="stylesheet" href="{{ mix('/assets/css/basic.css') }}">
-    <link rel="stylesheet" href="{{ mix('/assets/css/extra.css') }}">
-    <script src="/assets/plg/CountDown/countdown.js"></script>
+
+    <link rel="stylesheet" href="{{ mix('/assets/css/app.css') }}">
     <!--[if lt IE 9]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>

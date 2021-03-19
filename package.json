@@ -14,5 +14,13 @@
         "laravel-mix": "^6.0.6",
         "lodash": "^4.17.19",
         "postcss": "^8.1.14"
+    },
+    "dependencies": {
+        "countdown": "^2.6.0",
+        "ion-rangeslider": "^2.3.1",
+        "jquery": "^3.6.0",
+        "jquery-form": "^4.3.0",
+        "jquery.maskedinput": "^1.4.1",
+        "slick-carousel": "^1.8.1"
     }
 }

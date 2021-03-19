@@ -23,10 +23,7 @@ p.error-browser
 <!--        +breadcrumbs('Главная','Портфолио')-->
 <!--    +Article('portfolio')-->
 <!---->
-<script src="/assets/plg/jQuery/jquery-3.5.0.slim.min.js"></script>
-<script src="/assets/plg/form/jquery.form.js"></script>
-<script src="/assets/plg/form/jquery.maskedinput.min.js"></script>
-<script src="/assets/plg/range/ion.rangeSlider.min.js"></script>
-<script src="/assets/plg/Slider/slick.min.js"></script>
-<script src="/assets/js/scripts.js"></script>
+<script src="{{ mix('/assets/js/manifest.js') }}"></script>
+<script src="{{ mix('/assets/js/vendor.js') }}"></script>
+<script src="{{ mix('/assets/js/app.js') }}"></script>
 </body>

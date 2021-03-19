@@ -11,9 +11,23 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
-    .postCss('resources/css/fonts.css', 'public/assets/css')
-    .postCss('resources/css/basic.css', 'public/assets/css')
-    .postCss('resources/css/extra.css', 'public/assets/css')
+// mix.webpackConfig(webpack => {
+//     return {
+//         plugins: [
+//             new webpack.ProvidePlugin({
+//                 $: 'jquery',
+//                 jQuery: 'jquery',
+//                 'window.jQuery': 'jquery'
+//             })
+//         ]
+//     }
+// });
+
+mix.js('resources/js/app.js', 'public/assets/js')
+    .styles([
+        'resources/css/fonts.css',
+        'resources/css/basic.css',
+        'resources/css/extra.css',
+    ], 'public/assets/css/app.css')
     .extract()
     .version();
