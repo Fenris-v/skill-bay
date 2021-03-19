@@ -14,7 +14,9 @@ p.error-browser
 
 @include('layouts.header.index')
 
+<div class="Middle {{ url()->current() !== route('index') ? 'Middle_top' : '' }}">
     @yield('content')
+</div>
 
 @include('layouts.footer.index')
 

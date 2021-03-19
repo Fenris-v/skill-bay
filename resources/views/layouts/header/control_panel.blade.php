@@ -10,7 +10,31 @@
                     <div class="row-block hide_700">
                         <span class="ControlPanel-title">Follow Us</span>
                         <ul class="menu menu_img menu_smallImg ControlPanel-menu">
-                            @include('layouts.blocks.socials.socials_list', ['class' => 'ControlPanel-menu'])
+                            <li class="menu-item">
+                                <a class="menu-link" href="#">
+                                    <img src="assets/img/icons/socialHeader/fb.svg" alt="fb.svg"/>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a class="menu-link" href="#">
+                                    <img src="assets/img/icons/socialHeader/tw.svg" alt="tw.svg"/>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a class="menu-link" href="#">
+                                    <img src="assets/img/icons/socialHeader/in.svg" alt="in.svg"/>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a class="menu-link" href="#">
+                                    <img src="assets/img/icons/socialHeader/pt.svg" alt="pt.svg"/>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a class="menu-link" href="#">
+                                    <img src="assets/img/icons/socialHeader/mail.svg" alt="mail.svg"/>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>

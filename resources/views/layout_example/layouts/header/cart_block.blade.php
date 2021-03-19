@@ -1,12 +1,12 @@
 {{--Блок с кнопками сравнения и корзины в хэдере--}}
 <div class="CartBlock">
-    <a class="CartBlock-block" href="#">
+    <a class="CartBlock-block" href="{{ route('compare') }}">
         <img class="CartBlock-img"
              src="/assets/img/icons/exchange.svg"
              alt="exchange.svg"/>
         @include('layouts.blocks.counter', compact($amount = 4))
     </a>
-    <a class="CartBlock-block" href="#">
+    <a class="CartBlock-block" href="{{ route('cart') }}">
         <img class="CartBlock-img" src="/assets/img/icons/cart.svg" alt="cart.svg"/>
         @include('layouts.blocks.counter', compact($amount = 0))
     </a>
