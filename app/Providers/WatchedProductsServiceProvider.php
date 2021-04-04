@@ -3,19 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Services\WatchedProductsService;
 
 class WatchedProductsServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
-    }
-
     /**
      * Bootstrap services.
      *
@@ -23,6 +14,8 @@ class WatchedProductsServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $this->app->bind(WatchedProductsService::class, function() {
+            return new WatchedProductsService();
+        });
     }
 }

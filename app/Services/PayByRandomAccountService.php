@@ -3,11 +3,13 @@
 
 namespace App\Services;
 
+use \App\Contracts\PaymentMethodInterface;
 
-class PayByRandomAccountService implements \App\Contracts\PaymentMethodInterface
+
+class PayByRandomAccountService implements PaymentMethodInterface
 {
 
-    public function Pay()
+    public function pay()
     {
         // TODO: Implement Pay() method.
     }

@@ -7,6 +7,6 @@ namespace App\Contracts;
 interface PaymentMethodInterface
 {
 
-    public function Pay();
+    public function pay();
 
 }
