@@ -11,18 +11,6 @@ const mix = require('laravel-mix');
  |
  */
 
-// mix.webpackConfig(webpack => {
-//     return {
-//         plugins: [
-//             new webpack.ProvidePlugin({
-//                 $: 'jquery',
-//                 jQuery: 'jquery',
-//                 'window.jQuery': 'jquery'
-//             })
-//         ]
-//     }
-// });
-
 mix.js('resources/js/app.js', 'public/assets/js')
     .styles([
         'resources/css/fonts.css',
