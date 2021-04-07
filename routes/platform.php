@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Orchid\Screens\Config\ConfigEditScreen;
+use App\Orchid\Screens\Config\ConfigsEditScreen;
 use App\Orchid\Screens\Examples\ExampleCardsScreen;
 use App\Orchid\Screens\Examples\ExampleChartsScreen;
 use App\Orchid\Screens\Examples\ExampleFieldsAdvancedScreen;
@@ -112,5 +112,5 @@ Route::screen('roles', RoleListScreen::class)
     );
 
 /** Пользовательские маршруты */
-Route::screen('config/edit', ConfigEditScreen::class)
+Route::screen('config/edit', ConfigsEditScreen::class)
     ->name('platform.edit.config');
