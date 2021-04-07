@@ -20,4 +20,9 @@ class Product extends Model
     {
         return $this->belongsToMany(Seller::class)->withPivot('price');
     }
+
+    public function specifications()
+    {
+        return $this->belongsToMany(Specification::class);
+    }
 }
