@@ -10,6 +10,11 @@ class Image extends Model
     use HasFactory;
 
     /**
+     * @var string[]
+     */
+    protected $fillable = ['path'];
+
+    /**
      * Возвращает URL изображения.
      *
      * @return string
