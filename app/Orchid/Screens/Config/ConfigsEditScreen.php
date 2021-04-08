@@ -7,6 +7,7 @@ use App\Orchid\Layouts\Config\ConfigCacheLayout;
 use App\Orchid\Layouts\Config\ConfigRowsLayout;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Screen;
@@ -84,6 +85,7 @@ class ConfigsEditScreen extends Screen
      * Сохраняет изменения
      * @param Request $request
      * @return RedirectResponse
+     * @throws ValidationException
      */
     public function save(Request $request): RedirectResponse
     {
@@ -96,6 +98,8 @@ class ConfigsEditScreen extends Screen
             if (!$config) {
                 continue;
             }
+
+            $this->validate($request, [$key => $this->getRules($config->type_id)]);
 
             $config->fill(['value' => $item]);
 
@@ -118,5 +122,24 @@ class ConfigsEditScreen extends Screen
     public function cacheClear()
     {
         Toast::error(__('admin.config.toasts.cache'));
+    }
+
+    /**
+     * Возвращает набор правил в зависимости от типа поля
+     * @param int $typeId
+     * @return string
+     */
+    private function getRules(int $typeId): string
+    {
+        switch ($typeId) {
+            case Config::INT_TYPE:
+                return 'integer';
+            case Config::STRING_TYPE:
+                return 'string';
+            case Config::CHECKBOX_TYPE:
+                return 'boolean';
+            default:
+                return '';
+        }
     }
 }
