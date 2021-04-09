@@ -15,7 +15,7 @@ class Config extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['value'];
+    protected $fillable = ['slug', 'type_id', 'value'];
 
     protected $casts = [
         'value' => 'string'
