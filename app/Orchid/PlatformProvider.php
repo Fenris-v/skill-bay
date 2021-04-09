@@ -16,6 +16,7 @@ class PlatformProvider extends OrchidServiceProvider
     public function boot(Dashboard $dashboard): void
     {
         parent::boot($dashboard);
+
         // ...
     }
 
@@ -25,10 +26,7 @@ class PlatformProvider extends OrchidServiceProvider
     public function registerMainMenu(): array
     {
         return [
-            ItemMenu::label(__('admin.config.config'))
-                ->title(__('admin.config.title'))
-                ->icon('settings')
-                ->route('platform.edit.config')
+            //
         ];
     }
 
