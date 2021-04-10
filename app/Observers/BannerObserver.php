@@ -9,7 +9,7 @@ class BannerObserver
     /**
      * Handle the Banner "updated" event.
      *
-     * @param  \App\Models\Banner  $banner
+     * @param  Banner  $banner
      * @return void
      * @throws \Exception
      */
@@ -21,7 +21,7 @@ class BannerObserver
     /**
      * Handle the Banner "deleted" event.
      *
-     * @param  \App\Models\Banner  $banner
+     * @param  Banner  $banner
      * @return void
      * @throws \Exception
      */

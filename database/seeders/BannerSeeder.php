@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Banner;
-use App\Models\Image;
 use Illuminate\Database\Seeder;
 
 class BannerSeeder extends Seeder
@@ -15,22 +14,8 @@ class BannerSeeder extends Seeder
      */
     public function run()
     {
-        $image = Image::create([
-            'path' => 'drone.png',
-        ]);
-
-        Banner::create([
-            'title' => 'Тестовый баннер 1',
-            'description' => 'Описание первого тестового баннера',
-            'url' => '/',
-            'image_id' => $image->id,
-        ]);
-
-        Banner::create([
-            'title' => 'Тестовый баннер 2',
-            'description' => 'Описание второго тестового баннера',
-            'url' => '/',
-            'image_id' => $image->id,
-        ]);
+        Banner::factory()
+            ->count(5)
+            ->create();
     }
 }

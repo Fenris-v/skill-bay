@@ -8,7 +8,9 @@
                 @endif
                 @if($banner->url)
                     <div class="Slider-footer">
-                        <a class="btn btn_primary" href="{{ $banner->url }}">Подробнее</a>
+                        <a class="btn btn_primary" href="{{ $banner->url }}">
+                            @lang('banner.more')
+                        </a>
                     </div>
                 @endif
             </div>
