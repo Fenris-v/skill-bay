@@ -23,7 +23,7 @@ class BannerFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->sentence(2),
+            'title' => $this->faker->words(2, true),
             'description' => $this->faker->sentence(10),
             'url' => '/#',
             'is_active' => 1,
