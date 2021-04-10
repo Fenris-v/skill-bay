@@ -19,3 +19,6 @@ Route::get('/', function () {
 })->name('index');
 
 Route::get('/registration', [UserController::class, 'create'])->name('registration');
+Route::post('/registration', [UserController::class, 'store'])->name('user.store');
+Route::get('/login', [UserController::class, 'login'])->name('login');
+Route::post('/auth', [UserController::class, 'auth'])->name('auth');

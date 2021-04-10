@@ -4,9 +4,8 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class UserField extends Component
+class LoginForm extends Component
 {
-		
     /**
      * Create a new component instance.
      *
@@ -14,6 +13,7 @@ class UserField extends Component
      */
     public function __construct()
     {
+        //
     }
 
     /**
@@ -23,6 +23,6 @@ class UserField extends Component
      */
     public function render()
     {
-        return view('components.user-field');
+        return view('components.login-form');
     }
 }
