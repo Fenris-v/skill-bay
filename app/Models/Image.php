@@ -24,7 +24,7 @@ class Image extends Model
         // $this->path должен содержать относительный путь
         // от папки /storage/app/public/images/
         return \Storage::url(
-            config('image.store_path') . $this->path
+            config('image.store_path') . "/{$this->path}"
         );
     }
 }
