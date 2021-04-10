@@ -13,15 +13,11 @@ class Specification extends Model
 
     protected $fillable = [
         'title',
+        'description',
     ];
-
-    public function group()
-    {
-        return $this->belongsTo(SpecificationGroup::Class, 'specification_group_id');
-    }
 
     public function products()
     {
-        return $this->belongsToMany(Product::class);
+        return $this->belongsToMany(Product::class)->withPivot('value');
     }
 }
