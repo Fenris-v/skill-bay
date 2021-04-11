@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\ProductCartService;
+use App\Contracts\ProductCartService as ProductCartServiceContract;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
@@ -14,7 +16,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        // Сервис для работы с корзиной товаров.
+        $this->app->singleton(
+            ProductCartServiceContract::class,
+            ProductCartService::class
+        );
     }
 
     /**
