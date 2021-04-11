@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Models\Category;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('pages.main.index');
 })->name('index');
+
+Route::get('/catalog/{category}/', function (Category $category) {
+    return dd($category);
+})->name('catalog_category');
