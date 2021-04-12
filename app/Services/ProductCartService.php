@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Collection;
-use \App\Contracts\ProductCartService as ProductCartServiceContract;
+use App\Contracts\ProductCartService as ProductCartServiceContract;
 
 /**
  * Класс-сервис для работы с корзиной товаров.
