@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Contracts\ProductViewHistoryService as ProductViewHistoryServiceContract;
 use App\Services\ProductCartService;
 use App\Contracts\ProductCartService as ProductCartServiceContract;
+use App\Services\ProductViewHistoryService;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
@@ -20,6 +22,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(
             ProductCartServiceContract::class,
             ProductCartService::class
+        );
+
+        // Сервис для работы с просмотренными товарами.
+        $this->app->singleton(
+            ProductViewHistoryServiceContract::class,
+            ProductViewHistoryService::class
         );
     }
 
