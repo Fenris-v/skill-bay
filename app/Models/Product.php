@@ -16,6 +16,11 @@ class Product extends Model
         'description',
     ];
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     public function sellers()
     {
         return $this->belongsToMany(Seller::class)->withPivot('price');

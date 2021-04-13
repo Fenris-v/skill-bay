@@ -21,12 +21,12 @@ Route::get('/seller/{seller}', 'App\Http\Controllers\SellerController@show')->na
 
 Route::get('/product/{product}',
     fn() => view('pages.main.product', [
-        'product' => \App\Models\Product::first(),
+        'product' => \App\Models\Product::find(2),
         'breadcrumbs' => [
-            ['isCurrent' => false, 'title' => 'Главная', 'url' => '/'],
-            ['isCurrent' => false, 'title' => 'Каталог', 'url' => '/catalog'],
-            ['isCurrent' => false, 'title' => 'Ноутбуки', 'url' => '/catalog/notebooks'],
-            ['isCurrent' => true, 'title' => 'Товар'],
+            ['title' => 'Главная', 'url' => '/'],
+            ['title' => 'Каталог', 'url' => '/catalog'],
+            ['title' => 'Ноутбуки', 'url' => '/catalog/notebooks'],
+            ['title' => 'Товар'],
         ],
     ])
 )->name('product');

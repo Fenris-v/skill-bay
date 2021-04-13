@@ -11,7 +11,7 @@ class SellerController extends Controller
     public function show(string $slug)
     {
         $seller = Cache::remember(
-            'seller_show_' . $slug,
+            'seller|show|' . $slug,
             86400,
             fn() => Seller::where('slug', $slug)->firstOrFail(),
         );
@@ -19,8 +19,8 @@ class SellerController extends Controller
         return view('pages.main.seller', [
             'seller' => $seller,
             'breadcrumbs' => [
-                ['isCurrent' => false, 'title' => 'Главная', 'url' => '/'],
-                ['isCurrent' => true, 'title' => 'О продавце'],
+                ['title' => 'Главная', 'url' => '/'],
+                ['title' => 'О продавце'],
             ],
         ]);
     }

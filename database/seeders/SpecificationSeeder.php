@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Seller;
 use App\Models\Specification;
 use App\Models\Product;
 use Illuminate\Database\Seeder;
@@ -18,15 +19,14 @@ class SpecificationSeeder extends Seeder
     {
         $products = Product::select('id')->get();
         Specification::factory()
-            ->count(10)
+            ->count($products->count())
             ->create()
-            ->each(fn($specification) => $specification
-                ->products()
-                ->attach(
-                    $products
+            ->each(
+                fn($specification, $key) => $specification->products()->attach(
+                    (!$key ? $products : $products->filter(fn($item) => !$item->specifications->count()))
                         ->random(rand(4, 8))
                         ->mapWithKeys(fn($item) => [$item->id => ['value' => $faker->word]])
-                )
+                ),
             )
         ;
     }
