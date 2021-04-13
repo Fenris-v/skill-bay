@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Contracts\OrderPaymentService as OrderPaymentServiceContract;
+use App\Services\OrderPaymentService;
 use App\Services\ProductCartService;
 use App\Contracts\ProductCartService as ProductCartServiceContract;
 use Illuminate\Support\Facades\Blade;
@@ -20,6 +22,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(
             ProductCartServiceContract::class,
             ProductCartService::class
+        );
+
+        // Сервис для оплаты заказа и проверки статуса оплаты.
+        $this->app->singleton(
+            OrderPaymentServiceContract::class,
+            OrderPaymentService::class
         );
     }
 
