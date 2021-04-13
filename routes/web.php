@@ -18,3 +18,15 @@ Route::get('/', function () {
 })->name('index');
 
 Route::get('/seller/{seller}', 'App\Http\Controllers\SellerController@show')->name('seller');
+
+Route::get('/product/{product}',
+    fn() => view('pages.main.product', [
+        'product' => \App\Models\Product::first(),
+        'breadcrumbs' => [
+            ['isCurrent' => false, 'title' => 'Главная', 'url' => '/'],
+            ['isCurrent' => false, 'title' => 'Каталог', 'url' => '/catalog'],
+            ['isCurrent' => false, 'title' => 'Ноутбуки', 'url' => '/catalog/notebooks'],
+            ['isCurrent' => true, 'title' => 'Товар'],
+        ],
+    ])
+)->name('product');
