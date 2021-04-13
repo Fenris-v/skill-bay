@@ -23,7 +23,7 @@ class ImageFactory extends Factory
     {
         return [
             'path' => $this->faker->image(
-                'storage/app/public/images',735,434, null, false
+                'storage/app/public/images', 735, 434, null, false
             ),
         ];
     }
