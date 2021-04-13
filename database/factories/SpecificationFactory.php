@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Specification;
-use App\Models\SpecificationGroup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -26,7 +25,7 @@ class SpecificationFactory extends Factory
         return [
             'title' => $title = ucfirst($this->faker->unique()->words(1, true)),
             'slug' => Str::slug($title),
-            'specification_group_id' => SpecificationGroup::first()->id,
+            'description' => $this->faker->sentence,
         ];
     }
 }

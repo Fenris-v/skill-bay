@@ -5,15 +5,6 @@
 
 @section('meta_description', 'Сведения о продавце')
 
-@php
-    // Для дальнейшего удаления
-    $seller = \App\Models\Seller::find(1);
-    $breadcrumbs = [
-        ['isCurrent' => false, 'title' => 'Главная'],
-        ['isCurrent' => true, 'title' => 'О продавце'],
-    ];
-@endphp
-
 @section('content')
     <div class="Middle Middle_top">
         <div class="Middle-top">
@@ -34,7 +25,7 @@
                         <h2 class="Section-title">Популярные товары продавца</h2>
                     </header>
                     <div class="Cards">
-                        <div class="Card"><a class="Card-picture" href="#"><img src="assets/img/content/home/card.jpg" alt="card.jpg"/></a>
+                        <div class="Card"><a class="Card-picture" href="#"><img src="/assets/img/content/home/card.jpg" alt="card.jpg"/></a>
                             <div class="Card-content">
                                 <strong class="Card-title"><a href="#">Corsair Carbide Series Arctic White Steel</a>
                                 </strong>
@@ -43,14 +34,14 @@
                                     </div>
                                     <div class="Card-category">Games / xbox
                                     </div>
-                                    <div class="Card-hover"><a class="Card-btn" href="#"><img src="assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/change.svg" alt="change.svg"/></a>
+                                    <div class="Card-hover"><a class="Card-btn" href="#"><img src="/assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="/assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="/assets/img/icons/card/change.svg" alt="change.svg"/></a>
                                     </div>
                                 </div>
                             </div>
                             <div class="Card-sale">-60%
                             </div>
                         </div>
-                        <div class="Card"><a class="Card-picture" href="#"><img src="assets/img/content/home/card.jpg" alt="card.jpg"/></a>
+                        <div class="Card"><a class="Card-picture" href="#"><img src="/assets/img/content/home/card.jpg" alt="card.jpg"/></a>
                             <div class="Card-content">
                                 <strong class="Card-title"><a href="#">Barand New Phone Smart Business</a>
                                 </strong>
@@ -59,14 +50,14 @@
                                     </div>
                                     <div class="Card-category">Games / xbox
                                     </div>
-                                    <div class="Card-hover"><a class="Card-btn" href="#"><img src="assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/change.svg" alt="change.svg"/></a>
+                                    <div class="Card-hover"><a class="Card-btn" href="#"><img src="/assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="/assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="/assets/img/icons/card/change.svg" alt="change.svg"/></a>
                                     </div>
                                 </div>
                             </div>
                             <div class="Card-sale">-60%
                             </div>
                         </div>
-                        <div class="Card"><a class="Card-picture" href="#"><img src="assets/img/content/home/card.jpg" alt="card.jpg"/></a>
+                        <div class="Card"><a class="Card-picture" href="#"><img src="/assets/img/content/home/card.jpg" alt="card.jpg"/></a>
                             <div class="Card-content">
                                 <strong class="Card-title"><a href="#">Mavic PRO Mini Drones Hobby RC Quadcopter</a>
                                 </strong>
@@ -75,14 +66,14 @@
                                     </div>
                                     <div class="Card-category">Digital / xbox
                                     </div>
-                                    <div class="Card-hover"><a class="Card-btn" href="#"><img src="assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/change.svg" alt="change.svg"/></a>
+                                    <div class="Card-hover"><a class="Card-btn" href="#"><img src="/assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="/assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="/assets/img/icons/card/change.svg" alt="change.svg"/></a>
                                     </div>
                                 </div>
                             </div>
                             <div class="Card-sale">-60%
                             </div>
                         </div>
-                        <div class="Card"><a class="Card-picture" href="#"><img src="assets/img/content/home/card.jpg" alt="card.jpg"/></a>
+                        <div class="Card"><a class="Card-picture" href="#"><img src="/assets/img/content/home/card.jpg" alt="card.jpg"/></a>
                             <div class="Card-content">
                                 <strong class="Card-title"><a href="#">Corsair Carbide Series Arctic White Steel</a>
                                 </strong>
@@ -91,14 +82,14 @@
                                     </div>
                                     <div class="Card-category">Media / xbox
                                     </div>
-                                    <div class="Card-hover"><a class="Card-btn" href="#"><img src="assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/change.svg" alt="change.svg"/></a>
+                                    <div class="Card-hover"><a class="Card-btn" href="#"><img src="/assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="/assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="/assets/img/icons/card/change.svg" alt="change.svg"/></a>
                                     </div>
                                 </div>
                             </div>
                             <div class="Card-sale">-60%
                             </div>
                         </div>
-                        <div class="Card"><a class="Card-picture" href="#"><img src="assets/img/content/home/card.jpg" alt="card.jpg"/></a>
+                        <div class="Card"><a class="Card-picture" href="#"><img src="/assets/img/content/home/card.jpg" alt="card.jpg"/></a>
                             <div class="Card-content">
                                 <strong class="Card-title"><a href="#">Corsair Carbide Series Arctic White Steel</a>
                                 </strong>
@@ -107,14 +98,14 @@
                                     </div>
                                     <div class="Card-category">Games / xbox
                                     </div>
-                                    <div class="Card-hover"><a class="Card-btn" href="#"><img src="assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/change.svg" alt="change.svg"/></a>
+                                    <div class="Card-hover"><a class="Card-btn" href="#"><img src="/assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="/assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="/assets/img/icons/card/change.svg" alt="change.svg"/></a>
                                     </div>
                                 </div>
                             </div>
                             <div class="Card-sale">-60%
                             </div>
                         </div>
-                        <div class="Card"><a class="Card-picture" href="#"><img src="assets/img/content/home/card.jpg" alt="card.jpg"/></a>
+                        <div class="Card"><a class="Card-picture" href="#"><img src="/assets/img/content/home/card.jpg" alt="card.jpg"/></a>
                             <div class="Card-content">
                                 <strong class="Card-title"><a href="#">Barand New Phone Smart Business</a>
                                 </strong>
@@ -123,14 +114,14 @@
                                     </div>
                                     <div class="Card-category">Games / xbox
                                     </div>
-                                    <div class="Card-hover"><a class="Card-btn" href="#"><img src="assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/change.svg" alt="change.svg"/></a>
+                                    <div class="Card-hover"><a class="Card-btn" href="#"><img src="/assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="/assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="/assets/img/icons/card/change.svg" alt="change.svg"/></a>
                                     </div>
                                 </div>
                             </div>
                             <div class="Card-sale">-60%
                             </div>
                         </div>
-                        <div class="Card hide_md hide_1450"><a class="Card-picture" href="#"><img src="assets/img/content/home/card.jpg" alt="card.jpg"/></a>
+                        <div class="Card hide_md hide_1450"><a class="Card-picture" href="#"><img src="/assets/img/content/home/card.jpg" alt="card.jpg"/></a>
                             <div class="Card-content">
                                 <strong class="Card-title"><a href="#">Mavic PRO Mini Drones Hobby RC Quadcopter</a>
                                 </strong>
@@ -139,14 +130,14 @@
                                     </div>
                                     <div class="Card-category">Digital / xbox
                                     </div>
-                                    <div class="Card-hover"><a class="Card-btn" href="#"><img src="assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/change.svg" alt="change.svg"/></a>
+                                    <div class="Card-hover"><a class="Card-btn" href="#"><img src="/assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="/assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="/assets/img/icons/card/change.svg" alt="change.svg"/></a>
                                     </div>
                                 </div>
                             </div>
                             <div class="Card-sale">-60%
                             </div>
                         </div>
-                        <div class="Card hide_md hide_1450"><a class="Card-picture" href="#"><img src="assets/img/content/home/card.jpg" alt="card.jpg"/></a>
+                        <div class="Card hide_md hide_1450"><a class="Card-picture" href="#"><img src="/assets/img/content/home/card.jpg" alt="card.jpg"/></a>
                             <div class="Card-content">
                                 <strong class="Card-title"><a href="#">Corsair Carbide Series Arctic White Steel</a>
                                 </strong>
@@ -155,7 +146,7 @@
                                     </div>
                                     <div class="Card-category">Media / xbox
                                     </div>
-                                    <div class="Card-hover"><a class="Card-btn" href="#"><img src="assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="assets/img/icons/card/change.svg" alt="change.svg"/></a>
+                                    <div class="Card-hover"><a class="Card-btn" href="#"><img src="/assets/img/icons/card/bookmark.svg" alt="bookmark.svg"/></a><a class="Card-btn" href="#"><img src="/assets/img/icons/card/cart.svg" alt="cart.svg"/></a><a class="Card-btn" href="#"><img src="/assets/img/icons/card/change.svg" alt="change.svg"/></a>
                                     </div>
                                 </div>
                             </div>

@@ -18,6 +18,7 @@ class CreateProductSpecificationTable extends Migration
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('specification_id');
             $table->foreign('specification_id')->references('id')->on('specifications')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('value', 255);
         });
     }
 

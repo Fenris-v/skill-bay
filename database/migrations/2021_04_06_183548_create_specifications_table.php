@@ -17,10 +17,9 @@ class CreateSpecificationsTable extends Migration
             $table->id();
             $table->string('title', 255);
             $table->string('slug', 255)->unique();
+            $table->text('description')->nullable();
             $table->softDeletes();
             $table->timestamps();
-            $table->unsignedBigInteger('specification_group_id');
-            $table->foreign('specification_group_id')->references('id')->on('specification_groups')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

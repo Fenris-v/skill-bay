@@ -3,7 +3,7 @@
     @foreach($items as $item)
         <li {{ $attributes->class(['breadcrumbs-item', 'breadcrumbs-item_current' => $item['isCurrent']]) }}>
             @if(!$item['isCurrent'])
-                <a href="index.html">{{ $item['title'] }}</a>
+                <a href="{{ $item['url'] }}">{{ $item['title'] }}</a>
             @else
                 <span>{{ $item['title'] }}</span>
             @endif

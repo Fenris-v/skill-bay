@@ -16,24 +16,15 @@ class SellerSeeder extends Seeder
      */
     public function run()
     {
+        $products = Product::select('id')->get();
         Seller::factory()
-            ->count(30)
+            ->count($products->count())
             ->create()
             ->each(
-                fn($seller) => $seller->products()->attach(
-                    array_combine(
-                        Product::orderBy(\DB::raw('RAND()'))
-                            ->take($amount = rand(2, 4))
-                            ->select('id')
-                            ->get()
-                            ->pluck('id')
-                            ->toArray(),
-                        array_reduce(
-                            range(0, $amount - 1, 1),
-                            fn($accum, $item) => [...$accum, ['price' => rand(10000, 1000000) / 100]],
-                            []
-                        )
-                    ),
+                fn($seller, $key) => $seller->products()->attach(
+                    (!$key ? $products : $products->filter(fn($item) => !$item->sellers->count()))
+                        ->random(rand(4, 8))
+                        ->mapWithKeys(fn($item) => [$item->id => ['price' => rand(10000, 1000000) / 100]])
                 ),
             )
         ;

@@ -23,6 +23,6 @@ class Product extends Model
 
     public function specifications()
     {
-        return $this->belongsToMany(Specification::class);
+        return $this->belongsToMany(Specification::class)->withPivot('value');
     }
 }
