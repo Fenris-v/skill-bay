@@ -4,12 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Seller;
-use App\Services\AdminSettingsService;
+use Illuminate\Support\Facades\Cache;
 
 class SellerController extends Controller
 {
-    public function show(Seller $seller)
+    public function show(string $slug)
     {
+        $seller = Cache::remember(
+            'seller_show_' . $slug,
+            86400,
+            fn() => Seller::where('slug', $slug)->firstOrFail(),
+        );
+
         return view('pages.main.seller', [
             'seller' => $seller,
             'breadcrumbs' => [
