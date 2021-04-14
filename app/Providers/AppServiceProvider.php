@@ -30,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(
             ProductViewHistoryServiceContract::class,
             ProductViewHistoryService::class
+        );
 
         // Сервис для оплаты заказа и проверки статуса оплаты.
         $this->app->singleton(
