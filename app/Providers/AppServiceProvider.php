@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Contracts\ProductViewHistoryService as ProductViewHistoryServiceContract;
+use App\Contracts\OrderPaymentService as OrderPaymentServiceContract;
+use App\Services\OrderPaymentService;
 use App\Services\ProductCartService;
 use App\Contracts\ProductCartService as ProductCartServiceContract;
 use App\Services\ProductViewHistoryService;
@@ -28,6 +30,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(
             ProductViewHistoryServiceContract::class,
             ProductViewHistoryService::class
+
+        // Сервис для оплаты заказа и проверки статуса оплаты.
+        $this->app->singleton(
+            OrderPaymentServiceContract::class,
+            OrderPaymentService::class
         );
     }
 
