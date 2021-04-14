@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,8 +14,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('pages.main.index');
-})->name('index');
+Route::get(
+    '/',
+    function () {
+        return view('pages.main.index');
+    }
+)->name('index');
+
+Route::get('/catalog/{slug?}', [ProductController::class, 'index'])
+    ->name('products.index');
+
+Route::get('/product/{slug}', [ProductController::class, 'show'])
+    ->name('products.show');
 
 Route::get('/seller/{seller}', 'App\Http\Controllers\SellerController@show')->name('seller');
