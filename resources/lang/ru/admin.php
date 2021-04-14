@@ -16,14 +16,13 @@ return [
         ],
         'toasts' => [
             'save' => 'Изменения были сохранены',
-            'nothing' => 'Вы ничего не изменили',
             'cache' => 'Кэш очищен'
         ],
         'cache' => [
             'clear' => [
                 'all' => 'Очистить весь кэш',
-                'news' => 'Очистить кэш новостей',
-                'catalog' => 'Очистить кэш каталога'
+                'catalog' => 'Очистить кэш каталога',
+                'configs' => 'Очистить кэш настроек'
             ],
         ],
         'groups' => [
@@ -31,12 +30,12 @@ return [
             'cache' => 'Управление кэшем'
         ],
         'fields' => [
-            // TODO: delete examples
-            'example' => [
-                'kolicestvo-tovarov-na-stranice' => 'Количество товаров на странице',
-                'stroka-naprimer' => 'Строка, например',
-                'a-vot-i-cekboks' => 'А вот и чекбокс',
-            ],
+            'per_page' => 'Количество объектов на странице',
+            'cache_lifetime' => 'Время жизни кэша',
+
+            // TODO: delete next examples
+            'stroka-naprimer' => 'Строка, например',
+            'a-vot-i-cekboks' => 'А вот и чекбокс',
         ]
     ],
 ];

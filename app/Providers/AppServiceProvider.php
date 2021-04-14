@@ -31,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Blade::directive('price', function ($expression) {
-            return "<?= number_format($expression, 2, '.', ' ') ?>";
+            return "$<?= number_format($expression, 2, '.', ' ') ?>";
         });
     }
 }

@@ -5,8 +5,10 @@ namespace App\Orchid\Screens\Config;
 use App\Models\Admin\Config;
 use App\Orchid\Layouts\Config\ConfigCacheLayout;
 use App\Orchid\Layouts\Config\ConfigRowsLayout;
+use App\Repository\ConfigRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\ValidationException;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
@@ -90,6 +92,7 @@ class ConfigsEditScreen extends Screen
     public function save(Request $request): RedirectResponse
     {
         $wasUpdated = false;
+        $tags = [ConfigRepository::CONFIG_CACHE_TAGS];
 
         $configs = Config::all();
         foreach ($request->except('_token') as $key => $item) {
@@ -104,24 +107,38 @@ class ConfigsEditScreen extends Screen
             $config->fill(['value' => $item]);
 
             if ($config->isDirty()) {
+                if ($key === 'cache_lifetime') {
+                    array_push($tags, ConfigRepository::GLOBAL_CACHE_TAG);
+                }
+
                 $wasUpdated = true;
                 $config->save();
             }
         }
 
-        Toast::info(
-            $wasUpdated
-                ? __('admin.config.toasts.save')
-                : __('admin.config.toasts.nothing')
-        );
+        if ($wasUpdated) {
+            $this->cacheClear($tags);
+
+            Toast::info(__('admin.config.toasts.save'));
+        }
 
         return redirect()->route('platform.edit.config');
     }
 
-    // TODO: написать метод для сброса кэша
-    public function cacheClear()
+    /**
+     * Сбрасывает тэгированный кэш
+     * @param array|string[] $tags
+     * @return RedirectResponse
+     */
+    public function cacheClear(?array $tags): RedirectResponse
     {
+        $tags = $tags ?? ConfigRepository::GLOBAL_CACHE_TAG;
+
+        Cache::tags($tags)->flush();
+
         Toast::error(__('admin.config.toasts.cache'));
+
+        return redirect()->route('platform.edit.config');
     }
 
     /**
