@@ -22,8 +22,8 @@
                 <h2 class="ProductCard-title">{{ $title }}</h2>
                 <div class="ProductCard-info">
                     <div class="ProductCard-cost">
-                        <div class="ProductCard-price">${{ $price }}</div>
-                        <div class="ProductCard-priceOld">${{ $priceOld }}</div>
+                        <div class="ProductCard-price">$ @price($price)</div>
+                        <div class="ProductCard-priceOld">$ @price($priceOld)</div>
                     </div>
                     <div class="ProductCard-compare">
                         <x-buttons.compare :href="$compareUrl"/>
@@ -69,7 +69,7 @@
                     </div>
                     <div class="Categories-block Categories-price">
                         <strong>
-                            {{ $seller->pivot->price }}
+                            $ @price($seller->pivot->price)
                         </strong>
                     </div>
                     <div class="Categories-block Categories-button">
@@ -91,6 +91,7 @@
                 @endforeach
             </div>
         </div>
+        <!--Для дальнейшей правки-->
         <div class="Tabs-block" id="reviews">
             <div class="Comments">
                 <div class="Comment">
