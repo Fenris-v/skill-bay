@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SellerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,3 +27,6 @@ Route::get('/catalog/{slug?}', [ProductController::class, 'index'])
 
 Route::get('/product/{slug}', [ProductController::class, 'show'])
     ->name('products.show');
+
+Route::get('/seller/{seller}', [SellerController::class, 'show'])
+    ->name('seller');

@@ -18,11 +18,11 @@ class SellerSeeder extends Seeder
     {
         $products = Product::select('id')->get();
         Seller::factory()
-            ->count(30)
+            ->count($products->count())
             ->create()
             ->each(
-                fn($seller) => $seller->products()->attach(
-                    $products
+                fn($seller, $key) => $seller->products()->attach(
+                    (!$key ? $products : $products->filter(fn($item) => !$item->sellers->count()))
                         ->random(rand(4, 8))
                         ->mapWithKeys(fn($item) => [$item->id => ['price' => rand(10000, 1000000) / 100]])
                 ),
