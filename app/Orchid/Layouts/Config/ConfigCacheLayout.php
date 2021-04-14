@@ -2,6 +2,8 @@
 
 namespace App\Orchid\Layouts\Config;
 
+use App\Models\Product;
+use App\Repository\ConfigRepository;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Field;
 use Orchid\Screen\Fields\Group;
@@ -31,13 +33,15 @@ class ConfigCacheLayout extends Rows
                         ->method('cacheClear')
                         ->type(Color::ERROR()),
 
-                    Button::make(__('admin.config.cache.clear.news'))
-                        ->method('cacheClear')
-                        ->type(Color::WARNING()),
-
                     Button::make(__('admin.config.cache.clear.catalog'))
                         ->method('cacheClear')
-                        ->type(Color::WARNING()),
+                        ->type(Color::WARNING())
+                        ->parameters([[Product::PRODUCT_CACHE_TAGS]]),
+
+                    Button::make(__('admin.config.cache.clear.configs'))
+                        ->method('cacheClear')
+                        ->type(Color::WARNING())
+                        ->parameters([[ConfigRepository::CONFIG_CACHE_TAGS]]),
                 ]
             )
         ];

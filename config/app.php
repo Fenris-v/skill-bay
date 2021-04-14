@@ -184,6 +184,7 @@ return [
         App\Providers\CompareProductsServiceProvider::class,
         App\Providers\PaymentServiceProvider::class,
 
+        App\Providers\RepositoryServiceProvider::class
     ],
 
     /*

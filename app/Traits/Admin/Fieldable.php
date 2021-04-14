@@ -37,10 +37,10 @@ trait Fieldable
     private function makeInput(Model $model, string $type): Input
     {
         return Input::make($model->slug)
-            ->title(__("admin.config.fields.example.{$model->slug}"))
+            ->title(__("admin.config.fields.{$model->slug}"))
             ->type($type)
             ->value($model->value)
-            ->placeholder(__("admin.config.fields.example.{$model->slug}"));
+            ->placeholder(__("admin.config.fields.{$model->slug}"));
     }
 
     /**
@@ -52,7 +52,7 @@ trait Fieldable
     {
         return CheckBox::make($model->slug)
             ->value($model->value)
-            ->placeholder(__("admin.config.fields.example.{$model->slug}"))
+            ->placeholder(__("admin.config.fields.{$model->slug}"))
             ->sendTrueOrFalse();
     }
 }
