@@ -19,7 +19,8 @@ class Category extends Model
         return 'slug';
     }
 
-    public function image() {
-        return $this->belongsTo(Image::class);
+    public function getIconUrl()
+    {
+        return config("image.icons_path") . 'departments/' . $this->icon . '.svg';
     }
 }

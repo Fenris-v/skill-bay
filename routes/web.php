@@ -17,7 +17,3 @@ use App\Models\Category;
 Route::get('/', function () {
     return view('pages.main.index');
 })->name('index');
-
-Route::get('/catalog/{category}/', function (Category $category) {
-    return dd($category);
-})->name('catalog_category');

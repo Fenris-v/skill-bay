@@ -18,9 +18,8 @@ class CreateCategoriesTable extends Migration
             $table->string('slug')->unique();
             $table->string('name');
             $table->nestedSet();
-            $table->unsignedBigInteger('image_id')->nullable();
+            $table->string('icon');
 
-            $table->foreign('image_id')->references('id')->on('images');
         });
     }
 

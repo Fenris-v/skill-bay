@@ -3,9 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Category;
-use App\Models\Image;
-use Faker\Generator;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Str;
 
 class CategoryFactory extends Factory
 {
@@ -24,12 +23,25 @@ class CategoryFactory extends Factory
     public function definition()
     {
         $name = $this->faker->unique()->word();
-        $slug = \Str::slug($name);
+        $slug = Str::slug($name);
+        $icons = [
+            "blender",
+            "camera",
+            "discount",
+            "headphones",
+            "lamp",
+            "microwave",
+            "smartphone",
+            "soundbar",
+            "stove",
+            "teapot",
+            "tv",
+            "washing_machine"];
 
         return [
             'slug' => $slug,
             'name' => $name,
-            'image_id' => Image::factory(),
+            'icon' => $icons[rand(0, count($icons) - 1)],
         ];
     }
 }
