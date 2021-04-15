@@ -7,23 +7,23 @@
                         {{ $discount }}%
                     </div>
                 @endif
-                <img src="{{ $pics[0]['url'] }}" alt=""/>
+                <img src="{{ $product->images->first()->getUrl() }}" alt=""/>
             </div>
             <div class="ProductCard-picts">
-                @foreach($pics as $key => $pic)
-                    <a class="ProductCard-pict ProductCard-pict{{ !$key ? '_ACTIVE' : '' }}" href="{{ $pic['url'] }}">
-                        <img src="{{ $pic['url'] }}" alt=""/>
+                @foreach($product->images as $key => $image)
+                    <a class="ProductCard-pict ProductCard-pict{{ !$key ? '_ACTIVE' : '' }}" href="{{ $image->getUrl() }}">
+                        <img src="{{ $image->getUrl() }}" alt=""/>
                     </a>
                 @endforeach
             </div>
         </div>
         <div class="ProductCard-desc">
             <div class="ProductCard-header">
-                <h2 class="ProductCard-title">{{ $title }}</h2>
+                <h2 class="ProductCard-title">{{ $product->title }}</h2>
                 <div class="ProductCard-info">
                     <div class="ProductCard-cost">
-                        <div class="ProductCard-price">$ @price($price)</div>
-                        <div class="ProductCard-priceOld">$ @price($priceOld)</div>
+                        <div class="ProductCard-price">@price($price)</div>
+                        <div class="ProductCard-priceOld">@price($priceOld)</div>
                     </div>
                     <div class="ProductCard-compare">
                         <x-buttons.compare :href="$compareUrl"/>
@@ -31,16 +31,20 @@
                 </div>
             </div>
             <div class="ProductCard-text">
-                {{ $description }}
+                {{ $product->description }}
             </div>
-            <div class="ProductCard-cart">
-                <div class="ProductCard-cartElement ProductCard-cartElement_amount">
-                    <x-amount />
+            <form
+                action="{{ $addToCartUrl }}"
+            >
+                <div class="ProductCard-cart">
+                    <div class="ProductCard-cartElement ProductCard-cartElement_amount">
+                        <x-amount />
+                    </div>
+                    <div class="ProductCard-cartElement">
+                        <x-buttons.cart />
+                    </div>
                 </div>
-                <div class="ProductCard-cartElement">
-                    <x-buttons.cart :href="$addToCartUrl"/>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
     <x-wrappers.tabs
@@ -52,7 +56,7 @@
         ]"
     >
         <div class="Tabs-block" id="description">
-            {{ $description }}
+            {{ $product->description }}
         </div>
         <div class="Tabs-block" id="sellers">
             <div class="Categories Categories_product">
@@ -69,11 +73,16 @@
                     </div>
                     <div class="Categories-block Categories-price">
                         <strong>
-                            $ @price($seller->pivot->price)
+                            @price($seller->pivot->price)
                         </strong>
                     </div>
                     <div class="Categories-block Categories-button">
-                        <x-buttons.cart href="#" />
+                        <x-wrappers.button-link
+                            class="btn_primary"
+                            :href="$seller->addToCartUrl"
+                            icon="icons.card.cart-white"
+                            title="Купить"
+                        />
                     </div>
                 </div>
                 @endforeach
@@ -81,7 +90,7 @@
         </div>
         <div class="Tabs-block" id="addit">
             <div class="Product-props">
-                @foreach($specifications as $specification)
+                @foreach($product->specifications as $specification)
                 <div class="Product-prop">
                     <strong>
                         {{ $specification->title }}

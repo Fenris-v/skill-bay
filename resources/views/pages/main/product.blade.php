@@ -16,6 +16,7 @@
                     />
                 </div>
             </div>
+            <x-notification />
         </div>
         <div class="Section">
             <div class="wrap">

@@ -177,13 +177,13 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\TelescopeServiceProvider::class,
         App\Providers\AdminSettingsServiceProvider::class,
-        App\Providers\WatchedProductsServiceProvider::class,
         App\Providers\DiscountServiceProvider::class,
         App\Providers\CartServiceProvider::class,
         App\Providers\ProductsReviewServiceProvider::class,
         App\Providers\CompareProductsServiceProvider::class,
         App\Providers\PaymentServiceProvider::class,
 
+        App\Providers\RepositoryServiceProvider::class
     ],
 
     /*

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SellerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,20 +15,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('pages.main.index');
-})->name('index');
+Route::get(
+    '/',
+    function () {
+        return view('pages.main.index');
+    }
+)->name('index');
 
-Route::get('/seller/{seller}', 'App\Http\Controllers\SellerController@show')->name('seller');
+Route::get('/catalog/{slug?}', [ProductController::class, 'index'])
+    ->name('products.index');
 
-Route::get('/product/{product}',
-    fn() => view('pages.main.product', [
-        'product' => \App\Models\Product::find(2),
-        'breadcrumbs' => [
-            ['title' => 'Главная', 'url' => '/'],
-            ['title' => 'Каталог', 'url' => '/catalog'],
-            ['title' => 'Ноутбуки', 'url' => '/catalog/notebooks'],
-            ['title' => 'Товар'],
-        ],
-    ])
-)->name('product');
+Route::get('/product/{slug}', [ProductController::class, 'show'])
+    ->name('products.show');
+
+Route::get('/seller/{seller}', [SellerController::class, 'show'])
+    ->name('seller');
+
+Route::get('/product/{product}/add-to-cart', [ProductController::class, 'addToCart'])
+    ->name('products.addToCart');
+Route::get('/product/{product}/seller/{seller}/add-to-cart', [ProductController::class, 'addToCartWithSeller'])
+    ->name('products.addToCartWithSeller');
+Route::get('/product/{product}/add-to-compare', [ProductController::class, 'addToCompare'])
+    ->name('products.addToCompare');
