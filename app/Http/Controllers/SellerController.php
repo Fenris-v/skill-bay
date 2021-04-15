@@ -5,14 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Seller;
 use Illuminate\Support\Facades\Cache;
+use App\Repository\ConfigRepository;
 
 class SellerController extends Controller
 {
-    public function show(string $slug)
+    public function show(string $slug, ConfigRepository $configs)
     {
-        $seller = Cache::remember(
+        $seller = Cache::tags(
+            [ConfigRepository::GLOBAL_CACHE_TAG, Seller::class]
+        )->remember(
             'seller|show|' . $slug,
-            86400,
+            $configs->getCacheLifetime(),
             fn() => Seller::where('slug', $slug)->firstOrFail(),
         );
 
