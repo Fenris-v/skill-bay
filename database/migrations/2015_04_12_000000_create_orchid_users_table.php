@@ -19,20 +19,20 @@ class CreateOrchidUsersTable extends Migration
             }
         );
 
-//        User::create(
-//            [
-//                'name' => 'admin',
-//                'email' => 'admin@admin.com',
-//                'password' => password_hash('secret', PASSWORD_DEFAULT),
-//                'permissions' => [
-//                    'platform.index' => true,
-//                    'platform.systems.index' => true,
-//                    'platform.systems.roles' => true,
-//                    'platform.systems.users' => true,
-//                    'platform.systems.attachment' => true,
-//                ]
-//            ]
-//        );
+        User::create(
+            [
+                'name' => 'admin',
+                'email' => 'admin@admin.com',
+                'password' => password_hash('secret', PASSWORD_DEFAULT),
+                'permissions' => [
+                    'platform.index' => true,
+                    'platform.systems.index' => true,
+                    'platform.systems.roles' => true,
+                    'platform.systems.users' => true,
+                    'platform.systems.attachment' => true,
+                ]
+            ]
+        );
     }
 
     /**
