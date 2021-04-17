@@ -22,3 +22,7 @@ Route::get('/registration', [UserController::class, 'create'])->name('registrati
 Route::post('/registration', [UserController::class, 'store'])->name('user.store');
 Route::get('/login', [UserController::class, 'login'])->name('login');
 Route::post('/auth', [UserController::class, 'auth'])->name('auth');
+Route::get('/forgot-password', [UserController::class, 'forgotPassword'])->middleware('guest')->name('forgot-password');
+Route::post('/forgot-password', [UserController::class, 'forgotPasswordSend'])->middleware('guest')->name('forgot-password-send');
+Route::get('/reset-password/{token}', [UserController::class, 'resetPassword'])->middleware('guest')->name('reset-password');
+Route::post('/reset-password', [UserController::class, 'resetPasswordSend'])->middleware('guest')->name('reset-password-send');
