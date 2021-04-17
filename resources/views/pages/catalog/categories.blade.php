@@ -10,14 +10,7 @@
             <div class="wrap">
                 <div class="Middle-header">
                     <h1 class="Middle-title">{{ __('navigation.catalog') }}</h1>
-                    <ul class="breadcrumbs Middle-breadcrumbs">
-                        <li class="breadcrumbs-item">
-                            <a href="{{ route('index') }}">{{ __('navigation.main') }}</a>
-                        </li>
-                        <li class="breadcrumbs-item breadcrumbs-item_current">
-                            <span>{{ __('navigation.catalog') }}</span>
-                        </li>
-                    </ul>
+                    <x-wrappers.breadcrumbs />
                 </div>
             </div>
         </div>

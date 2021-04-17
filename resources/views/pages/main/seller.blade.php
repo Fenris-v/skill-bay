@@ -11,9 +11,7 @@
             <div class="wrap">
                 <div class="Middle-header">
                     <h1 class="Middle-title">Продавец {{ $seller->title }}</h1>
-                    <x-wrappers.breadcrumbs
-                        :items="$breadcrumbs"
-                    />
+                    <x-wrappers.breadcrumbs />
                 </div>
             </div>
         </div>
