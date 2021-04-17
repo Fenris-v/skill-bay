@@ -18,10 +18,6 @@ class SellerController extends Controller
 
         return view('pages.main.seller', [
             'seller' => $seller,
-            'breadcrumbs' => [
-                ['title' => 'Главная', 'url' => '/'],
-                ['title' => 'О продавце'],
-            ],
         ]);
     }
 }
