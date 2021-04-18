@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Database\Seeders\CategorySeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,7 +22,8 @@ class DatabaseSeeder extends Seeder
                 BannerSeeder::class,
                 RoleSeeder::class,
                 UserSeeder::class,
-                RoleUsersSeeder::class
+                RoleUsersSeeder::class,
+                CategorySeeder::class,
             ]
         );
     }
