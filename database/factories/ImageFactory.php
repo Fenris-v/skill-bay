@@ -22,8 +22,9 @@ class ImageFactory extends Factory
     public function definition()
     {
         return [
-            'path' => rand(1, 12) . '.svg',
-
+            'path' => $this->faker->image(
+                'public/storage/images',735,434, null, false
+            ),
         ];
     }
 }
