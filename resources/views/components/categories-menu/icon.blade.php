@@ -1,7 +1,7 @@
 {{-- Иконка категории --}}
 
-@props(["node"])
+@props(["icon"])
 
 <div class="CategoriesButton-icon">
-    <img src="{{ $node->getIconUrl() }}" alt="{{ $node->icon }}"/>
+    @include('components.icons.departments.' . $icon)
 </div>

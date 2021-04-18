@@ -3,7 +3,7 @@
 @props(['node'])
 
 <div class="CategoriesButton-link"><a href="{{ route('products.index', $node->slug) }}">
-        <x-categories-menu.icon :node="$node"/>
+        <x-categories-menu.icon :icon="$node->icon"/>
         <span class="CategoriesButton-text">{{ $node->name }}</span></a>
     @if($node->children->count())
         <a class="CategoriesButton-arrow" href="{{ route('products.index', $node->slug) }}"></a>
