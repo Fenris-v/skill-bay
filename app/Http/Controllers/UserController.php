@@ -95,7 +95,7 @@ class UserController extends Controller
 	
 	public resetPasswordSend(Request $request)
 	{
-		$request->validate([
+		$this->validate($request,[
 			'token' => 'required',
 			'email' => 'required|email',
 			'password' => 'required|min:8|confirmed',
