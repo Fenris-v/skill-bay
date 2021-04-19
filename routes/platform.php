@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Orchid\Screens\Banner\BannerEditScreen;
+use App\Orchid\Screens\Banner\BannerListScreen;
 use App\Orchid\Screens\Config\ConfigsEditScreen;
 use App\Orchid\Screens\Examples\ExampleCardsScreen;
 use App\Orchid\Screens\Examples\ExampleChartsScreen;
@@ -10,7 +12,11 @@ use App\Orchid\Screens\Examples\ExampleFieldsScreen;
 use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
 use App\Orchid\Screens\Examples\ExampleScreen;
 use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
+use App\Orchid\Screens\Order\OrderEditScreen;
+use App\Orchid\Screens\Order\OrderListScreen;
 use App\Orchid\Screens\PlatformScreen;
+use App\Orchid\Screens\Product\ProductEditScreen;
+use App\Orchid\Screens\Product\ProductListScreen;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
@@ -114,3 +120,33 @@ Route::screen('roles', RoleListScreen::class)
 /** Пользовательские маршруты */
 Route::screen('config/edit', ConfigsEditScreen::class)
     ->name('platform.edit.config');
+
+// Товары.
+Route::screen('products/create', ProductEditScreen::class)
+    ->name('platform.product.create');
+
+Route::screen('products/{product}', ProductEditScreen::class)
+    ->name('platform.product.edit');
+
+Route::screen('products', ProductListScreen::class)
+    ->name('platform.product.list');
+
+// Баннеры.
+Route::screen('banners/create', BannerEditScreen::class)
+    ->name('platform.banner.create');
+
+Route::screen('banners/{banner}', BannerEditScreen::class)
+    ->name('platform.banner.edit');
+
+Route::screen('banners', BannerListScreen::class)
+    ->name('platform.banner.list');
+
+// Заказы.
+Route::screen('orders/create', OrderEditScreen::class)
+    ->name('platform.order.create');
+
+Route::screen('orders/{order}', OrderEditScreen::class)
+    ->name('platform.order.edit');
+
+Route::screen('orders', OrderListScreen::class)
+    ->name('platform.order.list');
