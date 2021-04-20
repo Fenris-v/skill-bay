@@ -13,14 +13,14 @@ class ProductReviewService implements ProductReviewServiceContract
      * Добавить отзыв к товару.
      *
      * @param  Product  $product
-     * @param  ProductReview  $review
-     * @return bool
+     * @param  string  $review
+     * @return ProductReview
      */
-    public function addReview(Product $product, ProductReview $review)
+    public function addReview(Product $product, string $review)
     {
         // @todo Реализовать метод
 
-        return true;
+        return new ProductReview();
     }
 
     /**
