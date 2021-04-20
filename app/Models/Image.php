@@ -27,4 +27,9 @@ class Image extends Model
             config('image.store_path') . "/{$this->path}"
         );
     }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class);
+    }
 }

@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Seller;
 use App\Repository\ConfigRepository;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
+use App\Services\ProductCartService;
+use App\Services\CompareProductsService;
+use App\Services\ProductViewHistoryService;
 
 class ProductController extends Controller
 {
@@ -46,10 +50,97 @@ class ProductController extends Controller
 
     /**
      * Метод для отображения карточки товара
+     * @param ConfigRepository $configs
+     * @param string $slug
      * @return View
      */
-    public function show(): View
-    {
-        dd('Make this anyone');
+    public function show(
+        ConfigRepository $configs,
+        ProductViewHistoryService $productViewHistoryService,
+        string $slug = null
+    ): View {
+        $product = Cache::tags(
+            [ConfigRepository::GLOBAL_CACHE_TAG, Product::class, Seller::class]
+        )->remember(
+            'product_page|' . $slug,
+            $configs->getCacheLifetime(),
+            fn() => Product::where('slug', $slug)->with('sellers')->firstOrFail(),
+        );
+
+        $productViewHistoryService->add($product);
+
+        return view('pages.main.product', compact('product'));
+    }
+
+    /**
+     * Метод для добавления товара в корзину
+     * @param Request $request
+     * @param ConfigRepository $configs
+     * @param Product $product
+     * @return null
+     */
+    public function addToCart(
+        Request $request,
+        ProductCartService $productCartService,
+        Product $product
+    ) {
+        $amount = current($request->validate([
+            'amount' => 'required|integer',
+        ]));
+
+        if ($productCartService->add(
+            $product,
+            $amount,
+        )) {
+            session()->flash('message', "Товар в количестве {$amount} шт. успешно добавлен в корзину");
+        } else {
+            session()->flash('message', 'Ошибка добавления товара в корзину');
+        }
+
+        return back()->withInput();
+    }
+    /**
+     * Метод для добавления товара в корзину с указанием продавца
+     * @param ConfigRepository $configs
+     * @param Product $product
+     * @param Seller $seller
+     * @return null
+     */
+    public function addToCartWithSeller(
+        ProductCartService $productCartService,
+        Product $product,
+        Seller $seller
+    ) {
+        if ($productCartService->add(
+            $product,
+            1,
+            $seller
+        )) {
+            session()->flash('message', "Товар у продавца {$seller->slug} успешно добавлен в корзину");
+        } else {
+            session()->flash('message', 'Ошибка добавления товара в корзину');
+        }
+
+        return back()->withInput();
+    }
+
+    /**
+     * Метод для добавления товара для сравнения
+     * @param Request $request
+     * @param ConfigRepository $configs
+     * @param Product $product
+     * @return null
+     */
+    public function addToCompare(
+        CompareProductsService $compareProductsService,
+        Product $product
+    ) {
+        if ($compareProductsService->add($product)) {
+            session()->flash('message', 'Товар успешно добавлен для сравнения');
+        } else {
+            session()->flash('message', 'Возникла непредвиденная ошибка');
+        }
+
+        return back()->withInput();
     }
 }
