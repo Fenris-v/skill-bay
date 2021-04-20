@@ -93,7 +93,7 @@ class UserController extends Controller
 		return view('pages.forgot-password.reset-password', ['token' => $token]);
 	}
 	
-	public resetPasswordSend(Request $request)
+	public function resetPasswordSend(Request $request)
 	{
 		$this->validate($request,[
 			'token' => 'required',
