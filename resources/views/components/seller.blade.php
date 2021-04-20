@@ -1,13 +1,13 @@
 @props(['seller'])
 <div class="Section-column">
     <x-wrappers.column-mark icon="icons.contacts.phone">
-        Тел:&#32;<nobr>{{ $seller->phone }}</nobr>
+        {{ __('sellerPage.phone') }}: <nobr>{{ $seller->phone }}</nobr>
     </x-wrappers.column-mark>
     <x-wrappers.column-mark icon="icons.contacts.address">
-        {{ $seller->address }}
+        {{ __('sellerPage.address') }}: {{ $seller->address }}
     </x-wrappers.column-mark>
     <x-wrappers.column-mark icon="icons.contacts.mail">
-        Email: {{ $seller->email }}
+        {{ __('sellerPage.email') }}: {{ $seller->email }}
     </x-wrappers.column-mark>
 </div>
 <div class="Section-content">
