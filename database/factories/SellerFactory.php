@@ -30,7 +30,7 @@ class SellerFactory extends Factory
             'phone' => $this->faker->phoneNumber,
             'email' => $this->faker->unique()->email,
             'address' => $this->faker->streetAddress,
-            'image_id' => Image::factory()->create()->id,
+            'image_id' => Image::factory(),
         ];
     }
 }

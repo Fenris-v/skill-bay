@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use CacheFlushableAfterCUDModelTrait;
+use App\Traits\CacheFlushableAfterCRUDModelTrait;
 
 class Seller extends Model
 {
     use HasFactory;
     use SoftDeletes;
-    use CacheFlushableAfterCUDModelTrait;
+    use CacheFlushableAfterCRUDModelTrait;
 
     protected $fillable = [
         'title',
