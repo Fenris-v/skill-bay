@@ -1,6 +1,5 @@
-@props(['href'])
-<x-wrappers.button-link
+<x-wrappers.button
     class="btn_default"
-    :href="$href"
+    type="submit"
     icon="icons.card.change"
 />

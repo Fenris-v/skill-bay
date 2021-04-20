@@ -69,14 +69,7 @@ class ProductController extends Controller
 
         $productViewHistoryService->add($product);
 
-        // Нужен сервис хлебных крошек
-        $breadcrumbs = [
-            ['title' => 'Главная', 'url' => '/'],
-            ['title' => 'Каталог', 'url' => '/catalog'],
-            ['title' => 'Ноутбуки', 'url' => '/catalog/notebooks'],
-            ['title' => 'Товар'],
-        ];
-        return view('pages.main.product', compact('product', 'breadcrumbs'));
+        return view('pages.main.product', compact('product'));
     }
 
     /**
@@ -92,12 +85,12 @@ class ProductController extends Controller
         Product $product
     ) {
         $amount = current($request->validate([
-            'amount' => 'required|integer|min:1',
+            'amount' => 'required|integer',
         ]));
 
         if ($productCartService->add(
             $product,
-            (int) $amount,
+            $amount,
         )) {
             session()->flash('message', "Товар в количестве {$amount} шт. успешно добавлен в корзину");
         } else {
@@ -142,7 +135,7 @@ class ProductController extends Controller
         CompareProductsService $compareProductsService,
         Product $product
     ) {
-        if ($compareProductsService->addProduct($product)) {
+        if ($compareProductsService->add($product)) {
             session()->flash('message', 'Товар успешно добавлен для сравнения');
         } else {
             session()->flash('message', 'Возникла непредвиденная ошибка');

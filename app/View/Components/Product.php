@@ -22,7 +22,7 @@ class Product extends Component
         $this->product = $product;
         $this->discount = $discountService->getDiscountPrice($product) ?? 0;
         $this->priceOld = $product->averagePrice;
-        $this->price = $discountService->getDiscountPrice($product) ?? $product->averagePrice;
+        $this->price = $product->currentPrice;
         $this->compareUrl = route('products.addToCompare', ['product' => $product->slug]);
         $this->addToCartUrl = route('products.addToCart', ['product' => $product->slug]);
         $this->sellers = $product->sellers->map(function ($seller) use ($product) {

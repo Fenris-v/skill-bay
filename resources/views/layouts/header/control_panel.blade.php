@@ -12,17 +12,17 @@
                         <ul class="menu menu_img menu_smallImg ControlPanel-menu">
                             <li class="menu-item">
                                 <a class="menu-link" href="#">
-                                    <img src="assets/img/icons/socialHeader/fb.svg" alt="fb.svg"/>
+                                    <img src="/assets/img/icons/socialHeader/fb.svg" alt="fb.svg"/>
                                 </a>
                             </li>
                             <li class="menu-item">
                                 <a class="menu-link" href="#">
-                                    <img src="assets/img/icons/socialHeader/tw.svg" alt="tw.svg"/>
+                                    <img src="/assets/img/icons/socialHeader/tw.svg" alt="tw.svg"/>
                                 </a>
                             </li>
                             <li class="menu-item">
                                 <a class="menu-link" href="#">
-                                    <img src="assets/img/icons/socialHeader/in.svg" alt="in.svg"/>
+                                    <img src="/assets/img/icons/socialHeader/in.svg" alt="in.svg"/>
                                 </a>
                             </li>
                         </ul>

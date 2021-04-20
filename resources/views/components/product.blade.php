@@ -26,15 +26,23 @@
                         <div class="ProductCard-priceOld">@price($priceOld)</div>
                     </div>
                     <div class="ProductCard-compare">
-                        <x-buttons.compare :href="$compareUrl"/>
+                        <x-wrappers.form
+                            action="{{ $compareUrl }}"
+                            method="post"
+                        >
+                            <x-slot name="submit">
+                                <x-buttons.compare />
+                            </x-slot>
+                        </x-wrappers.form>
                     </div>
                 </div>
             </div>
             <div class="ProductCard-text">
                 {{ $product->description }}
             </div>
-            <form
+            <x-wrappers.form
                 action="{{ $addToCartUrl }}"
+                method="post"
             >
                 <div class="ProductCard-cart">
                     <div class="ProductCard-cartElement ProductCard-cartElement_amount">
@@ -44,15 +52,15 @@
                         <x-buttons.cart />
                     </div>
                 </div>
-            </form>
+            </x-wrappers.form>
         </div>
     </div>
     <x-wrappers.tabs
         :links="[
-            ['id' => '#description', 'title' => 'Описание'],
-            ['id' => '#sellers', 'title' => 'Продавцы'],
-            ['id' => '#addit', 'title' => 'Характеристики'],
-            ['id' => '#reviews', 'title' => 'Отзывы'],
+            ['id' => '#description', 'title' => __('components.product.tabs.description')],
+            ['id' => '#sellers', 'title' => __('components.product.tabs.sellers')],
+            ['id' => '#addit', 'title' => __('components.product.tabs.addit')],
+            ['id' => '#reviews', 'title' => __('components.product.tabs.reviews')],
         ]"
     >
         <div class="Tabs-block" id="description">
@@ -77,12 +85,15 @@
                         </strong>
                     </div>
                     <div class="Categories-block Categories-button">
-                        <x-wrappers.button-link
-                            class="btn_primary"
-                            :href="$seller->addToCartUrl"
-                            icon="icons.card.cart-white"
-                            title="Купить"
-                        />
+                        <x-wrappers.form
+                            action="{{ $seller->addToCartUrl }}"
+                            method="post"
+                            name="form_seller_{{ $seller->slug }}"
+                        >
+                            <x-slot name="submit">
+                                <x-buttons.cart />
+                            </x-slot>
+                        </x-wrappers.form>
                     </div>
                 </div>
                 @endforeach

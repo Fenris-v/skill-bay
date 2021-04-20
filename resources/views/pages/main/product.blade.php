@@ -11,9 +11,7 @@
             <div class="wrap">
                 <div class="Middle-header">
                     <h1 class="Middle-title">Товар</h1>
-                    <x-wrappers.breadcrumbs
-                        :items="$breadcrumbs"
-                    />
+                    <x-wrappers.breadcrumbs />
                 </div>
             </div>
             <x-notification />

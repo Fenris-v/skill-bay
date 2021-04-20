@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-trait CacheFlushableAfterCUDModelTrait
+trait CacheFlushableAfterCRUDModelTrait
 {
     public static function bootCacheFlushableAfterCUDModelTrait()
     {
