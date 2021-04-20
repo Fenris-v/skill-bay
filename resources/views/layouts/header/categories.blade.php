@@ -8,7 +8,6 @@
             <span class="CategoriesButton-text">Категории</span>
             <div class="CategoriesButton-arrow"></div>
         </div>
-
         @include('layouts.header.categories_dropdown')
     </div>
 </div>
