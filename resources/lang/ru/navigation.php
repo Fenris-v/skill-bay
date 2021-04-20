@@ -7,5 +7,7 @@ return [
     'main' => 'Главная',
     'catalog' => 'Каталог',
     'discounts' => 'Скидки',
-    'contacts' => 'Контакты'
+    'contacts' => 'Контакты',
+    'seller' => 'О продавце',
+    'product' => 'О товаре',
 ];
