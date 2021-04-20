@@ -26,14 +26,18 @@ class CreateConfigsTable extends Migration
 
         $fields = [
             [
-                'slug' => Str::slug('Количество товаров на странице'), /* При добавлении реальной опции,
-                    дать осмысленное название, например, per_page.
-                    Str::slug используется только для примера */
+                'slug' => 'per_page',
                 'type_id' => Config::INT_TYPE,
-                'value' => 20,
+                'value' => 8,
             ],
             [
-                'slug' => Str::slug('Строка например'),
+                'slug' => 'cache_lifetime',
+                'type_id' => Config::INT_TYPE,
+                'value' => 3600 * 24,
+            ],
+            [
+                'slug' => Str::slug('Строка например'), /* При добавлении реальной опции,
+                    дать осмысленное название. Str::slug используется только для примера */
                 'type_id' => Config::STRING_TYPE,
                 'value' => 'Какой-то рандомный текст',
             ],

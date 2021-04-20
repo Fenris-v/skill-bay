@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Banner;
+use App\Models\Product;
+use App\Observers\BannerObserver;
+use App\Observers\ProductObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -27,6 +31,7 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Banner::observe(BannerObserver::class);
+        Product::observe(ProductObserver::class);
     }
 }

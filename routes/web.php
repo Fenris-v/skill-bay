@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SellerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Models\Category;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +20,6 @@ use App\Http\Controllers\UserController;
 Route::get('/', function () {
     return view('pages.main.index');
 })->name('index');
-
 Route::get('/registration', [UserController::class, 'create'])->name('registration');
 Route::post('/registration', [UserController::class, 'store'])->name('user.store');
 Route::get('/login', [UserController::class, 'login'])->name('login');
@@ -26,3 +28,9 @@ Route::get('/forgot-password', [UserController::class, 'forgotPassword'])->middl
 Route::post('/forgot-password', [UserController::class, 'forgotPasswordSend'])->middleware('guest')->name('forgot-password-send');
 Route::get('/reset-password/{token}', [UserController::class, 'resetPassword'])->middleware('guest')->name('reset-password');
 Route::post('/reset-password', [UserController::class, 'resetPasswordSend'])->middleware('guest')->name('reset-password-send');
+Route::get('/catalog/{slug?}', [ProductController::class, 'index'])
+    ->name('products.index');
+Route::get('/product/{slug}', [ProductController::class, 'show'])
+    ->name('products.show');
+Route::get('/seller/{seller}', [SellerController::class, 'show'])
+    ->name('seller');
