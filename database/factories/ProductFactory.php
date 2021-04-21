@@ -28,7 +28,6 @@ class ProductFactory extends Factory
             'slug' => Str::slug($title),
             'description' => $this->faker->sentence,
             'vendor' => ucfirst($this->faker->word),
-            'reviews' => ProductReview::factory()->count(10),
         ];
     }
 }
