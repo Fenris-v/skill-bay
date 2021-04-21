@@ -13,10 +13,11 @@ interface ProductReviewService
      * Добавить отзыв к товару.
      *
      * @param  Product  $product
-     * @param  string  $review
+     * @param  string  $name
+     * @param  string  $comment
      * @return ProductReview
      */
-    public function addReview(Product $product, string $review);
+    public function addReview(Product $product, string $name, string $comment);
 
     /**
      * Возвращает список отзывов к товару.

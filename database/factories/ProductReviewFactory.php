@@ -5,16 +5,15 @@ namespace Database\Factories;
 use App\Models\Product;
 use App\Models\ProductReview;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
-class ProductFactory extends Factory
+class ProductReviewFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Product::class;
+    protected $model = ProductReview::class;
 
     /**
      * Define the model's default state.
@@ -24,11 +23,9 @@ class ProductFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $title = ucfirst($this->faker->unique()->words(3, true)),
-            'slug' => Str::slug($title),
-            'description' => $this->faker->sentence,
-            'vendor' => ucfirst($this->faker->word),
-            'reviews' => ProductReview::factory()->count(10),
+            'name' => $this->faker->name,
+            'comment' => $this->faker->sentence,
+            'product_id' => Product::factory(),
         ];
     }
 }
