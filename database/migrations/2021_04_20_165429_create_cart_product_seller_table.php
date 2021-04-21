@@ -21,6 +21,7 @@ class CreateCartProductSellerTable extends Migration
             $table->unsignedBigInteger('seller_id');
             $table->foreign('seller_id')->references('id')->on('sellers')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('amount');
+            $table->index(['cart_id', 'product_id']);
         });
     }
 
