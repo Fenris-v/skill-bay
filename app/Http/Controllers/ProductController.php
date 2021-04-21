@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductReview;
 use App\Models\Seller;
 use App\Models\Image;
 use App\Models\Specification;
@@ -68,12 +69,13 @@ class ProductController extends Controller
                 Seller::class,
                 Image::class,
                 Specification::class,
+                ProductReview::class,
             ]
         )->remember(
             'product_page|' . $slug,
             $configs->getCacheLifetime(),
             fn() => Product::where('slug', $slug)
-                ->with('sellers', 'images', 'specifications')
+                ->with('sellers', 'images', 'specifications', 'reviews')
                 ->firstOrFail()
         );
 

@@ -40,11 +40,17 @@ class Product extends Model
         return $this->sellers->avg('pivot.price') ?? 0;
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function sellers()
     {
         return $this->belongsToMany(Seller::class)->withPivot('price');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function specifications()
     {
         return $this->belongsToMany(Specification::class)->withPivot('value');
@@ -58,5 +64,13 @@ class Product extends Model
     public function images()
     {
         return $this->belongsToMany(Image::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function reviews()
+    {
+        return $this->hasMany(ProductReview::class);
     }
 }
