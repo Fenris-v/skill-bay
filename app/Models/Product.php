@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\CacheFlushableAfterCRUDModelTrait;
 use App\Traits\Models\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,7 @@ class Product extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    use CacheFlushableAfterCRUDModelTrait;
     use AsSource;
     use Sluggable;
 
@@ -24,9 +26,6 @@ class Product extends Model
         'vendor',
     ];
 
-    /**
-     * @return string
-     */
     public function getRouteKeyName(): string
     {
         return 'slug';
@@ -55,6 +54,16 @@ class Product extends Model
     public function specifications()
     {
         return $this->belongsToMany(Specification::class)->withPivot('value');
+    }
+
+    public function getCurrentPriceAttribute(): float
+    {
+        return $this->averagePrice - $this->discount * $this->averagePrice / 100;
+    }
+
+    public function images()
+    {
+        return $this->belongsToMany(Image::class);
     }
 
     /**

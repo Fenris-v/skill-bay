@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Product;
+use App\Models\Image;
 
 class ProductSeeder extends Seeder
 {
@@ -17,6 +18,11 @@ class ProductSeeder extends Seeder
         Product::factory()
             ->count(50)
             ->create()
+            ->each(fn($product) => $product->images()->attach(
+                Image::factory()
+                    ->count(2)
+                    ->create()
+            ))
         ;
     }
 }

@@ -54,3 +54,10 @@ Route::get('/sellers/{seller}', [SellerController::class, 'show'])
             ->push(__('navigation.seller'), route('sellers', $seller))
     )
 ;
+
+Route::post('/product/{product}/add-to-cart', [ProductController::class, 'addToCart'])
+    ->name('products.addToCart');
+Route::post('/product/{product}/seller/{seller}/add-to-cart', [ProductController::class, 'addToCartWithSeller'])
+    ->name('products.addToCartWithSeller');
+Route::post('/product/{product}/add-to-compare', [ProductController::class, 'addToCompare'])
+    ->name('products.addToCompare');
