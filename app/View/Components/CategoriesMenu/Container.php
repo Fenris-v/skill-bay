@@ -15,7 +15,7 @@ class Container extends Component
      */
     public function __construct()
     {
-        $this->roots = Category::whereIsRoot()->get();
+        $this->roots = Category::get()->toTree();
     }
 
     /**
