@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Seller;
+use App\Models\Image;
+use App\Models\Specification;
 use App\Repository\ConfigRepository;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Cache;
@@ -60,11 +62,19 @@ class ProductController extends Controller
         string $slug = null
     ): View {
         $product = Cache::tags(
-            [ConfigRepository::GLOBAL_CACHE_TAG, Product::class, Seller::class]
+            [
+                ConfigRepository::GLOBAL_CACHE_TAG,
+                Product::class,
+                Seller::class,
+                Image::class,
+                Specification::class,
+            ]
         )->remember(
             'product_page|' . $slug,
             $configs->getCacheLifetime(),
-            fn() => Product::where('slug', $slug)->with('sellers')->firstOrFail(),
+            fn() => Product::where('slug', $slug)
+                ->with('sellers', 'images', 'specifications')
+                ->firstOrFail()
         );
 
         $productViewHistoryService->add($product);
@@ -92,12 +102,14 @@ class ProductController extends Controller
             $product,
             $amount,
         )) {
-            session()->flash('message', "Товар в количестве {$amount} шт. успешно добавлен в корзину");
+            $message = __('productMessages.addToCart.success.withoutSeller', [
+                'amount' => $amount,
+            ]);
         } else {
-            session()->flash('message', 'Ошибка добавления товара в корзину');
+            $message = __('productMessages.addToCart.error');
         }
 
-        return back()->withInput();
+        return back()->withInput()->with('message', $message);
     }
     /**
      * Метод для добавления товара в корзину с указанием продавца
@@ -116,12 +128,15 @@ class ProductController extends Controller
             1,
             $seller
         )) {
-            session()->flash('message', "Товар у продавца {$seller->slug} успешно добавлен в корзину");
+            $message = __('productMessages.addToCart.success.withSeller', [
+                'amount' => 1,
+                'seller' => $seller->slug,
+            ]);
         } else {
-            session()->flash('message', 'Ошибка добавления товара в корзину');
+            $message = __('productMessages.addToCart.error');
         }
 
-        return back()->withInput();
+        return back()->withInput()->with('message', $message);
     }
 
     /**
@@ -136,11 +151,11 @@ class ProductController extends Controller
         Product $product
     ) {
         if ($compareProductsService->add($product)) {
-            session()->flash('message', 'Товар успешно добавлен для сравнения');
+            $message = __('productMessages.addToCompare.success');
         } else {
-            session()->flash('message', 'Возникла непредвиденная ошибка');
+            $message = __('productMessages.addToCompare.error');
         }
 
-        return back()->withInput();
+        return back()->withInput()->with('message', $message);
     }
 }

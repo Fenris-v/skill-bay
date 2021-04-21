@@ -7,7 +7,7 @@
                         {{ $crumbs->title() }}
                     </a>
                 </li>
-            @else
+            @elseif($loop->count > 1)
                 <li class="breadcrumbs-item breadcrumbs-item_current">
                     <span>{{ $crumbs->title() }}</span>
                 </li>
