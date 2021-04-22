@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\ProductReviewService;
+use App\Http\Requests\ProductReviewStoreRequest;
 use App\Models\Product;
 use App\Models\Seller;
 use App\Repository\ConfigRepository;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use App\Services\ProductCartService;
@@ -70,6 +73,30 @@ class ProductController extends Controller
         $productViewHistoryService->add($product);
 
         return view('pages.main.product', compact('product'));
+    }
+
+    /**
+     * Сохранение отзыва.
+     *
+     * @param  ProductReviewStoreRequest  $request
+     * @param  Product  $product
+     * @param  ProductReviewService  $productReviewService
+     * @return RedirectResponse
+     */
+    public function storeReview(
+        ProductReviewStoreRequest $request,
+        Product $product,
+        ProductReviewService $productReviewService
+    ) {
+        $name = $request->get('name');
+        $email = $request->get('email');
+        $comment = $request->get('comment');
+
+        $productReviewService->addReview(
+            $product, $name, $email, $comment
+        );
+
+        return back()->withInput();
     }
 
     /**

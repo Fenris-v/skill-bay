@@ -24,6 +24,7 @@ class ProductReviewFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
+            'email' => $this->faker->email,
             'comment' => $this->faker->sentence,
             'product_id' => Product::factory(),
         ];

@@ -37,6 +37,9 @@ Route::get('/catalog/{slug?}', [ProductController::class, 'index'])
     )
 ;
 
+Route::post('/products/{product}', [ProductController::class, 'storeReview'])
+    ->name('products.store-review');
+
 Route::get('/products/{slug}', [ProductController::class, 'show'])
     ->name('products.show')
     ->breadcrumbs(fn (Trail $trail, $product) =>

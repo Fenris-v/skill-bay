@@ -112,7 +112,6 @@
             </div>
         </div>
 
-        <!--Для дальнейшей правки-->
         <div class="Tabs-block" id="reviews">
             <x-product.product-reviews :reviews="$product->reviews" />
         </div>

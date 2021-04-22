@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\ProductReview;
 use Illuminate\Database\Eloquent\Collection;
 use App\Contracts\ProductReviewService as ProductReviewServiceContract;
+use Illuminate\Database\Eloquent\Model;
 
 class ProductReviewService implements ProductReviewServiceContract
 {
@@ -14,16 +15,19 @@ class ProductReviewService implements ProductReviewServiceContract
      *
      * @param  Product  $product
      * @param  string  $name
+     * @param  string  $email
      * @param  string  $comment
-     * @return ProductReview
+     * @return ProductReview|Model
      */
-    public function addReview(Product $product, string $name, string $comment)
-    {
-        $review = $product->reviews()->create([
-           ''
-        ]);
-
-        return new ProductReview();
+    public function addReview(
+        Product $product,
+        string $name,
+        string $email,
+        string $comment
+    ) {
+        return $product->reviews()->create(
+            compact('name', 'email', 'comment')
+        );
     }
 
     /**

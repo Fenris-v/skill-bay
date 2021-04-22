@@ -12,7 +12,7 @@ class ProductReview extends Model
     /**
      * @var string[]
      */
-    protected $fillable = ['name', 'comment'];
+    protected $fillable = ['name', 'email', 'comment'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
