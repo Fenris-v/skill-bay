@@ -3,8 +3,12 @@
 namespace App\Services;
 
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use App\Contracts\ProductCartService as ProductCartServiceContract;
+use App\Repository\ProductRepository;
+use App\Repository\CartRepository;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Класс-сервис для работы с корзиной товаров.
@@ -13,6 +17,17 @@ use App\Contracts\ProductCartService as ProductCartServiceContract;
  */
 class ProductCartService implements ProductCartServiceContract
 {
+    private ProductRepository $productRepository;
+    private CartRepository $cartRepository;
+
+    public function __construct(
+        ProductRepository $productRepository,
+        CartRepository $cartRepository
+    ) {
+        $this->productRepository = $productRepository;
+        $this->cartRepository = $cartRepository;
+    }
+
     /**
      * Добавление товара в корзину.
      *
@@ -20,9 +35,27 @@ class ProductCartService implements ProductCartServiceContract
      * @param  int  $amount
      * @return bool
      */
-    public function add(Product $product, int $amount = 1)
-    {
-        // @todo Реализовать метод
+    public function add(
+        string $slug,
+        array $data
+    ) {
+        $validator = Validator::make($data, [
+            'amount' => 'required|integer|min:1',
+        ])->validate();
+
+        $product = $this->productRepository->getProductBySlug($slug);
+        $this
+            ->cartRepository
+            ->getUserCart(User::where('id', 36)->first())
+            ->products()
+            ->attach(
+                $product,
+                [
+                    'amount' => $data['amount'],
+                    'seller_id' => $product->sellers->random()->id,
+                ]
+            )
+        ;
 
         return true;
     }

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Repository\ConfigRepository;
+use App\Repository\ProductRepository;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -18,6 +19,13 @@ class RepositoryServiceProvider extends ServiceProvider
             ConfigRepository::class,
             function () {
                 return new ConfigRepository();
+            }
+        );
+
+        $this->app->singleton(
+            ProductRepository::class,
+            function () {
+                return new ProductRepository();
             }
         );
     }

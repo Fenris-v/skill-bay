@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\ProductReview;
 use App\Models\Seller;
-use App\Models\Image;
-use App\Models\Specification;
-use App\Repository\ConfigRepository;
+use App\Repository\ProductRepository;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
@@ -58,27 +55,11 @@ class ProductController extends Controller
      * @return View
      */
     public function show(
-        ConfigRepository $configs,
+        ProductRepository $productRepository,
         ProductViewHistoryService $productViewHistoryService,
         string $slug = null
     ): View {
-        $product = Cache::tags(
-            [
-                ConfigRepository::GLOBAL_CACHE_TAG,
-                Product::class,
-                Seller::class,
-                Image::class,
-                Specification::class,
-                ProductReview::class,
-            ]
-        )->remember(
-            'product_page|' . $slug,
-            $configs->getCacheLifetime(),
-            fn() => Product::where('slug', $slug)
-                ->with('sellers', 'images', 'specifications', 'reviews')
-                ->firstOrFail()
-        );
-
+        $product = $productRepository->getProductBySlug($slug);
         $productViewHistoryService->add($product);
 
         return view('pages.main.product', compact('product'));
@@ -94,18 +75,16 @@ class ProductController extends Controller
     public function addToCart(
         Request $request,
         ProductCartService $productCartService,
-        Product $product
+        string $slug
     ) {
-        $amount = current($request->validate([
-            'amount' => 'required|integer',
-        ]));
+        $data = $request->only(['amount']);
 
         if ($productCartService->add(
-            $product,
-            $amount,
+            $slug,
+            $data,
         )) {
             $message = __('productMessages.addToCart.success.withoutSeller', [
-                'amount' => $amount,
+                'amount' => $data['amount'],
             ]);
         } else {
             $message = __('productMessages.addToCart.error');

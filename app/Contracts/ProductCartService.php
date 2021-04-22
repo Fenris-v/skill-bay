@@ -18,11 +18,11 @@ interface ProductCartService
     /**
      * Добавление товара в корзину.
      *
-     * @param  Product  $product
-     * @param  int  $amount
+     * @param  string  $slug
+     * @param  array  $data
      * @return bool
      */
-    public function add(Product $product, int $amount = 1);
+    public function add(string $slug, array $data);
 
     /**
      * Удаление товара из корзины.

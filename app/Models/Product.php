@@ -26,11 +26,6 @@ class Product extends Model
         'vendor',
     ];
 
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
-
     /**
      * Аксессор для получения средней цены
      * @return float
