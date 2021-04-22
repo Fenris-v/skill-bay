@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Str;
+use App\Http\Requests\{StoreUserRequest, AuthRequest, ForgotPasswordRequest, ResetPasswordRequest};
 
 class UserController extends Controller
 {
@@ -23,28 +24,16 @@ class UserController extends Controller
 		return view('pages.registration.index');
 	}
 	
-	public function store(Request $request)
-	{
-		$this->validate($request, [
-           	'phone' => 'required|unique:users',
-           	'email' =>'required|unique:users',
-           	'password' => 'required',
-           	'passwordReply'=> 'required'
-       	]);
-       	
-       	if($request->password != $request->passwordReply){
-			return back()->with('password_reply_bad', 'Неверно повторили пароль!');
-		}
-       	
+	public function store(StoreUserRequest $request)
+	{       	
        	$data = $request->only([
             'email',
             'phone',
             'password'
         ]);
-       	$data['password'] = Hash::make($data['password']);
        	$newUser = $this->userService->createUser($data);
        	\Auth::loginUsingId($newUser->id);
-		return back()->with('success', 'Вы успешно зарегистрированы!');
+		return back()->with('success', __('user_messages.registration_success'));
 	}
 	
 	public function login()
@@ -52,21 +41,16 @@ class UserController extends Controller
 		return view('pages.login.index');
 	}
 	
-	public function auth(Request $request)
-	{
-		$this->validate($request, [
-           	'phone' => 'required',
-           	'password' => 'required',
-       	]);
-       	
+	public function auth(AuthRequest $request)
+	{    	
 		$data = $request->only([
             'phone',
             'password'
         ]);
-        if(\Auth::attempt(['phone' => $request->phone, 'password' => $request->password])){
+        if(\Auth::attempt($data)){
 			return redirect()->route('index');
 		} else {
-			return back()->with('auth_fail', 'Неверный телефон или пароль');
+			return back()->with('auth_fail', __('user_messages.auth_fail'));
 		}
 	}
 	
@@ -75,10 +59,8 @@ class UserController extends Controller
 		return view('pages.forgot-password.forgot-password');
 	}
 	
-	public function forgotPasswordSend(Request $request)
+	public function forgotPasswordSend(ForgotPasswordRequest $request)
 	{
-		$this->validate($request, ['email' => 'required|email']);
-
 		$status = Password::sendResetLink(
 			$request->only('email')
 		);
@@ -93,14 +75,8 @@ class UserController extends Controller
 		return view('pages.forgot-password.reset-password', ['token' => $token]);
 	}
 	
-	public function resetPasswordSend(Request $request)
+	public function resetPasswordSend(ResetPasswordRequest $request)
 	{
-		$this->validate($request,[
-			'token' => 'required',
-			'email' => 'required|email',
-			'password' => 'required|min:8|confirmed',
-		]);
-
 		$status = Password::reset(
 			$request->only('email', 'password', 'password_confirmation', 'token'),
 			function ($user, $password) use ($request) {

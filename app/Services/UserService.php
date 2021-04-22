@@ -1,6 +1,9 @@
 <?php
 namespace App\Services;
+
 use App\Services\Handlers\{CreateUserHandler, UpdateUserHandler, DeleteUserHandler, GiveMeUserHandler, GiveMeAllUserHandler};
+use Illuminate\Support\Facades\Hash;
+
 class UserService{
 	protected $createUserHandler;
     protected $updateUserHandler;
@@ -19,6 +22,7 @@ class UserService{
 
 	public function createUser($data)
 	{
+		$data['password'] = Hash::make($data['password']);
 		return $this->createUserHandler->handle($data);
 	}
 	

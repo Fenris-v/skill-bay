@@ -1,10 +1,6 @@
 <form class="form Authorization" action="{{route('reset-password-send')}}" method="post">
 	@csrf
-	@if(count($errors) > 0)
-		@foreach($errors->all() as $error)
-			<div class="alert alert-danger errors">{{$error}}</div>
-		@endforeach
-	@endif
+	@include('includes.validate')
 	@if ($message = Session::get('status'))
 		<div class="alert alert-success">{{ $message }}</div>
 	@endif

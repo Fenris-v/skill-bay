@@ -1,16 +1,6 @@
 <form class="form Authorization" action="{{route('user.store')}}" method="post">
 	@csrf
-	@if(count($errors) > 0)
-		@foreach($errors->all() as $error)
-			<div class="alert alert-danger errors">{{$error}}</div>
-		@endforeach
-	@endif
-	@if ($message = Session::get('success'))
-		<div class="alert alert-success">{{ $message }}</div>
-	@endif
-	@if ($message = Session::get('password_reply_bad'))
-		<div class="alert alert-danger errors">{{ $message }}</div>
-	@endif
+	@include('includes.validate')
 	<div class="row">		  
 		<div class="row-block">
 			<x-user-field type="tel"  name="phone" title="Телефон" id="phone" placeholder="+70000000000">Телефон</x-user-field>
