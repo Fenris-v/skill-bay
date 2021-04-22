@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\CacheFlushableAfterCRUDModelTrait;
 
 class Image extends Model
 {
-    use HasFactory;
+    use HasFactory,
+        CacheFlushableAfterCRUDModelTrait
+    ;
 
     /**
      * @var string[]
@@ -26,5 +29,10 @@ class Image extends Model
         return \Storage::url(
             config('image.store_path') . "/{$this->path}"
         );
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class);
     }
 }
