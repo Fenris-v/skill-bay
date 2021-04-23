@@ -3,21 +3,19 @@
 namespace App\View\Components\Catalog;
 
 use Closure;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class ProductList extends Component
 {
-    public $products;
-
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($products)
+    public function __construct(public Paginator $products)
     {
-        $this->products = $products;
     }
 
     /**
@@ -25,7 +23,7 @@ class ProductList extends Component
      *
      * @return View|Closure|string
      */
-    public function render()
+    public function render(): View|Closure|string
     {
         return view('components.catalog.product-list');
     }

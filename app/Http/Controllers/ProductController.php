@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Repository\FilterRepository;
+use App\Repository\CatalogRepository;
 use App\Models\Product;
 use App\Models\ProductReview;
 use App\Models\Seller;
@@ -19,36 +22,41 @@ class ProductController extends Controller
 {
     /**
      * Список товаров (каталог/категория)
+     * @param CatalogRepository $catalog
+     * @param FilterRepository $filters
      * @param Request $request
-     * @param ConfigRepository $configs
      * @param string|null $slug
      * @return View
      */
     public function index(
+        CatalogRepository $catalog,
+        FilterRepository $filters,
         Request $request,
-        ConfigRepository $configs,
-        string $slug = null
+        ?string $slug = null
     ): View {
-        $page = request()->has('page') ? (int)$request->query('page') : 1;
-        $perPage = $configs->getPerPage();
+        $category = Category::where('slug', $slug)->first(['id', 'slug']);
 
-        $products = Cache::tags(
-            [ConfigRepository::GLOBAL_CACHE_TAG, Product::PRODUCT_CACHE_TAGS]
-        )->remember(
-            'catalog_page_' . ($slug ? "{$slug}_" : '') . "{$perPage}_{$page}",
-            $configs->getCacheLifetime(),
-            function () use ($perPage) {
-                return Product::with(
-                    [
-                        'sellers' => function ($query) {
-                            $query->orderBy('pivot_price');
-                        }
-                    ]
-                )->paginate($perPage);
-            }
+        $params = $request->only(['filter', 'sort', 'page']);
+        $products = $catalog->getPaginateProducts($params, $category ?? null);
+
+        $sellers = $filters->getSellers($category);
+        $specifications = $filters->getSpecifications($category);
+        $specificationsValues = $filters->getSpecificationsValues($category);
+
+        $minMaxPrice = $filters->getMinMaxPrice($category);
+
+        $products->withQueryString()->onEachSide(1);
+
+        return view(
+            'pages.catalog.categories',
+            compact(
+                'products',
+                'sellers',
+                'specifications',
+                'minMaxPrice',
+                'specificationsValues'
+            )
         );
-
-        return view('pages.catalog.categories', compact('products'));
     }
 
     /**

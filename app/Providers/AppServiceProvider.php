@@ -10,6 +10,7 @@ use App\Services\ProductCartService;
 use App\Contracts\ProductCartService as ProductCartServiceContract;
 use App\Services\ProductReviewService;
 use App\Services\ProductViewHistoryService;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
@@ -57,5 +58,7 @@ class AppServiceProvider extends ServiceProvider
         Blade::directive('price', function ($expression) {
             return "$<?= number_format($expression, 2, '.', ' ') ?>";
         });
+
+        Paginator::defaultView('layouts.pagination.index');
     }
 }
