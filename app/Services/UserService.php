@@ -3,7 +3,7 @@ namespace App\Services;
 
 use App\Services\Handlers\{CreateUserHandler, UpdateUserHandler, DeleteUserHandler, GiveMeUserHandler, GiveMeAllUserHandler};
 use Illuminate\Support\Facades\Hash;
-use App\Repositories\EloquentUserRepository;
+use App\Repository\EloquentUserRepository;
 
 class UserService{
 	protected $userRepository;
