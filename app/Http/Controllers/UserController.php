@@ -31,7 +31,7 @@ class UserController extends Controller
             'phone',
             'password'
         ]);
-       	$newUser = $this->userService->createUser($data);
+       	$newUser = $this->userService->registerUser($data);
        	\Auth::loginUsingId($newUser->id);
 		return back()->with('success', __('user_messages.registration_success'));
 	}
