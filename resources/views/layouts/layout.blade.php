@@ -30,7 +30,25 @@ p.error-browser
 
 @include('layouts.header.index')
 
-@yield('content')
+@hasSection('middle-header-h1')
+    <div class="Middle Middle_top">
+        <div class="Middle-top">
+            <div class="wrap">
+                <div class="Middle-header">
+                    <h1 class="Middle-title">
+                        @yield('middle-header-h1')
+                    </h1>
+                    <x-wrappers.breadcrumbs />
+                </div>
+            </div>
+            <x-notification />
+        </div>
+        @yield('content')
+    </div>
+@else
+    <x-notification />
+    @yield('content')
+@endif
 
 @include('layouts.footer.index')
 

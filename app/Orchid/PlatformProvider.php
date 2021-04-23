@@ -16,7 +16,6 @@ class PlatformProvider extends OrchidServiceProvider
     public function boot(Dashboard $dashboard): void
     {
         parent::boot($dashboard);
-
         // ...
     }
 
@@ -26,7 +25,23 @@ class PlatformProvider extends OrchidServiceProvider
     public function registerMainMenu(): array
     {
         return [
-            //
+            ItemMenu::label(__('admin.config.config'))
+                ->title(__('admin.config.title'))
+                ->icon('settings')
+                ->route('platform.edit.config'),
+
+            ItemMenu::label(__('admin.product.products'))
+                ->title(__('admin.lists'))
+                ->icon('list')
+                ->route('platform.product.list'),
+
+            ItemMenu::label(__('admin.banner.banners'))
+                ->icon('list')
+                ->route('platform.banner.list'),
+
+            ItemMenu::label(__('admin.order.orders'))
+                ->icon('list')
+                ->route('platform.order.list'),
         ];
     }
 

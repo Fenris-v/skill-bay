@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "502c258b32ecfd1ab4368d90df87aaa3",
+    "content-hash": "f43f7e19a4c45b057886c3d67cff8564",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -891,6 +891,69 @@
                 "source": "https://github.com/guzzle/psr7/tree/1.7.0"
             },
             "time": "2020-09-30T07:37:11+00:00"
+        },
+        {
+            "name": "kalnoy/nestedset",
+            "version": "v5.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lazychaser/laravel-nestedset.git",
+                "reference": "789a70bce94a7c3bd206fb05fa4b747cf27acbe2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lazychaser/laravel-nestedset/zipball/789a70bce94a7c3bd206fb05fa4b747cf27acbe2",
+                "reference": "789a70bce94a7c3bd206fb05fa4b747cf27acbe2",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "~5.7.0|~5.8.0|^6.0|^7.0|^8.0",
+                "illuminate/events": "~5.7.0|~5.8.0|^6.0|^7.0|^8.0",
+                "illuminate/support": "~5.7.0|~5.8.0|^6.0|^7.0|^8.0",
+                "php": ">=7.1.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "7.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "v5.0.x-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Kalnoy\\Nestedset\\NestedSetServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Kalnoy\\Nestedset\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alexander Kalnoy",
+                    "email": "lazychaser@gmail.com"
+                }
+            ],
+            "description": "Nested Set Model for Laravel 5.7 and up",
+            "keywords": [
+                "database",
+                "hierarchy",
+                "laravel",
+                "nested sets",
+                "nsm"
+            ],
+            "support": {
+                "issues": "https://github.com/lazychaser/laravel-nestedset/issues",
+                "source": "https://github.com/lazychaser/laravel-nestedset/tree/v5.0.3"
+            },
+            "time": "2020-12-07T05:59:45+00:00"
         },
         {
             "name": "laravel/framework",
@@ -2066,16 +2129,16 @@
         },
         {
             "name": "orchid/platform",
-            "version": "9.19.8",
+            "version": "9.20.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/orchidsoftware/platform.git",
-                "reference": "06e3fbc188825d76dc42ecf9c2854cd4198b9918"
+                "reference": "91130e378d391bf1c65d332d95a540fc4ac4b390"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/orchidsoftware/platform/zipball/06e3fbc188825d76dc42ecf9c2854cd4198b9918",
-                "reference": "06e3fbc188825d76dc42ecf9c2854cd4198b9918",
+                "url": "https://api.github.com/repos/orchidsoftware/platform/zipball/91130e378d391bf1c65d332d95a540fc4ac4b390",
+                "reference": "91130e378d391bf1c65d332d95a540fc4ac4b390",
                 "shasum": ""
             },
             "require": {
@@ -2164,7 +2227,7 @@
                     "type": "opencollective"
                 }
             ],
-            "time": "2021-02-18T23:13:44+00:00"
+            "time": "2021-03-25T19:53:56+00:00"
         },
         {
             "name": "phpoption/phpoption",
