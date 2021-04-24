@@ -8,8 +8,8 @@ class EloquentUserRepository implements RepositoryInterface
     // model property on class instances
     protected $model;
 
-    public function __construct(){
-        $this->model = new User();
+    public function __construct(User $user){
+        $this->model = $user;
     }
 
     // Get all instances of model

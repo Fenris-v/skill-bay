@@ -1,13 +1,6 @@
 <form class="form Authorization" action="{{route('auth')}}" method="post">
 	@csrf
-	@if(count($errors) > 0)
-		@foreach($errors->all() as $error)
-			<div class="alert alert-danger errors">{{$error}}</div>
-		@endforeach
-	@endif
-	@if ($message = Session::get('success'))
-		<div class="alert alert-success">{{ $message }}</div>
-	@endif
+	@include('includes.validate')
 	@if ($message = Session::get('auth_fail'))
 		<div class="alert alert-danger errors">{{ $message }}</div>
 	@endif
