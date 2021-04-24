@@ -46,7 +46,7 @@
             >
                 <div class="ProductCard-cart">
                     <div class="ProductCard-cartElement ProductCard-cartElement_amount">
-                        <x-amount />
+                        <x-amount class="Amount_product"/>
                     </div>
                     <div class="ProductCard-cartElement">
                         <x-buttons.cart />

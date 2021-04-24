@@ -89,7 +89,7 @@ class ProductController extends Controller
         } else {
             $message = __('productMessages.addToCart.error');
         }
-        dd((new \App\Repository\CartRepository)->getCart());
+        //dd((new \App\Repository\CartRepository)->getCart());
         return back()->withInput()->with('message', $message);
     }
     /**

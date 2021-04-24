@@ -6,10 +6,7 @@
              alt="exchange.svg"/>
         @include('layouts.blocks.counter', compact($amount = 4))
     </a>
-    <a class="CartBlock-block" href="cart.html">
-        <img class="CartBlock-img" src="/assets/img/icons/cart.svg" alt="cart.svg"/>
-        @include('layouts.blocks.counter', compact($amount = 0))
-    </a>
+    <x-cart.header-cart />
     <div class="CartBlock-block">
         @include('layouts.header.cart_block_price')
     </div>

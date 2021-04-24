@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellerController;
+use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -61,3 +62,12 @@ Route::post('/product/{product}/seller/{seller}/add-to-cart', [ProductController
     ->name('products.addToCartWithSeller');
 Route::post('/product/{product}/add-to-compare', [ProductController::class, 'addToCompare'])
     ->name('products.addToCompare');
+
+Route::get('/cart', [CartController::class, 'show'])
+    ->name('cart.show')
+    ->breadcrumbs(fn (Trail $trail) =>
+    $trail
+        ->parent('index')
+        ->push(__('navigation.cart'), route('cart.show'))
+    )
+;

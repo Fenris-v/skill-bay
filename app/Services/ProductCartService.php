@@ -118,6 +118,22 @@ class ProductCartService implements ProductCartServiceContract
      */
     public function count()
     {
-        $this->cartRepository->getCart()->products->amount();
+        return $this->cartRepository->getCart()->products()->count();
+    }
+
+    /**
+     * Возвращает стоимость товаров в корзине.
+     *
+     * @return array
+     */
+    public function total()
+    {
+        return $this->cartRepository
+            ->getCart()
+            ->products->reduce(fn($accum, $product) => [
+                'current' => $accum['current'] + $product->currentPrice,
+                'old' => $accum['old'] + $product->averagePrice,
+            ], ['current' => 0, 'old' => 0])
+        ;
     }
 }

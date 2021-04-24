@@ -95,7 +95,7 @@ class CartRepository
     public function getCart(): Cart
     {
         if (!session()->has('guest_id')) {
-            session(['guest_id' => $guest_id]);
+            session(['guest_id' => Str::uuid()]);
         }
         $guestCart = $this->getGuestCart(session('guest_id'));
 
