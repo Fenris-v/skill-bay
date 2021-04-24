@@ -1,9 +1,7 @@
 <form class="form Authorization" action="{{route('auth')}}" method="post">
 	@csrf
 	@include('includes.validate')
-	@if ($message = Session::get('auth_fail'))
-		<div class="alert alert-danger errors">{{ $message }}</div>
-	@endif
+	@include('includes.auth_fail')
 	<div class="row">
 		<div class="row-block">
 			<x-user-field type="tel"  name="phone" title="Телефон" id="phone" placeholder="+70000000000">Телефон</x-user-field>
