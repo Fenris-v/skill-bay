@@ -7,6 +7,9 @@ use App\Http\Requests\ProductReviewStoreRequest;
 use App\Models\Product;
 use App\Models\Seller;
 use App\Repository\ConfigRepository;
+use App\View\Components\Product\ProductReviews;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
@@ -100,10 +103,29 @@ class ProductController extends Controller
     }
 
     /**
+     * Возвращает HTML отзывов по товару.
+     *
+     * @param  Product  $product
+     * @param  ProductReviewService  $productReviewService
+     * @return Application|Factory|View
+     */
+    public function reviews(
+        Product $product,
+        ProductReviewService $productReviewService
+    ) {
+        $reviews = $productReviewService->getReviewListPaginator($product);
+
+        return view(
+            'components.product.product-review-list',
+            compact('reviews')
+        );
+    }
+
+    /**
      * Метод для добавления товара в корзину
-     * @param Request $request
-     * @param ConfigRepository $configs
-     * @param Product $product
+     * @param  Request  $request
+     * @param  ProductCartService  $productCartService
+     * @param  Product  $product
      * @return null
      */
     public function addToCart(

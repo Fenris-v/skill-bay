@@ -1,3 +1,7 @@
+@foreach ($errors->all() as $error)
+    <div class="form-error">{{ $error }}</div>
+@endforeach
+
 <form class="form" method="POST">
     @csrf
 
@@ -15,6 +19,7 @@
         </div>
     </div>
     <div class="form-group">
-        <button class="btn btn_muted" type="submit">Оставить отзыв</button>
+        <input type="hidden" name="review" value="1" />
+        <button class="btn btn_muted" type="submit">@lang('product.post_review')</button>
     </div>
 </form>

@@ -55,6 +55,7 @@
             </x-wrappers.form>
         </div>
     </div>
+
     <x-wrappers.tabs
         :links="[
             ['id' => '#description', 'title' => __('components.product.tabs.description')],
@@ -62,6 +63,7 @@
             ['id' => '#addit', 'title' => __('components.product.tabs.addit')],
             ['id' => '#reviews', 'title' => __('components.product.tabs.reviews')],
         ]"
+        :active="old('review') ? '#reviews' : '#description'"
     >
         <div class="Tabs-block" id="description">
             {{ $product->description }}
@@ -113,7 +115,7 @@
         </div>
 
         <div class="Tabs-block" id="reviews">
-            <x-product.product-reviews :reviews="$product->reviews" />
+            <x-product.product-reviews :product="$product" />
         </div>
     </x-wrappers.tabs>
 </div>

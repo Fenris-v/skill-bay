@@ -2,6 +2,8 @@
 
 namespace App\View\Components\Product;
 
+use App\Contracts\ProductReviewService;
+use App\Models\Product;
 use App\Models\ProductReview;
 use Closure;
 use Illuminate\Contracts\View\View;
@@ -11,6 +13,11 @@ use Illuminate\View\Component;
 class ProductReviews extends Component
 {
     /**
+     * @var Product
+     */
+    public $product;
+
+    /**
      * @var Collection|ProductReview[]
      */
     public $reviews;
@@ -18,11 +25,13 @@ class ProductReviews extends Component
     /**
      * Create a new component instance.
      *
-     * @param  Collection  $reviews
+     * @param  Product  $product
+     * @param  ProductReviewService  $productReviewService
      */
-    public function __construct(Collection $reviews)
+    public function __construct(Product $product, ProductReviewService $productReviewService)
     {
-        $this->reviews = $reviews;
+        $this->product = $product;
+        $this->reviews = $productReviewService->getReviewListPaginator($product);
     }
 
     /**

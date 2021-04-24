@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Product;
 use App\Models\ProductReview;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use App\Contracts\ProductReviewService as ProductReviewServiceContract;
 use Illuminate\Database\Eloquent\Model;
 
@@ -34,13 +34,13 @@ class ProductReviewService implements ProductReviewServiceContract
      * Возвращает список отзывов к товару.
      *
      * @param  Product  $product
-     * @return Collection|ProductReview[]
+     * @return LengthAwarePaginator
      */
-    public function getReviews(Product $product)
+    public function getReviewListPaginator(Product $product)
     {
-        // @todo Реализовать метод
-
-        return $product->reviews;
+        return $product->reviews()->paginate(
+            config('product.reviews_per_page')
+        );
     }
 
     /**
@@ -51,6 +51,6 @@ class ProductReviewService implements ProductReviewServiceContract
      */
     public function getReviewCount(Product $product)
     {
-        return $this->getReviews($product)->count();
+        return $product->reviews()->count();
     }
 }

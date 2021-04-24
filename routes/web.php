@@ -37,6 +37,8 @@ Route::get('/catalog/{slug?}', [ProductController::class, 'index'])
     )
 ;
 
+Route::get('/products/{product}/reviews', [ProductController::class, 'reviews'])
+    ->name('products.reviews');
 Route::post('/products/{product}', [ProductController::class, 'storeReview'])
     ->name('products.store-review');
 
