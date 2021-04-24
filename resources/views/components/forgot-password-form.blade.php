@@ -1,13 +1,7 @@
 <form class="form Authorization" action="{{route('forgot-password-send')}}" method="post">
 	@csrf
-	@if(count($errors) > 0)
-		@foreach($errors->all() as $error)
-			<div class="alert alert-danger errors">{{$error}}</div>
-		@endforeach
-	@endif
-	@if ($message = Session::get('status'))
-		<div class="alert alert-success">{{ $message }}</div>
-	@endif
+	@include('includes.validate')
+	@include('includes.validate_status')
 	<div class="row">
 		<div class="row-block">
 			<x-user-field type="email"  name="email" title="Email" id="email" placeholder="Email">Email</x-user-field>

@@ -1,9 +1,7 @@
 <form class="form Authorization" action="{{route('reset-password-send')}}" method="post">
 	@csrf
 	@include('includes.validate')
-	@if ($message = Session::get('status'))
-		<div class="alert alert-success">{{ $message }}</div>
-	@endif
+	@include('includes.validate_status')
 	<div class="row">
 		<div class="row-block">
 			<x-user-field type="email"  name="email" title="Email" id="email" placeholder="Email">Email</x-user-field>
