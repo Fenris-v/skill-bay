@@ -27,19 +27,19 @@ interface ProductCartService
     /**
      * Удаление товара из корзины.
      *
-     * @param  Product  $product
+     * @param  string  $slug
      * @return bool
      */
-    public function remove(Product $product);
+    public function remove(string $slug);
 
     /**
      * Изменяет количество товара в корзине.
      *
-     * @param  Product  $product
-     * @param  int  $amount
+     * @param  string  $slug
+     * @param  array  $data
      * @return bool
      */
-    public function changeAmount(Product $product, int $amount);
+    public function changeAmount(string $slug, array $data);
 
     /**
      * Возвращает коллекцию товаров в корзине.

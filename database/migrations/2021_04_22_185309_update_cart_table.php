@@ -22,6 +22,9 @@ class UpdateCartTable extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade')
             ;
+
+            $table->unsignedBigInteger('user_id')->nullable()->change();
+            $table->uuid('guest_id')->nullable()->unique();
         });
     }
 

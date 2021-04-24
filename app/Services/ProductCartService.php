@@ -32,30 +32,33 @@ class ProductCartService implements ProductCartServiceContract
      * Добавление товара в корзину.
      *
      * @param  Product  $product
-     * @param  int  $amount
+     * @param  array  $data
      * @return bool
      */
     public function add(
         string $slug,
         array $data
     ) {
-        $validator = Validator::make($data, [
+        Validator::make($data, [
             'amount' => 'required|integer|min:1',
         ])->validate();
 
         $product = $this->productRepository->getProductBySlug($slug);
-        $this
-            ->cartRepository
-            ->getUserCart(User::where('id', 36)->first())
-            ->products()
-            ->attach(
-                $product,
-                [
-                    'amount' => $data['amount'],
-                    'seller_id' => $product->sellers->random()->id,
-                ]
-            )
-        ;
+        $cart = $this->cartRepository->getCart();
+
+        if ($cart->products->contains(fn($product) => $product->slug === $slug)) {
+            return $this->changeAmount($slug, $data);
+        } else {
+            $cart->products()
+                ->attach(
+                    $product,
+                    [
+                        'amount' => $data['amount'],
+                        'seller_id' => $product->sellers->random()->id,
+                    ]
+                )
+            ;
+        }
 
         return true;
     }
@@ -63,12 +66,15 @@ class ProductCartService implements ProductCartServiceContract
     /**
      * Удаление товара из корзины.
      *
-     * @param  Product  $product
+     * @param  string  $slug
      * @return bool
      */
-    public function remove(Product $product)
+    public function remove(string $slug)
     {
-        // @todo Реализовать метод
+        $product = $this->productRepository->getProductBySlug($slug);
+        $this->cartRepository->getCart()
+            ->products()->detach($product)
+        ;
 
         return true;
     }
@@ -76,13 +82,21 @@ class ProductCartService implements ProductCartServiceContract
     /**
      * Изменяет количество товара в корзине.
      *
-     * @param  Product  $product
-     * @param  int  $amount
+     * @param  string  $slug
+     * @param  array  $data
      * @return bool
      */
-    public function changeAmount(Product $product, int $amount)
+    public function changeAmount(string $slug, array $data)
     {
-        // @todo Реализовать метод
+        Validator::make($data, [
+            'amount' => 'required|integer|min:1',
+        ])->validate();
+
+        $product = $this->productRepository->getProductBySlug($slug);
+        $this->cartRepository->getCart()
+            ->products()->updateExistingPivot($product->id, [
+                'amount' => $data['amount'],
+            ]);
 
         return true;
     }
@@ -94,9 +108,7 @@ class ProductCartService implements ProductCartServiceContract
      */
     public function get()
     {
-        // @todo Реализовать метод
-
-        return Product::factory()->count(5)->make();
+        return $this->cartRepository->getCart()->products;
     }
 
     /**
@@ -106,8 +118,6 @@ class ProductCartService implements ProductCartServiceContract
      */
     public function count()
     {
-        // @todo Реализовать метод
-
-        return $this->get()->count();
+        $this->cartRepository->getCart()->products->amount();
     }
 }
