@@ -1,5 +1,5 @@
-@props(['items'])
-<select {{ $attributes->merge(['class' => 'form-select']) }}>
+@props(['items', 'name'])
+<select {{ $attributes->merge(['class' => 'form-select']) }} name="{{ $name }}">
     @foreach($items as $item)
         <option
             value="{{ $item['value'] }}"
@@ -10,3 +10,6 @@
         </option>
     @endforeach
 </select>
+@if($errors->get($name))
+    <div class="form-error">{{ implode(', ', $errors->get($name)) }}</div>
+@endif

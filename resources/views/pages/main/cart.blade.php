@@ -10,18 +10,12 @@
 @section('content')
     <div class="Section">
         <div class="wrap">
-            <x-wrappers.form
-                class="form Cart"
-                action="/cart"
-                method="post"
-            >
-                @foreach($products as $product)
-                    <x-cart.cart-product
-                        :product="$product"
-                    />
-                @endforeach
-                <x-cart.cart-total />
-            </x-wrappers.form>
+            @foreach($products as $product)
+                <x-cart.cart-product
+                    :product="$product"
+                />
+            @endforeach
+            <x-cart.cart-total />
         </div>
     </div>
 @endsection

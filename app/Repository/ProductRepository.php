@@ -6,10 +6,12 @@ use App\Models\Image;
 use App\Models\Product;
 use App\Models\ProductReview;
 use App\Models\Seller;
+use App\Models\Cart;
 use App\Models\Specification;
 use App\Repository\ConfigRepository;
 use Cache;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class ProductRepository
@@ -49,7 +51,35 @@ class ProductRepository
     /**
      * Возвращает товар по его slug.
      *
-     * @param  int  $amount
+     * @param  string  $productSlug
+     * @param string $sellerSlug
+     * @return Seller
+     */
+    public function getSellerOfProductBySlug(
+        string $productSlug,
+        string $sellerSlug
+    ): Seller {
+        return Cache::tags([
+            ConfigRepository::GLOBAL_CACHE_TAG,
+            Product::class,
+            Seller::class,
+        ])->remember(
+            'product|' . $productSlug . '|seller|' . $sellerSlug,
+            $this->ttl,
+            fn() => Seller
+                ::where('slug', $sellerSlug)
+                ->with([
+                    'products' => fn($query) => $query->where('slug', $productSlug)
+                ])
+                ->firstOrFail()
+        );
+    }
+
+    /**
+     * Возвращает товар по его slug.
+     *
+     * @param Cart $cart
+     * @param  string  $slug
      * @return Product
      */
     public function getProductBySlug(string $slug): Product
@@ -62,10 +92,16 @@ class ProductRepository
             Specification::class,
             ProductReview::class,
         ])->remember(
-            'product|' . $slug,
+            'cart_product|' . $slug,
             $this->ttl,
-            fn() => Product::with('sellers', 'images', 'specifications', 'reviews')
-                ->where('slug', $slug)
+            fn() => Product
+                ::where('slug', $slug)
+                ->with([
+                    'sellers',
+                    'images',
+                    'specifications',
+                    'reviews',
+                ])
                 ->firstOrFail()
         );
     }

@@ -28,28 +28,50 @@
     </div>
     <div class="Cart-block Cart-block_row">
         <div class="Cart-block Cart-block_seller">
-            <x-wrappers.form-elements.select
-                :name="'product_' . $product->id . '_seller'"
-                :items="$sellers"
-            />
+            <x-wrappers.form
+                class="form Cart"
+                action="{{ $changeProductSellerUrl }}"
+                method="patch"
+                class="form Cart"
+            >
+                <x-wrappers.form-elements.select
+                    name="seller"
+                    :items="$sellers"
+                    onchange="submit()"
+                />
+            </x-wrappers.form>
         </div>
         <div class="Cart-block Cart-block_amount">
-            <div class="Cart-amount">
-                <x-amount
-                    buttons-type="submit"
-                    :value="$amount"
-                    minus-button-click="alert(1)"
-                    plus-button-click="alert(1)"
-                >
-                </x-amount>
-            </div>
+            <x-wrappers.form
+                    class="form Cart"
+                    action="{{ $changeProductAmountUrl }}"
+                    method="patch"
+                    class="form Cart"
+            >
+                <div class="Cart-amount">
+                    <x-amount
+                        buttons-type="submit"
+                        :value="$amount"
+                        changeAmount="submit()"
+                    >
+                    </x-amount>
+                </div>
+            </x-wrappers.form>
         </div>
+
         <div class="Cart-block Cart-block_delete">
-            <x-wrappers.button
-                class="Cart-delete"
-                type="submit"
-                icon="icons.card.delete"
-            ></x-wrappers.button>
+            <x-wrappers.form
+                method="post"
+                action="{{ $removeProductFromCartUrl }}"
+                class="form Cart"
+                method="patch"
+            >
+                <x-wrappers.button
+                    class="Cart-delete"
+                    type="submit"
+                    icon="icons.card.delete"
+                ></x-wrappers.button>
+            </x-wrappers.form>
         </div>
     </div>
 </div>

@@ -7,7 +7,4 @@
         @include('layouts.blocks.counter', compact($amount = 4))
     </a>
     <x-cart.header-cart />
-    <div class="CartBlock-block">
-        @include('layouts.header.cart_block_price')
-    </div>
 </div>

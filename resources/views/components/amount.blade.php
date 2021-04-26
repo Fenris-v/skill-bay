@@ -3,15 +3,13 @@
     'type' => 'text',
     'value' => 1,
     'buttonsType' => 'button',
-    'minusButtonClick' => null,
-    'plusButtonClick' => null,
+    'changeAmount' => null
 ])
 <div class="form-group">
     <div {{  $attributes->class(['Amount']) }}>
         <x-wrappers.button
-            class="Amount-remove"
+            class="Amount-remove Amount-remove-cart"
             :type="$buttonsType"
-            onclick="{{ $minusButtonClick }}"
         ></x-wrappers.button>
         <input
             class="Amount-input form-input"
@@ -20,9 +18,8 @@
             value="{{ $value}}"
         />
         <x-wrappers.button
-            class="Amount-add"
+            class="Amount-add Amount-add-cart"
             :type="$buttonsType"
-            onclick="{{ $plusButtonClick }}"
         ></x-wrappers.button>
     </div>
     @if($errors->get($name))

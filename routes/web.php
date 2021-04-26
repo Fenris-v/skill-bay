@@ -71,3 +71,9 @@ Route::get('/cart', [CartController::class, 'show'])
         ->push(__('navigation.cart'), route('cart.show'))
     )
 ;
+Route::patch('/cart/{product}/remove', [CartController::class, 'removeProduct'])
+    ->name('cart.removeProduct');
+Route::patch('/cart/{product}/change-amount', [CartController::class, 'changeProductAmount'])
+    ->name('cart.changeProductAmount');
+Route::patch('/cart/{product}/change-seller', [CartController::class, 'changeProductSeller'])
+    ->name('cart.changeProductSeller');

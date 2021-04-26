@@ -14,6 +14,9 @@ class CartProduct extends Component
     public float $priceOld;
     public Collection $sellers;
     public int $amount;
+    public string $removeProductFromCartUrl;
+    public string $changeProductSellerUrl;
+    public string $changeProductAmountUrl;
 
     public function __construct(Product $product)
     {
@@ -27,6 +30,9 @@ class CartProduct extends Component
         $this->priceOld = $product->averagePrice;
         $this->price = $product->currentPrice;
         $this->amount = $product->pivot->amount;
+        $this->removeProductFromCartUrl = route('cart.removeProduct', $product->slug);
+        $this->changeProductSellerUrl = route('cart.changeProductSeller', $product->slug);
+        $this->changeProductAmountUrl = route('cart.changeProductAmount', $product->slug);
     }
 
     /**

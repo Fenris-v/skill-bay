@@ -9,11 +9,13 @@ class HeaderCart extends Component
 {
     public int $amount;
     public string $link;
+    public float $price;
 
     public function __construct(ProductCartService $productCartService)
     {
         $this->link = route('cart.show');
         $this->amount = $productCartService->count();
+        $this->price = $productCartService->total()['current'] ?? 0;
     }
 
     /**
