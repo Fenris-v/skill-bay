@@ -1,11 +1,11 @@
 <div class="Card-hover">
     <a class="Card-btn" href="#">
-        <x-buttons.bookmark />
+        <x-icons.catalog.bookmark />
     </a>
     <a class="Card-btn" href="#">
-        <x-buttons.to-cart />
+        <x-icons.catalog.to-cart />
     </a>
     <a class="Card-btn" href="#">
-        <x-buttons.to-compare />
+        <x-icons.catalog.to-compare />
     </a>
 </div>

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Providers;
+namespace App\Providers\Repositories;
 
 use App\Repository\ConfigRepository;
 use Illuminate\Support\ServiceProvider;
 
-class RepositoryServiceProvider extends ServiceProvider
+class ConfigServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
@@ -20,15 +20,5 @@ class RepositoryServiceProvider extends ServiceProvider
                 return new ConfigRepository();
             }
         );
-    }
-
-    /**
-     * Bootstrap services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        //
     }
 }

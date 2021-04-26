@@ -4,10 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Contracts\ProductReviewService;
 use App\Http\Requests\ProductReviewStoreRequest;
+use App\Models\Category;
+use App\Repository\FilterRepository;
+use App\Repository\CatalogRepository;
 use App\Models\Product;
+use App\Models\ProductReview;
 use App\Models\Seller;
+use App\Models\Image;
+use App\Models\Specification;
 use App\Repository\ConfigRepository;
-use App\View\Components\Product\ProductReviews;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -22,36 +27,41 @@ class ProductController extends Controller
 {
     /**
      * Список товаров (каталог/категория)
+     * @param CatalogRepository $catalog
+     * @param FilterRepository $filters
      * @param Request $request
-     * @param ConfigRepository $configs
      * @param string|null $slug
      * @return View
      */
     public function index(
+        CatalogRepository $catalog,
+        FilterRepository $filters,
         Request $request,
-        ConfigRepository $configs,
-        string $slug = null
+        ?string $slug = null
     ): View {
-        $page = request()->has('page') ? (int)$request->query('page') : 1;
-        $perPage = $configs->getPerPage();
+        $category = Category::where('slug', $slug)->first(['id', 'slug']);
 
-        $products = Cache::tags(
-            [ConfigRepository::GLOBAL_CACHE_TAG, Product::PRODUCT_CACHE_TAGS]
-        )->remember(
-            'catalog_page_' . ($slug ? "{$slug}_" : '') . "{$perPage}_{$page}",
-            $configs->getCacheLifetime(),
-            function () use ($perPage) {
-                return Product::with(
-                    [
-                        'sellers' => function ($query) {
-                            $query->orderBy('pivot_price');
-                        }
-                    ]
-                )->paginate($perPage);
-            }
+        $params = $request->only(['filter', 'sort', 'page']);
+        $products = $catalog->getPaginateProducts($params, $category ?? null);
+
+        $sellers = $filters->getSellers($category);
+        $specifications = $filters->getSpecifications($category);
+        $specificationsValues = $filters->getSpecificationsValues($category);
+
+        $minMaxPrice = $filters->getMinMaxPrice($category);
+
+        $products->withQueryString()->onEachSide(1);
+
+        return view(
+            'pages.catalog.categories',
+            compact(
+                'products',
+                'sellers',
+                'specifications',
+                'minMaxPrice',
+                'specificationsValues'
+            )
         );
-
-        return view('pages.catalog.categories', compact('products'));
     }
 
     /**
@@ -66,11 +76,20 @@ class ProductController extends Controller
         string $slug = null
     ): View {
         $product = Cache::tags(
-            [ConfigRepository::GLOBAL_CACHE_TAG, Product::class, Seller::class]
+            [
+                ConfigRepository::GLOBAL_CACHE_TAG,
+                Product::class,
+                Seller::class,
+                Image::class,
+                Specification::class,
+                ProductReview::class,
+            ]
         )->remember(
             'product_page|' . $slug,
             $configs->getCacheLifetime(),
-            fn() => Product::where('slug', $slug)->with('sellers')->firstOrFail(),
+            fn() => Product::where('slug', $slug)
+                ->with('sellers', 'images', 'specifications', 'reviews')
+                ->firstOrFail()
         );
 
         $productViewHistoryService->add($product);
@@ -141,12 +160,14 @@ class ProductController extends Controller
             $product,
             $amount,
         )) {
-            session()->flash('message', "Товар в количестве {$amount} шт. успешно добавлен в корзину");
+            $message = __('productMessages.addToCart.success.withoutSeller', [
+                'amount' => $amount,
+            ]);
         } else {
-            session()->flash('message', 'Ошибка добавления товара в корзину');
+            $message = __('productMessages.addToCart.error');
         }
 
-        return back()->withInput();
+        return back()->withInput()->with('message', $message);
     }
     /**
      * Метод для добавления товара в корзину с указанием продавца
@@ -165,12 +186,15 @@ class ProductController extends Controller
             1,
             $seller
         )) {
-            session()->flash('message', "Товар у продавца {$seller->slug} успешно добавлен в корзину");
+            $message = __('productMessages.addToCart.success.withSeller', [
+                'amount' => 1,
+                'seller' => $seller->slug,
+            ]);
         } else {
-            session()->flash('message', 'Ошибка добавления товара в корзину');
+            $message = __('productMessages.addToCart.error');
         }
 
-        return back()->withInput();
+        return back()->withInput()->with('message', $message);
     }
 
     /**
@@ -185,11 +209,11 @@ class ProductController extends Controller
         Product $product
     ) {
         if ($compareProductsService->add($product)) {
-            session()->flash('message', 'Товар успешно добавлен для сравнения');
+            $message = __('productMessages.addToCompare.success');
         } else {
-            session()->flash('message', 'Возникла непредвиденная ошибка');
+            $message = __('productMessages.addToCompare.error');
         }
 
-        return back()->withInput();
+        return back()->withInput()->with('message', $message);
     }
 }

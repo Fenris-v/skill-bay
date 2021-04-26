@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductReview;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -23,11 +24,17 @@ class ProductFactory extends Factory
      */
     public function definition()
     {
+        $categories = Category::where('parent_id', null)
+            ->get('id');
+
         return [
             'title' => $title = ucfirst($this->faker->unique()->words(3, true)),
             'slug' => Str::slug($title),
             'description' => $this->faker->sentence,
             'vendor' => ucfirst($this->faker->word),
+            'rating_sort' => $this->faker->numberBetween(1, 999),
+            'category_id' => $this->faker->randomElement($categories)->id,
+            'created_at' => $this->faker->dateTimeBetween('-60 days', now())
         ];
     }
 }

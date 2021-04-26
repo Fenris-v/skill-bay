@@ -22,10 +22,13 @@ class SpecificationFactory extends Factory
      */
     public function definition()
     {
+        $types = [Specification::CHECKBOX, Specification::SELECT, Specification::MULTIPLE];
+
         return [
             'title' => $title = ucfirst($this->faker->unique()->words(1, true)),
             'slug' => Str::slug($title),
             'description' => $this->faker->sentence,
+            'type' => $this->faker->randomElement($types)
         ];
     }
 }

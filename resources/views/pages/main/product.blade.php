@@ -3,23 +3,12 @@
 
 @section('title', 'Megano')
 
-@section('meta_description', 'Товар')
+@section('middle-header-h1', __('productPage.title'))
 
 @section('content')
-    <div class="Middle Middle_top">
-        <div class="Middle-top">
-            <div class="wrap">
-                <div class="Middle-header">
-                    <h1 class="Middle-title">Товар</h1>
-                    <x-wrappers.breadcrumbs />
-                </div>
-            </div>
-            <x-notification />
-        </div>
-        <div class="Section">
-            <div class="wrap">
-                <x-product :product="$product"/>
-            </div>
+    <div class="Section">
+        <div class="wrap">
+            <x-product :product="$product"/>
         </div>
     </div>
 @endsection

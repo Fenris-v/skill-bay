@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Traits\CacheFlushableAfterCRUDModelTrait;
+use Illuminate\Database\Eloquent\Builder;
 use App\Traits\Models\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Orchid\Screen\AsSource;
 
@@ -26,6 +28,9 @@ class Product extends Model
         'vendor',
     ];
 
+    /**
+     * @return string
+     */
     public function getRouteKeyName(): string
     {
         return 'slug';
@@ -38,6 +43,31 @@ class Product extends Model
     public function getAveragePriceAttribute(): float
     {
         return $this->sellers->avg('pivot.price') ?? 0;
+    }
+
+    /**
+     * Выборка по продавцу
+     * @param Builder $query
+     * @param string $seller
+     * @return Builder
+     */
+    public function scopeSeller(Builder $query, string $seller): Builder
+    {
+        return $query->whereHas(
+            'sellers',
+            function ($query) use ($seller) {
+                return $query->where('title', $seller);
+            }
+        );
+    }
+
+    /**
+     * Связь с категорией
+     * @return BelongsTo
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 
     /**

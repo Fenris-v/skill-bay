@@ -40,10 +40,10 @@ class ConfigRepository
 
     /**
      * Алиас, возвращающий количество объектов на странице
-     * @param mixed $default
-     * @return mixed
+     * @param int $default
+     * @return int
      */
-    public function getPerPage($default = null)
+    public function getPerPage(int $default = 8): int
     {
         return $this->getValueBySlug('per_page', $default);
     }
@@ -51,25 +51,25 @@ class ConfigRepository
     /**
      * Алиас, возвращающий время жизни кэша
      * @param mixed $default
-     * @return mixed|null
+     * @return int
      */
-    public function getCacheLifetime($default = null)
+    public function getCacheLifetime($default = 86400): int
     {
         return $this->getValueBySlug('cache_lifetime', $default);
     }
 
     /**
      * Возвращает время жизни кэша и кеширует его с отдельным ключом
-     * @return array|mixed
+     * @return int
      */
-    private function getLifetime()
+    private function getLifetime(): int
     {
         if (Cache::tags([self::CONFIG_CACHE_TAGS, self::GLOBAL_CACHE_TAG])->has('configs_cache_lifetime')) {
             return Cache::tags([self::CONFIG_CACHE_TAGS, self::GLOBAL_CACHE_TAG])
                 ->get('configs_cache_lifetime');
         }
 
-        $lifetime = Config::where('slug', 'cache_lifetime')->first()->value ?? 0;
+        $lifetime = Config::where('slug', 'cache_lifetime')->first()->value ?? 86400;
 
         return Cache::tags([self::CONFIG_CACHE_TAGS, self::GLOBAL_CACHE_TAG])
             ->remember(
