@@ -4,5 +4,11 @@
  */
 return [
     'auth_fail' => 'Неверный телефон или пароль',
-    'registration_success' => 'Вы успешно зарегистрированы!'
+    'registration_success' => 'Вы успешно зарегистрированы!',
+    'email' => 'E-mail',
+    'password'=>'Пароль',
+    'password_confirm' => 'Подтверждение пароля',
+    'phone' => 'Телефон',
+    'register' => 'Зарегистрироваться',
+    'login' => 'Войти'
 ];

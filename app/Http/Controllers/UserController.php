@@ -16,10 +16,10 @@ class UserController extends Controller
 
 	public function __construct(UserService $userService)
 	{
-        $this->userService = $userService;
+		$this->userService = $userService;
 	}
 	
-    public function create()
+	public function create()
     {
 		return view('pages.registration.index');
 	}
