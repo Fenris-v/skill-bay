@@ -9,11 +9,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Pivots\ProductSeller;
 use App\Models\Order;
+use App\Traits\CacheFlushableAfterCRUDModelTrait;
 
 class Cart extends Model
 {
     use HasFactory,
-        SoftDeletes;
+        SoftDeletes,
+        CacheFlushableAfterCRUDModelTrait
+    ;
 
     public function products(): BelongsToMany
     {

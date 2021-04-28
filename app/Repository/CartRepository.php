@@ -43,14 +43,20 @@ class CartRepository
         ])->remember(
             'cart_user|' . $user->id,
             $this->ttl,
-            fn() => Cart
-                ::whereHas(
-                    'user',
-                    fn(Builder $query) => $query->where('id', $user->id)
-                )
-                ->doesntHave('order')
-                ->firstOrCreate()
-                ->associate($user)
+            function() use ($user) {
+                $cart = Cart
+                    ::whereHas(
+                        'user',
+                        fn(Builder $query) => $query->where('id', $user->id)
+                    )
+                    ->doesntHave('order')
+                    ->firstOrNew()
+                    ->user()->associate($user)
+                ;
+                if (!$cart->id) $cart->save();
+
+                return $cart;
+            }
         );
     }
 
@@ -81,12 +87,25 @@ class CartRepository
      */
     public function mergeCarts(Cart $guestCart, Cart $userCart): Cart
     {
+        $prepareCollection = fn($item) => [
+            'product|' . $item->id => [
+                'seller_id' => $item->pivot->seller->id,
+                'amount' => $item->pivot->amount,
+            ]
+        ];
         $userCart->guest_id = $guestCart->guest_id;
-        $userCart->products()->syncWithPivotValues(
-            $userCart->products->merge($guestCart->products)
+        $userCart->products()->sync(
+            $userCart->products->mapWithKeys($prepareCollection)
+                ->merge($guestCart->products->mapWithKeys($prepareCollection))
+            ->mapWithKeys(fn($item, $key) => [
+                str_replace('product|', '', $key) => [
+                    'seller_id' => $item['seller_id'],
+                    'amount' => $item['amount'],
+                ]
+            ])
         );
         $guestCart->forceDelete();
-        $userCart->save();
+        Cache::tags([Cart::class])->flush();
 
         return $userCart;
     }
@@ -106,8 +125,8 @@ class CartRepository
 
         if (auth()->check()) {
             return $this->mergeCarts(
-                $this->getUserCart(auth()->user()),
-                $guestCart
+                $guestCart,
+                $this->getUserCart(auth()->user())
             );
         } else {
             $guestCart->guest_id = session('guest_id');
@@ -186,5 +205,88 @@ class CartRepository
                     ]
                 )
         );
+    }
+
+    /**
+     * Добавление товара в корзину.
+     *
+     * @param  Product $product
+     * @param  array  $data
+     * @return bool
+     */
+    public function add(
+        Product $product,
+        array $data
+    ): bool {
+        $cart = $this->getCart();
+
+        if ($cart->products->contains(fn($productInCart) => $productInCart->slug === $product->slug)) {
+            return $this->changeAmount($product, $data);
+        } else {
+            $cart->products()
+                ->attach(
+                    $product,
+                    [
+                        'amount' => $data['amount'],
+                        'seller_id' => $product->sellers->random()->id,
+                    ]
+                )
+            ;
+        }
+
+        return true;
+    }
+
+    /**
+     * Удаление товара из корзины.
+     *
+     * @param  Product $product
+     * @return bool
+     */
+    public function remove(Product $product): bool
+    {
+        $this->getCart()
+            ->products()->detach($product)
+        ;
+
+        return true;
+    }
+
+    /**
+     * Изменяет количество товара в корзине.
+     *
+     * @param  Product $product
+     * @param  array  $data
+     * @return bool
+     */
+    public function changeAmount(Product $product, array $data): bool
+    {
+        if ($data['amount'] == 0) return $this->remove($product);
+
+        $this->getCart()
+            ->products()->updateExistingPivot($product->id, [
+                'amount' => $data['amount'],
+            ]);
+
+        return true;
+    }
+
+    /**
+     * Изменяет количество товара в корзине.
+     *
+     * @param  Product $product
+     * @param  Seller  $seller
+     * @return bool
+     */
+    public function changeSeller(
+        Product $product,
+        Seller  $seller
+    ): bool {
+        $this->getCart()
+            ->products()->updateExistingPivot($product->id, [
+                'seller_id' => $seller->id,
+            ]);
+
+        return true;
     }
 }

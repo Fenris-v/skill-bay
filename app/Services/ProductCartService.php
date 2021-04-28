@@ -36,7 +36,7 @@ class ProductCartService implements ProductCartServiceContract
     /**
      * Добавление товара в корзину.
      *
-     * @param  Product  $product
+     * @param  string  $slug
      * @param  array  $data
      * @return bool
      */
@@ -48,24 +48,7 @@ class ProductCartService implements ProductCartServiceContract
             'amount' => 'required|integer|min:1',
         ]);
 
-        $product = $this->productRepository->getProductBySlug($slug);
-        $cart = $this->cartRepository->getCart();
-
-        if ($cart->products->contains(fn($product) => $product->slug === $slug)) {
-            return $this->changeAmount($slug, $data);
-        } else {
-            $cart->products()
-                ->attach(
-                    $product,
-                    [
-                        'amount' => $data['amount'],
-                        'seller_id' => $product->sellers->random()->id,
-                    ]
-                )
-            ;
-        }
-
-        return true;
+        return $this->cartRepository->add($this->productRepository->getProductBySlug($slug), $data);
     }
 
     /**
@@ -74,13 +57,9 @@ class ProductCartService implements ProductCartServiceContract
      * @param  string  $slug
      * @return bool
      */
-    public function remove(string $slug)
+    public function remove(string $slug): bool
     {
-        $this->cartRepository->getCart()
-            ->products()->detach($this->productRepository->getProductBySlug($slug))
-        ;
-
-        return true;
+        return $this->cartRepository->remove($this->productRepository->getProductBySlug($slug));
     }
 
     /**
@@ -90,20 +69,17 @@ class ProductCartService implements ProductCartServiceContract
      * @param  array  $data
      * @return bool
      */
-    public function changeAmount(string $slug, array $data)
+    public function changeAmount(string $slug, array $data): bool
     {
         $this->validate($data, [
             'amount' => 'required|integer|min:0',
         ]);
         if ($data['amount'] == 0) return $this->remove($slug);
 
-        $product = $this->productRepository->getProductBySlug($slug);
-        $this->cartRepository->getCart()
-            ->products()->updateExistingPivot($product->id, [
-                'amount' => $data['amount'],
-            ]);
-
-        return true;
+        return $this->cartRepository->changeAmount(
+            $this->productRepository->getProductBySlug($slug),
+            $data
+        );
     }
 
     /**
@@ -118,13 +94,13 @@ class ProductCartService implements ProductCartServiceContract
         array $data
     ): bool {
         $this->validate($data, ['seller' => 'string|required']);
-        $seller = $this->productRepository->getSellerOfProductBySlug($productSlug, $data['seller']);
-        $this->cartRepository->getCart()
-            ->products()->updateExistingPivot($seller->products->first()->id, [
-                'seller_id' => $seller->id,
-            ]);
 
-        return true;
+        $seller = $this->productRepository->getSellerOfProductBySlug($productSlug, $data['seller']);
+
+        return $this->cartRepository->changeSeller(
+            $seller->products->first(),
+            $seller
+        );
     }
 
     /**

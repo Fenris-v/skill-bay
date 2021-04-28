@@ -3,12 +3,12 @@
     'type' => 'text',
     'value' => 1,
     'buttonsType' => 'button',
-    'changeAmount' => null
+    'submitOnClick' => false,
 ])
 <div class="form-group">
     <div {{  $attributes->class(['Amount']) }}>
         <x-wrappers.button
-            class="Amount-remove Amount-remove-cart"
+            {{ $attributes->class(['Amount-remove', 'Amount-remove-cart' => $submitOnClick]) }}
             :type="$buttonsType"
         ></x-wrappers.button>
         <input
@@ -18,7 +18,7 @@
             value="{{ $value}}"
         />
         <x-wrappers.button
-            class="Amount-add Amount-add-cart"
+            {{ $attributes->class(['Amount-add', 'Amount-add-cart' => $submitOnClick]) }}
             :type="$buttonsType"
         ></x-wrappers.button>
     </div>

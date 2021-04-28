@@ -53,6 +53,7 @@
                         buttons-type="submit"
                         :value="$amount"
                         changeAmount="submit()"
+                        :submitOnClick="true"
                     >
                     </x-amount>
                 </div>
