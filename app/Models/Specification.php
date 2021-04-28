@@ -14,6 +14,10 @@ class Specification extends Model
         CacheFlushableAfterCRUDModelTrait
     ;
 
+    const CHECKBOX = 1;
+    const SELECT = 2;
+    const MULTIPLE = 3;
+
     protected $fillable = [
         'title',
         'description',
@@ -22,5 +26,15 @@ class Specification extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class)->withPivot('value');
+    }
+
+    public function productSpecification()
+    {
+        return $this->hasManyThrough(ProductSpecification::class, Product::class);
+    }
+
+    public function values()
+    {
+        return $this->hasMany(ProductSpecification::class);
     }
 }

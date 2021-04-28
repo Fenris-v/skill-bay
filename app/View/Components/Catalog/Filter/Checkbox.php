@@ -1,19 +1,19 @@
 <?php
 
-namespace App\View\Components\Catalog;
+namespace App\View\Components\Catalog\Filter;
 
-use App\Models\Product;
+use App\Models\Specification;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class ProductListItem extends Component
+class Checkbox extends Component
 {
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct(public Product $product)
+    public function __construct(public Specification $specification)
     {
     }
 
@@ -24,6 +24,6 @@ class ProductListItem extends Component
      */
     public function render(): View
     {
-        return view('components.catalog.product-list-item');
+        return view('components.catalog.filter.checkbox');
     }
 }
