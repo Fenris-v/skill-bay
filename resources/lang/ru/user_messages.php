@@ -10,6 +10,7 @@ return [
     'password_confirm' => 'Подтверждение пароля',
     'phone' => 'Телефон',
     'register' => 'Зарегистрироваться',
+    'reset_password'=>'Сбросить пароль',
     'login' => 'Войти',
     'placeholder_mail' => 'send@test.test',
     'placeholder_password' => 'Выберите пароль',

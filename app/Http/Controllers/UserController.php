@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Str;
 use App\Http\Requests\{StoreUserRequest, AuthRequest, ForgotPasswordRequest, ResetPasswordRequest};
@@ -24,7 +25,7 @@ class UserController extends Controller
 		return view('pages.registration.index');
 	}
 	
-	public function store(StoreUserRequest $request)
+	public function store(RegisterUserRequest $request)
 	{       	
        	$data = $request->only([
             'email',
@@ -32,7 +33,7 @@ class UserController extends Controller
             'password'
         ]);
        	$newUser = $this->userService->registerUser($data);
-       	\Auth::loginUsingId($newUser->id);
+       	Auth::loginUsingId($newUser->id);
 		return back()->with('success', __('user_messages.registration_success'));
 	}
 	
@@ -47,7 +48,7 @@ class UserController extends Controller
             'phone',
             'password'
         ]);
-        if(\Auth::attempt($data)){
+        if(Auth::attempt($data)){
 			return redirect()->route('index');
 		} else {
 			return back()->with('auth_fail', __('user_messages.auth_fail'));
@@ -93,5 +94,11 @@ class UserController extends Controller
 		return $status == Password::PASSWORD_RESET
 					? redirect()->route('login')->with('status', __($status))
 					: back()->withErrors(['email' => [__($status)]]);
+	}
+	
+	public function logout()
+	{
+		Auth::logout();
+		return back()
 	}
 }

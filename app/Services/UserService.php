@@ -6,11 +6,10 @@ use Illuminate\Support\Facades\Hash;
 use App\Repository\EloquentUserRepository;
 
 class UserService{
-	protected $userRepository;
-
 	private $userRepository;
 
-	public function __construct(EloquentUserRepository $userRepository){
+	public function __construct
+	(EloquentUserRepository $userRepository){
 		$this->userRepository = $userRepository;
 	}
 
