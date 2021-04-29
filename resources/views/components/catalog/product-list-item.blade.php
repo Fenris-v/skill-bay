@@ -1,6 +1,6 @@
 <div class="Card">
     <a class="Card-picture" href="{{ route('products.show', $product) }}">
-        <img src="{{ asset('assets/img/content/home/card.jpg') }}" alt="card.jpg"/>
+        <img src="{{ $product->image->getUrl() }}" alt="card.jpg"/>
     </a>
     <div class="Card-content">
         <strong class="Card-title">
@@ -15,7 +15,7 @@
                     @price($product->average_price ?? 0)
                 </span>
             </div>
-            <div class="Card-category">Games / xbox</div>
+            <div class="Card-category">{{ $product->category->name }}</div>
 
             <x-catalog.product-control :product="$product"/>
         </div>
