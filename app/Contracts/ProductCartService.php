@@ -5,6 +5,7 @@ namespace App\Contracts;
 
 
 use App\Models\Product;
+use App\Models\Seller;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -18,28 +19,48 @@ interface ProductCartService
     /**
      * Добавление товара в корзину.
      *
-     * @param  string  $slug
-     * @param  array  $data
+     * @param  Product  $product
+     * @param  int  $amount
+     * @param  Seller|null  $seller
      * @return bool
      */
-    public function add(string $slug, array $data);
+    public function add(
+        Product $product,
+        int $amount,
+        Seller $seller = null
+    ): bool;
 
     /**
      * Удаление товара из корзины.
      *
-     * @param  string  $slug
+     * @param  Product  $product
      * @return bool
      */
-    public function remove(string $slug);
+    public function remove(Product  $product): bool;
 
     /**
      * Изменяет количество товара в корзине.
      *
-     * @param  string  $slug
-     * @param  array  $data
+     * @param  Product  $product
+     * @param  int  $amount
      * @return bool
      */
-    public function changeAmount(string $slug, array $data);
+    public function changeAmount(
+        Product  $product,
+        int $amount
+    ): bool;
+
+    /**
+     * Изменяет продавца у товара в корзине.
+     *
+     * @param  Product  $product
+     * @param  Seller  $seller
+     * @return bool
+     */
+    public function changeSeller(
+        Product  $product,
+        Seller  $seller
+    ): bool;
 
     /**
      * Возвращает коллекцию товаров в корзине.

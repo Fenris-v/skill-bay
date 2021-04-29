@@ -56,11 +56,11 @@ Route::get('/sellers/{seller}', [SellerController::class, 'show'])
     )
 ;
 
-Route::post('/product/{product}/add-to-cart', [ProductController::class, 'addToCart'])
+Route::post('/product/{slug}/add-to-cart', [ProductController::class, 'addToCart'])
     ->name('products.addToCart');
-Route::post('/product/{product}/seller/{seller}/add-to-cart', [ProductController::class, 'addToCartWithSeller'])
+Route::post('/product/{productSlug}/seller/{sellerSlug}/add-to-cart', [ProductController::class, 'addToCartWithSeller'])
     ->name('products.addToCartWithSeller');
-Route::post('/product/{product}/add-to-compare', [ProductController::class, 'addToCompare'])
+Route::post('/product/{slug}/add-to-compare', [ProductController::class, 'addToCompare'])
     ->name('products.addToCompare');
 
 Route::get('/cart', [CartController::class, 'show'])
@@ -71,9 +71,9 @@ Route::get('/cart', [CartController::class, 'show'])
         ->push(__('navigation.cart'), route('cart.show'))
     )
 ;
-Route::patch('/cart/{product}/remove', [CartController::class, 'removeProduct'])
+Route::patch('/cart/{slug}/remove', [CartController::class, 'removeProduct'])
     ->name('cart.removeProduct');
-Route::patch('/cart/{product}/change-amount', [CartController::class, 'changeProductAmount'])
+Route::patch('/cart/{slug}/change-amount', [CartController::class, 'changeProductAmount'])
     ->name('cart.changeProductAmount');
-Route::patch('/cart/{product}/change-seller', [CartController::class, 'changeProductSeller'])
+Route::patch('/cart/{productSlug}/change-seller', [CartController::class, 'changeProductSeller'])
     ->name('cart.changeProductSeller');

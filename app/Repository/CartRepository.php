@@ -13,11 +13,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Collection;
 
-/**
- * Class ProductRepository
- *
- * @author Roman Sarvarov <roman.sarvarov@gmail.com>
- */
 class CartRepository
 {
     private ConfigRepository $configRepository;
@@ -49,6 +44,7 @@ class CartRepository
                         'user',
                         fn(Builder $query) => $query->where('id', $user->id)
                     )
+                    ->with('products')
                     ->doesntHave('order')
                     ->firstOrNew()
                     ->user()->associate($user)
@@ -75,6 +71,7 @@ class CartRepository
             'cart_guest|' . $guest_id,
             $this->ttl,
             fn() => Cart::where('guest_id', $guest_id)
+                ->with('products')
                 ->doesntHave('order')
                 ->firstOrNew()
         );
@@ -83,27 +80,30 @@ class CartRepository
     /**
      * Сливает корзину неавторизованного пользователя в корзину авторизованного
      *
+     * @param Cart $guestCart
+     * @param Cart $userCart
      * @return Cart
      */
-    public function mergeCarts(Cart $guestCart, Cart $userCart): Cart
+    protected function mergeCarts(Cart $guestCart, Cart $userCart): Cart
     {
+        if (!$guestCart->products->count()) {
+            return $userCart;
+        }
+
         $prepareCollection = fn($item) => [
-            'product|' . $item->id => [
+            $item->id => [
                 'seller_id' => $item->pivot->seller->id,
                 'amount' => $item->pivot->amount,
             ]
         ];
         $userCart->guest_id = $guestCart->guest_id;
-        $userCart->products()->sync(
-            $userCart->products->mapWithKeys($prepareCollection)
-                ->merge($guestCart->products->mapWithKeys($prepareCollection))
-            ->mapWithKeys(fn($item, $key) => [
-                str_replace('product|', '', $key) => [
-                    'seller_id' => $item['seller_id'],
-                    'amount' => $item['amount'],
-                ]
-            ])
-        );
+        $mergedCartProducts = $userCart->products->mapWithKeys($prepareCollection);
+
+        foreach ($guestCart->products->mapWithKeys($prepareCollection) as $productKey => $guestCartProduct) {
+            $mergedCartProducts[$productKey] = $guestCartProduct;
+        }
+
+        $userCart->products()->sync($mergedCartProducts);
         $guestCart->forceDelete();
         Cache::tags([Cart::class])->flush();
 
@@ -136,13 +136,14 @@ class CartRepository
     }
 
     /**
-     * Возвращает корзину
+     * Возвращает товары, находящиеся в корзине
      *
-     * @param Cart $cart
      * @return Collection|Product[]
      */
-    public function getCartProducts(Cart $cart): Collection
+    public function getCartProducts(): Collection
     {
+        $cart = $this->getCart();
+
         return Cache::tags([
             ConfigRepository::GLOBAL_CACHE_TAG,
             Cart::class,
@@ -161,13 +162,14 @@ class CartRepository
     }
 
     /**
-     * Возвращает корзину
+     * Возвращает количество товаров в корзине
      *
-     * @param Cart $cart
      * @return int
      */
-    public function getCartProductsCount(Cart $cart): int
+    public function getCartProductsCount(): int
     {
+        $cart = $this->getCart();
+
         return Cache::tags([
             ConfigRepository::GLOBAL_CACHE_TAG,
             Cart::class,
@@ -179,60 +181,27 @@ class CartRepository
     }
 
     /**
-     * Возвращает корзину
-     *
-     * @param Cart $cart
-     * @return array
-     */
-    public function getCartTotalPrice(Cart $cart): array
-    {
-        return Cache::tags([
-            ConfigRepository::GLOBAL_CACHE_TAG,
-            Cart::class,
-            Product::class,
-            Seller::class,
-        ])->remember(
-            'cart|' . $cart->id . '|total_price',
-            $this->ttl,
-            fn() => $cart
-                ->products
-                ->reduce(
-                    fn($accum, $product) => [
-                        'current' => $accum['current'] + $product->currentPrice,
-                        'old' => $accum['old'] + $product->averagePrice,
-                    ], [
-                        'current' => 0, 'old' => 0
-                    ]
-                )
-        );
-    }
-
-    /**
      * Добавление товара в корзину.
      *
      * @param  Product $product
-     * @param  array  $data
+     * @param  int  $amount
+     * @param Seller|null $seller
      * @return bool
      */
     public function add(
         Product $product,
-        array $data
+        int  $amount,
+        Seller $seller = null
     ): bool {
-        $cart = $this->getCart();
-
-        if ($cart->products->contains(fn($productInCart) => $productInCart->slug === $product->slug)) {
-            return $this->changeAmount($product, $data);
-        } else {
-            $cart->products()
-                ->attach(
-                    $product,
-                    [
-                        'amount' => $data['amount'],
-                        'seller_id' => $product->sellers->random()->id,
-                    ]
-                )
-            ;
-        }
+        $this->getCart()->products()
+            ->attach(
+                $product,
+                [
+                    'amount' => $amount,
+                    'seller_id' => $seller->id ?? $product->sellers->random()->id,
+                ]
+            )
+        ;
 
         return true;
     }
@@ -256,16 +225,19 @@ class CartRepository
      * Изменяет количество товара в корзине.
      *
      * @param  Product $product
-     * @param  array  $data
+     * @param  int  $amount
      * @return bool
      */
-    public function changeAmount(Product $product, array $data): bool
-    {
-        if ($data['amount'] == 0) return $this->remove($product);
-
+    public function changeAmount(
+        Product $product,
+        int  $amount
+    ): bool {
+        if ($amount === 0) {
+            return $this->remove($product);
+        }
         $this->getCart()
             ->products()->updateExistingPivot($product->id, [
-                'amount' => $data['amount'],
+                'amount' => $amount,
             ]);
 
         return true;
@@ -285,6 +257,28 @@ class CartRepository
         $this->getCart()
             ->products()->updateExistingPivot($product->id, [
                 'seller_id' => $seller->id,
+            ]);
+
+        return true;
+    }
+
+    /**
+     * Изменяет количество товара, а также его продавца в корзине.
+     *
+     * @param  Product $product
+     * @param  Seller  $seller
+     * @param int $amount
+     * @return bool
+     */
+    public function changeSellerAndAmount(
+        Product $product,
+        Seller  $seller,
+        int $amount
+    ): bool {
+        $this->getCart()
+            ->products()->updateExistingPivot($product->id, [
+                'seller_id' => $seller->id,
+                'amount' => $amount,
             ]);
 
         return true;

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Repository\SellerRepository;
 use Illuminate\Http\Request;
 use App\Services\ProductCartService;
+use App\Repository\ProductRepository;
 
 class CartController extends Controller
 {
@@ -18,9 +20,10 @@ class CartController extends Controller
 
     public function removeProduct(
         ProductCartService $productCartService,
+        ProductRepository $productRepository,
         string $slug
     ) {
-        if ($productCartService->remove($slug)) {
+        if ($productCartService->remove($productRepository->getProductBySlug($slug))) {
             $message = __('cartMessages.productRemove.success');
         } else {
             $message = __('cartMessages.productRemove.error');
@@ -31,10 +34,15 @@ class CartController extends Controller
 
     public function changeProductAmount(
         ProductCartService $productCartService,
+        ProductRepository $productRepository,
         string $slug,
         Request $request
     ) {
-        if ($productCartService->changeAmount($slug, $request->only(['amount']))) {
+        $amount = (int) $request->validate([
+            'amount' => 'required|integer',
+        ])['amount'];
+
+        if ($productCartService->changeAmount($productRepository->getProductBySlug($slug), $amount)) {
             $message = __('cartMessages.changeProductAmount.success');
         } else {
             $message = __('cartMessages.changeProductAmount.error');
@@ -45,10 +53,20 @@ class CartController extends Controller
 
     public function changeProductSeller(
         ProductCartService $productCartService,
+        ProductRepository $productRepository,
+        SellerRepository $sellerRepository,
         string $productSlug,
         Request $request
     ) {
-        if ($productCartService->changeSeller($productSlug, $request->only(['seller']))) {
+        $sellerSlug = (string) $request->validate([
+            'seller' => 'required|string',
+        ])['seller'];
+
+        $product = $productRepository->getProductBySlug($productSlug);
+        if ($productCartService->changeSeller(
+            $product,
+            $sellerRepository->getSellerBySlugFromProduct($product, $sellerSlug))
+        ) {
             $message = __('cartMessages.changeProductSeller.success');
         } else {
             $message = __('cartMessages.changeProductSeller.error');

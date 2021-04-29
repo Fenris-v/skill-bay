@@ -45,4 +45,20 @@ class Cart extends Model
     {
         return $this->BelongsTo(Order::class);
     }
+
+    public function getCurrentPriceAttribute(): float
+    {
+        return $this->products->reduce(
+            fn($accum, $product) => $accum + $product->currentPrice,
+            0
+        );
+    }
+
+    public function getOldPriceAttribute(): float
+    {
+        return $this->products->reduce(
+            fn($accum, $product) => $accum + $product->averagePrice,
+            0
+        );
+    }
 }

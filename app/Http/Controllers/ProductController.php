@@ -5,11 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Repository\FilterRepository;
 use App\Repository\CatalogRepository;
-use App\Models\Product;
-use App\Models\Seller;
 use App\Repository\ProductRepository;
+use App\Repository\SellerRepository;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use App\Services\ProductCartService;
 use App\Services\CompareProductsService;
@@ -58,8 +56,9 @@ class ProductController extends Controller
 
     /**
      * Метод для отображения карточки товара
-     * @param ConfigRepository $configs
-     * @param string $slug
+     * @param ProductRepository $productRepository
+     * @param ProductViewHistoryService $productViewHistoryService
+     * @param string|null $slug
      * @return View
      */
     public function show(
@@ -76,49 +75,60 @@ class ProductController extends Controller
     /**
      * Метод для добавления товара в корзину
      * @param Request $request
-     * @param ConfigRepository $configs
-     * @param Product $product
+     * @param ProductCartService $productCartService
+     * @param ProductRepository $productRepository
+     * @param string $slug
      * @return null
      */
     public function addToCart(
         Request $request,
         ProductCartService $productCartService,
+        ProductRepository $productRepository,
         string $slug
     ) {
-        $data = $request->only(['amount']);
+        $amount = (int) $request->validate([
+            'amount' => 'required|integer|min:1',
+        ])['amount'];
 
         if ($productCartService->add(
-            $slug,
-            $data,
+            $productRepository->getProductBySlug($slug),
+            $amount
         )) {
             $message = __('productMessages.addToCart.success.withoutSeller', [
-                'amount' => $data['amount'],
+                'amount' => $amount,
             ]);
         } else {
             $message = __('productMessages.addToCart.error');
         }
+
         return back()->withInput()->with('message', $message);
     }
+
     /**
      * Метод для добавления товара в корзину с указанием продавца
-     * @param ConfigRepository $configs
-     * @param Product $product
-     * @param Seller $seller
+     * @param ProductCartService $productCartService
+     * @param ProductRepository $productRepository
+     * @param SellerRepository $sellerRepository
+     * @param string $productSlug
+     * @param string $sellerSlug
      * @return null
      */
     public function addToCartWithSeller(
         ProductCartService $productCartService,
-        Product $product,
-        Seller $seller
+        ProductRepository $productRepository,
+        SellerRepository $sellerRepository,
+        string $productSlug,
+        string $sellerSlug
     ) {
+        $product = $productRepository->getProductBySlug($productSlug);
         if ($productCartService->add(
             $product,
             1,
-            $seller
+            $sellerRepository->getSellerBySlugFromProduct($product, $sellerSlug)
         )) {
             $message = __('productMessages.addToCart.success.withSeller', [
                 'amount' => 1,
-                'seller' => $seller->slug,
+                'seller' => $sellerSlug,
             ]);
         } else {
             $message = __('productMessages.addToCart.error');
@@ -129,16 +139,19 @@ class ProductController extends Controller
 
     /**
      * Метод для добавления товара для сравнения
-     * @param Request $request
-     * @param ConfigRepository $configs
-     * @param Product $product
+     * @param CompareProductsService $compareProductsService
+     * @param ProductRepository $productRepository
+     * @param string $slug
      * @return null
      */
     public function addToCompare(
         CompareProductsService $compareProductsService,
-        Product $product
+        ProductRepository $productRepository,
+        string $slug
     ) {
-        if ($compareProductsService->add($product)) {
+        if ($compareProductsService->add(
+            $productRepository->getProductBySlug($slug)
+        )) {
             $message = __('productMessages.addToCompare.success');
         } else {
             $message = __('productMessages.addToCompare.error');

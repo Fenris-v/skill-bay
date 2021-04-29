@@ -23,12 +23,12 @@ class Product extends Component
         $this->discount = $discountService->getDiscountPrice($product) ?? 0;
         $this->priceOld = $product->averagePrice;
         $this->price = $product->currentPrice;
-        $this->compareUrl = route('products.addToCompare', ['product' => $product->slug]);
-        $this->addToCartUrl = route('products.addToCart', ['product' => $product->slug]);
+        $this->compareUrl = route('products.addToCompare', ['slug' => $product->slug]);
+        $this->addToCartUrl = route('products.addToCart', ['slug' => $product->slug]);
         $this->sellers = $product->sellers->map(function ($seller) use ($product) {
             $seller->addToCartUrl = route(
                 'products.addToCartWithSeller',
-                ['product' => $product->slug, 'seller' => $seller->slug]
+                ['productSlug' => $product->slug, 'sellerSlug' => $seller->slug]
             );
             return $seller;
         });

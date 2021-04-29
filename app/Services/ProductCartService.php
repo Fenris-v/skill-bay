@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Product;
+use App\Models\Seller;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use App\Contracts\ProductCartService as ProductCartServiceContract;
@@ -36,72 +37,100 @@ class ProductCartService implements ProductCartServiceContract
     /**
      * Добавление товара в корзину.
      *
-     * @param  string  $slug
-     * @param  array  $data
+     * @param  Product  $product
+     * @param  int  $amount
+     * @param  Seller|null  $seller
      * @return bool
      */
     public function add(
-        string $slug,
-        array $data
-    ) {
-        $this->validate($data, [
-            'amount' => 'required|integer|min:1',
-        ]);
+        Product $product,
+        int $amount,
+        Seller $seller = null
+    ): bool {
+        if ($amount > 0) {
+            $productInCart = $this->cartRepository->getCart()->products->firstWhere('slug', $product->slug);
+            if ($productInCart) {
+                $amount += $productInCart->pivot->amount;
+                if ($seller && $productInCart->pivot->amount !== $amount) {
+                    return $this->changeSellerAndAmount($product, $seller, $amount);
+                } elseif ($seller) {
+                    return $this->changeSeller($product, $seller);
+                }
+                return $this->changeAmount($product, $amount);
+            }
 
-        return $this->cartRepository->add($this->productRepository->getProductBySlug($slug), $data);
+            return $this->cartRepository->add($product, $amount, $seller);
+        }
+
+        return false;
     }
 
     /**
      * Удаление товара из корзины.
      *
-     * @param  string  $slug
+     * @param  Product  $product
      * @return bool
      */
-    public function remove(string $slug): bool
+    public function remove(Product  $product): bool
     {
-        return $this->cartRepository->remove($this->productRepository->getProductBySlug($slug));
+        return $this->cartRepository->remove($product);
     }
 
     /**
      * Изменяет количество товара в корзине.
      *
-     * @param  string  $slug
-     * @param  array  $data
+     * @param  Product $product
+     * @param  int $amount
      * @return bool
      */
-    public function changeAmount(string $slug, array $data): bool
-    {
-        $this->validate($data, [
-            'amount' => 'required|integer|min:0',
-        ]);
-        if ($data['amount'] == 0) return $this->remove($slug);
+    public function changeAmount(
+        Product $product,
+        int $amount
+    ): bool {
+        if ($amount === 0) return $this->remove($product);
 
         return $this->cartRepository->changeAmount(
-            $this->productRepository->getProductBySlug($slug),
-            $data
+            $product,
+            $amount
         );
     }
 
     /**
-     * Изменяет количество товара в корзине.
+     * Изменяет продавца у товара в корзине.
      *
-     * @param  string  $productSlug
-     * @param  array  $data
+     * @param  Product $product
+     * @param  Seller $seller
      * @return bool
      */
     public function changeSeller(
-        string $productSlug,
-        array $data
+        Product $product,
+        Seller $seller
     ): bool {
-        $this->validate($data, ['seller' => 'string|required']);
-
-        $seller = $this->productRepository->getSellerOfProductBySlug($productSlug, $data['seller']);
-
         return $this->cartRepository->changeSeller(
-            $seller->products->first(),
+            $product,
             $seller
         );
     }
+    /**
+     * Изменяет продавца и количество у товара в корзине.
+     *
+     * @param  Product $product
+     * @param  Seller $seller
+     * @param int $amount
+     * @return bool
+     */
+    public function changeSellerAndAmount(
+        Product $product,
+        Seller $seller,
+        int $amount
+    ): bool {
+        return $this->cartRepository->changeSellerAndAmount(
+            $product,
+            $seller,
+            $amount
+        );
+    }
+
 
     /**
      * Возвращает коллекцию товаров в корзине.
@@ -110,7 +139,7 @@ class ProductCartService implements ProductCartServiceContract
      */
     public function get()
     {
-        return $this->cartRepository->getCartProducts($this->cartRepository->getCart());
+        return $this->cartRepository->getCartProducts();
     }
 
     /**
@@ -120,7 +149,7 @@ class ProductCartService implements ProductCartServiceContract
      */
     public function count()
     {
-        return $this->cartRepository->getCartProductsCount($this->cartRepository->getCart());
+        return $this->cartRepository->getCartProductsCount();
     }
 
     /**
@@ -130,6 +159,6 @@ class ProductCartService implements ProductCartServiceContract
      */
     public function total()
     {
-        return $this->cartRepository->getCartTotalPrice($this->cartRepository->getCart());
+        return $this->cartRepository->getCartTotalPrice();
     }
 }
