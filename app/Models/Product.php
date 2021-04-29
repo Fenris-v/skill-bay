@@ -97,6 +97,15 @@ class Product extends Model
     }
 
     /**
+     * Связь с главной картинкой
+     * @return BelongsTo
+     */
+    public function image(): BelongsTo
+    {
+        return $this->belongsTo(Image::class, 'main_image_id');
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function reviews()
