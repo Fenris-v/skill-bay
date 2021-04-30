@@ -17,6 +17,8 @@ class CreatePaymentTypesTable extends Migration
             $table->id();
             $table->string('name');
         });
+
+        Artisan::call('db:seed', array('--class' => 'PaymentTypeSeeder'));
     }
 
     /**

@@ -24,8 +24,8 @@ class DatabaseSeeder extends Seeder
                 UserSeeder::class,
                 RoleUsersSeeder::class,
                 CartSeeder::class,
-                DeliveryTypeSeeder::class,
-                PaymentTypeSeeder::class,
+                //DeliveryTypeSeeder::class,
+                //PaymentTypeSeeder::class,
                 OrderSeeder::class,
             ]
         );
