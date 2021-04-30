@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Category;
+use App\Models\Image;
 use App\Models\Product;
 use App\Models\ProductReview;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -34,7 +35,8 @@ class ProductFactory extends Factory
             'vendor' => ucfirst($this->faker->word),
             'rating_sort' => $this->faker->numberBetween(1, 999),
             'category_id' => $this->faker->randomElement($categories)->id,
-            'created_at' => $this->faker->dateTimeBetween('-60 days', now())
+            'created_at' => $this->faker->dateTimeBetween('-60 days', now()),
+            'main_image_id' => Image::factory()
         ];
     }
 }
