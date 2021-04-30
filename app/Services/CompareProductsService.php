@@ -8,44 +8,63 @@ use Illuminate\Database\Eloquent\Collection;
 
 class CompareProductsService
 {
+    private $visitorService;
 
-    private $products;
-
-    public function __construct()
+    /**
+     * @param VisitorService $visitorService
+     */
+    public function __construct(VisitorService $visitorService)
     {
-        $this->products = Product::factory()->count(5)->make();
+        $this->visitorService = $visitorService;
     }
 
     /**
      * @param Product $product
-     * @return $this
+     * @return bool
      */
-    public function add(Product $product) : CompareProductsService
+    public function add(Product $product) : bool
     {
-        $this->products->push($product);
-        return $this;
-    }
+        $compareProducts = $this->visitorService->get()->compareProducts();
 
-    /**
-     * @param Product $product
-     * @return $this
-     */
-    public function remove(Product $product) : CompareProductsService
-    {
-        if ($key = $this->products->search($product)) {
-            $this->products->forget($key);
+        if (!$compareProducts->get()->contains($product)) {
+            $compareProducts->attach($product);
+
+            return true;
         }
 
-        return $this;
+        return false;
+    }
+
+    /**
+     * @param Product $product
+     * @return bool
+     */
+    public function remove(Product $product) : bool
+    {
+        $compareProducts = $this->visitorService->get()->compareProducts();
+
+        if ($compareProducts->findOrFail($product->id)) {
+            $compareProducts->detach($product);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
      * @param int $count
-     * @return Collection
+     * @return Collection|Array
      */
-    public function getProducts($count = 3) : Collection
+    public function getProducts($count = 3) : Collection|Array
     {
-        return $this->products->take($count);
+        return $this
+            ->visitorService
+            ->get()
+            ->compareProducts
+            ->load('images')
+            ->load('specifications')
+            ->take($count);
     }
 
     /**
@@ -53,6 +72,11 @@ class CompareProductsService
      */
     public function count() : int
     {
-        return $this->products->count();
+        return $this
+            ->visitorService
+            ->get()
+            ->compareProducts
+            ->count();
     }
+
 }
