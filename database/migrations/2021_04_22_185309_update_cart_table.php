@@ -35,6 +35,9 @@ class UpdateCartTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('carts', function (Blueprint $table) {
+            $table->dropColumn(['order_id', 'guest_id']);
+            $table->unsignedBigInteger('user_id')->change();
+        });
     }
 }

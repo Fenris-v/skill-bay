@@ -9,13 +9,6 @@
 
 @section('content')
     <div class="Section">
-        <div class="wrap">
-            @foreach($products as $product)
-                <x-cart.cart-product
-                    :product="$product"
-                />
-            @endforeach
-            <x-cart.cart-total />
-        </div>
+        <x-cart :products="$products"/>
     </div>
 @endsection

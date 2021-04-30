@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Product;
 use App\Models\Seller;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use App\Contracts\ProductCartService as ProductCartServiceContract;
 use App\Repository\ProductRepository;
@@ -44,7 +43,7 @@ class ProductCartService implements ProductCartServiceContract
      */
     public function add(
         Product $product,
-        int $amount,
+        int $amount = 1,
         Seller $seller = null
     ): bool {
         if ($amount > 0) {
@@ -159,6 +158,9 @@ class ProductCartService implements ProductCartServiceContract
      */
     public function total()
     {
-        return $this->cartRepository->getCartTotalPrice();
+        return [
+            'current' => $this->cartRepository->currentPrice,
+            'old' => $this->cartRepository->oldPrice,
+        ];
     }
 }

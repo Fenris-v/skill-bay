@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cart;
 use App\Repository\SellerRepository;
 use Illuminate\Http\Request;
 use App\Services\ProductCartService;
@@ -10,31 +9,36 @@ use App\Repository\ProductRepository;
 
 class CartController extends Controller
 {
-    public function show(
-        ProductCartService $productCartService
+    public function __construct(
+        protected ProductCartService $productCartService,
+        protected ProductRepository $productRepository
     ) {
+        //
+    }
+
+    protected function getResultIndex(bool $result)
+    {
+        return $result ? 'success' : 'result';
+    }
+
+    public function show() {
         return view('pages.main.cart', [
-            'products' => $productCartService->get(),
+            'products' => $this->productCartService->get(),
         ]);
     }
 
     public function removeProduct(
-        ProductCartService $productCartService,
-        ProductRepository $productRepository,
         string $slug
     ) {
-        if ($productCartService->remove($productRepository->getProductBySlug($slug))) {
-            $message = __('cartMessages.productRemove.success');
-        } else {
-            $message = __('cartMessages.productRemove.error');
-        }
+        $result = $this->productCartService->remove($this->productRepository->getProductBySlug($slug));
 
-        return back()->withInput()->with('message', $message);
+        return back()
+            ->withInput()
+            ->with('message', __('cartMessages.productRemove.' . $this->getResultIndex($result)))
+        ;
     }
 
     public function changeProductAmount(
-        ProductCartService $productCartService,
-        ProductRepository $productRepository,
         string $slug,
         Request $request
     ) {
@@ -42,18 +46,15 @@ class CartController extends Controller
             'amount' => 'required|integer',
         ])['amount'];
 
-        if ($productCartService->changeAmount($productRepository->getProductBySlug($slug), $amount)) {
-            $message = __('cartMessages.changeProductAmount.success');
-        } else {
-            $message = __('cartMessages.changeProductAmount.error');
-        }
+        $result = $this->productCartService->changeAmount($this->productRepository->getProductBySlug($slug), $amount);
 
-        return back()->withInput()->with('message', $message);
+        return back()
+            ->withInput()
+            ->with('message', __('cartMessages.changeProductAmount.' . $this->getResultIndex($result)))
+        ;
     }
 
     public function changeProductSeller(
-        ProductCartService $productCartService,
-        ProductRepository $productRepository,
         SellerRepository $sellerRepository,
         string $productSlug,
         Request $request
@@ -62,16 +63,15 @@ class CartController extends Controller
             'seller' => 'required|string',
         ])['seller'];
 
-        $product = $productRepository->getProductBySlug($productSlug);
-        if ($productCartService->changeSeller(
+        $product = $this->productRepository->getProductBySlug($productSlug);
+        $result = $this->productCartService->changeSeller(
             $product,
-            $sellerRepository->getSellerBySlugFromProduct($product, $sellerSlug))
-        ) {
-            $message = __('cartMessages.changeProductSeller.success');
-        } else {
-            $message = __('cartMessages.changeProductSeller.error');
-        }
+            $sellerRepository->getSellerBySlugFromProduct($product, $sellerSlug)
+        );
 
-        return back()->withInput()->with('message', $message);
+        return back()
+            ->withInput()
+            ->with('message', __('cartMessages.changeProductSeller.' . $this->getResultIndex($result)))
+        ;
     }
 }

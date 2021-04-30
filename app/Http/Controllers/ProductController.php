@@ -15,6 +15,12 @@ use App\Services\ProductViewHistoryService;
 
 class ProductController extends Controller
 {
+    public function __construct(
+        protected ProductRepository $productRepository
+    ) {
+        //
+    }
+
     /**
      * Список товаров (каталог/категория)
      * @param CatalogRepository $catalog
@@ -56,17 +62,15 @@ class ProductController extends Controller
 
     /**
      * Метод для отображения карточки товара
-     * @param ProductRepository $productRepository
      * @param ProductViewHistoryService $productViewHistoryService
      * @param string|null $slug
      * @return View
      */
     public function show(
-        ProductRepository $productRepository,
         ProductViewHistoryService $productViewHistoryService,
         string $slug = null
     ): View {
-        $product = $productRepository->getProductBySlug($slug);
+        $product = $this->productRepository->getProductBySlug($slug);
         $productViewHistoryService->add($product);
 
         return view('pages.main.product', compact('product'));
@@ -76,14 +80,12 @@ class ProductController extends Controller
      * Метод для добавления товара в корзину
      * @param Request $request
      * @param ProductCartService $productCartService
-     * @param ProductRepository $productRepository
      * @param string $slug
      * @return null
      */
     public function addToCart(
         Request $request,
         ProductCartService $productCartService,
-        ProductRepository $productRepository,
         string $slug
     ) {
         $amount = (int) $request->validate([
@@ -91,7 +93,7 @@ class ProductController extends Controller
         ])['amount'];
 
         if ($productCartService->add(
-            $productRepository->getProductBySlug($slug),
+            $this->productRepository->getProductBySlug($slug),
             $amount
         )) {
             $message = __('productMessages.addToCart.success.withoutSeller', [
@@ -107,7 +109,6 @@ class ProductController extends Controller
     /**
      * Метод для добавления товара в корзину с указанием продавца
      * @param ProductCartService $productCartService
-     * @param ProductRepository $productRepository
      * @param SellerRepository $sellerRepository
      * @param string $productSlug
      * @param string $sellerSlug
@@ -115,12 +116,11 @@ class ProductController extends Controller
      */
     public function addToCartWithSeller(
         ProductCartService $productCartService,
-        ProductRepository $productRepository,
         SellerRepository $sellerRepository,
         string $productSlug,
         string $sellerSlug
     ) {
-        $product = $productRepository->getProductBySlug($productSlug);
+        $product = $this->productRepository->getProductBySlug($productSlug);
         if ($productCartService->add(
             $product,
             1,
@@ -140,17 +140,15 @@ class ProductController extends Controller
     /**
      * Метод для добавления товара для сравнения
      * @param CompareProductsService $compareProductsService
-     * @param ProductRepository $productRepository
      * @param string $slug
      * @return null
      */
     public function addToCompare(
         CompareProductsService $compareProductsService,
-        ProductRepository $productRepository,
         string $slug
     ) {
         if ($compareProductsService->add(
-            $productRepository->getProductBySlug($slug)
+            $this->productRepository->getProductBySlug($slug)
         )) {
             $message = __('productMessages.addToCompare.success');
         } else {
