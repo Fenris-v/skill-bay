@@ -49,6 +49,16 @@ class ConfigRepository
     }
 
     /**
+     * Алиас, возвращающий количество объектов на странице
+     * @param int $default
+     * @return int
+     */
+    public function getHistorySize(int $default = 20): int
+    {
+        return $this->getValueBySlug('history_size', $default);
+    }
+
+    /**
      * Алиас, возвращающий время жизни кэша
      * @param mixed $default
      * @return int

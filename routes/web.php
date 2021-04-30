@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HistoryProductController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellerController;
 use Illuminate\Support\Facades\Route;
@@ -61,3 +62,12 @@ Route::post('/product/{product}/seller/{seller}/add-to-cart', [ProductController
     ->name('products.addToCartWithSeller');
 Route::post('/product/{product}/add-to-compare', [ProductController::class, 'addToCompare'])
     ->name('products.addToCompare');
+
+Route::get('/account/views', [HistoryProductController::class, 'index'])
+    ->name('viewed_history')
+    ->breadcrumbs(
+        function (Trail $trail) {
+            $trail->parent('index')
+                ->push(__('navigation.history'), route('viewed_history'));
+        }
+    );
