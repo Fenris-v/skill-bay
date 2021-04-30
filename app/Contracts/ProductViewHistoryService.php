@@ -23,22 +23,6 @@ interface ProductViewHistoryService
     public function add(Product $product);
 
     /**
-     * Удаление товара из списка просмотренных товаров.
-     *
-     * @param  Product  $product
-     * @return bool
-     */
-    public function remove(Product $product);
-
-    /**
-     * Возвращает булево значение факта просмотра товара.
-     *
-     * @param  Product  $product
-     * @return bool
-     */
-    public function has(Product $product);
-
-    /**
      * Возвращает коллекцию просмотренных товаров.
      *
      * @return  Collection|Product[]

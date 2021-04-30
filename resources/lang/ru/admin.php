@@ -33,10 +33,7 @@ return [
         'fields' => [
             'per_page' => 'Количество объектов на странице',
             'cache_lifetime' => 'Время жизни кэша',
-
-            // TODO: delete next examples
-            'stroka-naprimer' => 'Строка, например',
-            'a-vot-i-cekboks' => 'А вот и чекбокс',
+            'history_size' => 'Количество просмотренных'
         ]
     ],
     'product' => [

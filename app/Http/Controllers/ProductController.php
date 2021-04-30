@@ -62,7 +62,8 @@ class ProductController extends Controller
     /**
      * Метод для отображения карточки товара
      * @param ConfigRepository $configs
-     * @param string $slug
+     * @param ProductViewHistoryService $productViewHistoryService
+     * @param string|null $slug
      * @return View
      */
     public function show(
@@ -95,7 +96,7 @@ class ProductController extends Controller
     /**
      * Метод для добавления товара в корзину
      * @param Request $request
-     * @param ConfigRepository $configs
+     * @param ProductCartService $productCartService
      * @param Product $product
      * @return null
      */
@@ -121,9 +122,10 @@ class ProductController extends Controller
 
         return back()->withInput()->with('message', $message);
     }
+
     /**
      * Метод для добавления товара в корзину с указанием продавца
-     * @param ConfigRepository $configs
+     * @param ProductCartService $productCartService
      * @param Product $product
      * @param Seller $seller
      * @return null
@@ -151,8 +153,7 @@ class ProductController extends Controller
 
     /**
      * Метод для добавления товара для сравнения
-     * @param Request $request
-     * @param ConfigRepository $configs
+     * @param CompareProductsService $compareProductsService
      * @param Product $product
      * @return null
      */
