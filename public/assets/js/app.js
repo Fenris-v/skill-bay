@@ -612,6 +612,20 @@ __webpack_require__(/*! ./scripts */ "./resources/js/scripts.js");
 
     Pagination().init();
 
+    var Alert = function Alert() {
+      var $alert = $('.custom-alert');
+      var $closebtn = $('.closebtn');
+      return {
+        init: function init() {
+          $closebtn.on('click', function () {
+            return $alert.fadeOut();
+          });
+        }
+      };
+    };
+
+    Alert().init();
+
     var Sort = function Sort() {
       return {
         init: function init() {}
