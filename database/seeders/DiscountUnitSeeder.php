@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
+use App\Models\DiscountUnit;
 use Illuminate\Database\Seeder;
 
-
-class CategorySeeder extends Seeder
+class DiscountUnitSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,9 +14,8 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        Category::factory()
+        DiscountUnit::factory()
             ->count(5)
-            ->has(Category::factory()->count(2), 'children')
             ->create();
     }
 }
