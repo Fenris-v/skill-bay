@@ -24,6 +24,8 @@ class DatabaseSeeder extends Seeder
                 UserSeeder::class,
                 RoleUsersSeeder::class,
                 CartSeeder::class,
+                DiscountSeeder::class,
+                DiscountUnitableSeeder::class
             ]
         );
     }
