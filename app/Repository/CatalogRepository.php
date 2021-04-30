@@ -29,6 +29,7 @@ class CatalogRepository
      */
     public function getPaginateProducts(array $params, ?Category $category): Paginator
     {
+        return $this->getProducts($params, $category->id ?? null);
         return Cache::tags(
             [ConfigRepository::GLOBAL_CACHE_TAG, Product::PRODUCT_CACHE_TAGS]
         )->remember(
@@ -64,6 +65,7 @@ class CatalogRepository
 
         $sortBy = $params['sort']['by'] ?? 'rating_sort';
         $sortType = $params['sort']['type'] ?? 'asc';
+
         $this->sort($query, $sortBy, $sortType);
 
         return $query->paginate($this->perPage);
@@ -223,7 +225,7 @@ class CatalogRepository
         match ($sortBy) {
             'popularity' => $query, // TODO: сделать, когда появятся популярные товары
             'price' => $query->orderBy('average_price', $sortType),
-            'feedbacks' => $query, // TODO: сделать, когда появятся отзывы
+            'reviews' => $query->withCount('reviews')->orderBy('reviews_count', $sortType),
             'newer' => $query->orderBy('created_at', $sortType),
             default => $query->orderBy('rating_sort', $sortType),
         };

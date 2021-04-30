@@ -5,7 +5,6 @@ namespace Database\Factories;
 use App\Models\Category;
 use App\Models\Image;
 use App\Models\Product;
-use App\Models\ProductReview;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
