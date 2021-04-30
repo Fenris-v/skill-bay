@@ -197,6 +197,10 @@ class CatalogRepository
             isset($params['filter']['props']),
             function ($query) use ($params) {
                 foreach ($params['filter']['props'] as $filter => $prop) {
+                    if (!$prop) {
+                        continue;
+                    }
+
                     if ($prop === 'on') {
                         $this->specificationCheckbox($query, $filter);
                         continue;
@@ -207,7 +211,7 @@ class CatalogRepository
                         continue;
                     }
 
-                    $query->specification($filter, $prop);
+                    $this->specification($query, $filter, $prop);
                 }
             }
         );

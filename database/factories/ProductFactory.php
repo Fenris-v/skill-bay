@@ -24,8 +24,7 @@ class ProductFactory extends Factory
      */
     public function definition()
     {
-        $categories = Category::where('parent_id', null)
-            ->get('id');
+        $categories = Category::get('id');
 
         return [
             'title' => $title = ucfirst($this->faker->unique()->words(3, true)),

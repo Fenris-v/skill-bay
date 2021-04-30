@@ -861,10 +861,9 @@ select + select {
 }
 .form .form-select {
   width: 100%;
-  height: 56px;
   box-sizing: border-box;
   padding: 5px 21px;
-  border-radius: 0px;
+  border-radius: 0;
   border: 1px solid #e0e0e0;
   background: #f9fafc;
   background: transparent;
@@ -872,6 +871,9 @@ select + select {
   background-image: none;
   font-size: 18px;
   line-height: 1.2em;
+}
+.form .form-select[multiple] {
+  min-height: 56px;
 }
 .form .form-select:focus {
   outline: none;
@@ -916,6 +918,12 @@ select + select {
 }
 .form-group + .form-group {
   margin-top: 25px;
+}
+.form-group label {
+  width: 100%;
+}
+.form-group label .form-selectWrap {
+  margin-top: 5px;
 }
 .form_contacts .form-input {
   min-width: auto;
