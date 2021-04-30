@@ -48,12 +48,14 @@ class CatalogRepository
      */
     private function getProducts(array $params, ?int $categoryId): LengthAwarePaginator
     {
-        $query = Product::when(
-            $categoryId,
-            function ($query) use ($categoryId) {
-                return $query->where('category_id', $categoryId);
-            }
-        )->selectRaw('*, (SELECT AVG(price) FROM product_seller WHERE products.id = product_id) as average_price');
+        $query = Product::with('image')
+            ->with('category')
+            ->when(
+                $categoryId,
+                function ($query) use ($categoryId) {
+                    return $query->where('category_id', $categoryId);
+                }
+            )->selectRaw('*, (SELECT AVG(price) FROM product_seller WHERE products.id = product_id) as average_price');
 
         $this->filterSearch($query, $params);
         $this->priceRange($query, $params);
@@ -208,7 +210,6 @@ class CatalogRepository
             }
         );
     }
-
 
     /**
      * Метод сортировки
