@@ -23,31 +23,31 @@
                            placeholder="{{ __('catalog.search') }}"/>
                 </div>
                 <div class="form-group">
-                    <select class="form-select" name="filter[seller]">
-                        <option selected="selected"
-                                disabled="disabled">{{ __('catalog.seller') }}</option>
-                        <option value="">{{ __('catalog.not-selected') }}</option>
-                        @foreach($sellers as $seller)
-                            <option {{ isset(request()->get('filter')['seller']) &&
-                                 request()->get('filter')['seller'] === $seller->title ? 'selected' : '' }}
-                                    value="{{ $seller->title }}">{{ $seller->title }}</option>
-                        @endforeach
-                    </select>
+                    <label>{{ __('catalog.seller') }}
+                        <select class="form-select" name="filter[seller]">
+                            <option value="">{{ __('catalog.not-selected') }}</option>
+                            @foreach($sellers as $seller)
+                                <option {{ isset(request()->get('filter')['seller']) &&
+                                     request()->get('filter')['seller'] === $seller->title ? 'selected' : '' }}
+                                        value="{{ $seller->title }}">{{ $seller->title }}</option>
+                            @endforeach
+                        </select>
+                    </label>
                 </div>
 
                 @foreach($specifications as $specification)
                     @switch($specification->type)
                         @case(\App\Models\Specification::CHECKBOX)
-                            <x-catalog.filter.checkbox :specification="$specification"/>
-                            @break
+                        <x-catalog.filter.checkbox :specification="$specification"/>
+                        @break
                         @case(\App\Models\Specification::SELECT )
-                            <x-catalog.filter.select :specification="$specification"
-                                                     :specifications-values="$specificationsValues"/>
-                            @break
+                        <x-catalog.filter.select :specification="$specification"
+                                                 :specifications-values="$specificationsValues"/>
+                        @break
                         @case(\App\Models\Specification::MULTIPLE)
                         <x-catalog.filter.select :specification="$specification"
-                                                     :specifications-values="$specificationsValues"
-                                                     :multiple="true"/>
+                                                 :specifications-values="$specificationsValues"
+                                                 :multiple="true"/>
                     @endswitch
                 @endforeach
 
