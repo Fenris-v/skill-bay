@@ -112,4 +112,9 @@ class Product extends Model
     {
         return $this->hasMany(ProductReview::class);
     }
+
+    public function getAllImagesAttribute()
+    {
+        return collect([$this->image])->merge($this->images);
+    }
 }
