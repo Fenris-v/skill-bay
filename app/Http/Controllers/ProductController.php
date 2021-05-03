@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use App\Services\ProductCartService;
 use App\Services\CompareProductsService;
 use App\Services\ProductViewHistoryService;
+use App\Services\AlertFlashService;
 
 class ProductController extends Controller
 {
@@ -98,12 +99,14 @@ class ProductController extends Controller
      * @param Request $request
      * @param ProductCartService $productCartService
      * @param Product $product
+     * @param AlertFlashService $alert
      * @return null
      */
     public function addToCart(
         Request $request,
         ProductCartService $productCartService,
-        Product $product
+        Product $product,
+        AlertFlashService $alert
     ) {
         $amount = current($request->validate([
             'amount' => 'required|integer',
@@ -113,14 +116,14 @@ class ProductController extends Controller
             $product,
             $amount,
         )) {
-            $message = __('productMessages.addToCart.success.withoutSeller', [
+            $alert->lang('productMessages.addToCart.success.withoutSeller', [
                 'amount' => $amount,
             ]);
         } else {
-            $message = __('productMessages.addToCart.error');
+            $alert->lang('productMessages.addToCart.error')->danger();
         }
 
-        return back()->withInput()->with('message', $message);
+        return back();
     }
 
     /**
@@ -128,45 +131,49 @@ class ProductController extends Controller
      * @param ProductCartService $productCartService
      * @param Product $product
      * @param Seller $seller
+     * @param AlertFlashService $alert
      * @return null
      */
     public function addToCartWithSeller(
         ProductCartService $productCartService,
         Product $product,
-        Seller $seller
+        Seller $seller,
+        AlertFlashService $alert
     ) {
         if ($productCartService->add(
             $product,
             1,
             $seller
         )) {
-            $message = __('productMessages.addToCart.success.withSeller', [
+            $alert->lang('productMessages.addToCart.success.withSeller', [
                 'amount' => 1,
                 'seller' => $seller->slug,
             ]);
         } else {
-            $message = __('productMessages.addToCart.error');
+            $alert->lang('productMessages.addToCart.error')->danger();
         }
 
-        return back()->withInput()->with('message', $message);
+        return back();
     }
 
     /**
      * Метод для добавления товара для сравнения
      * @param CompareProductsService $compareProductsService
      * @param Product $product
+     * @param AlertFlashService $alert
      * @return null
      */
     public function addToCompare(
         CompareProductsService $compareProductsService,
-        Product $product
+        Product $product,
+        AlertFlashService $alert
     ) {
         if ($compareProductsService->add($product)) {
-            $message = __('productMessages.addToCompare.success');
+            $alert->lang('productMessages.addToCompare.success');
         } else {
-            $message = __('productMessages.addToCompare.error');
+            $alert->lang('productMessages.addToCompare.error')->danger();
         }
 
-        return back()->withInput()->with('message', $message);
+        return back();
     }
 }

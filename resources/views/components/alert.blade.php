@@ -1,6 +1,3 @@
-@php
-    session(['alertType' => 'danger', 'message' => 'Тестовое сообщение'])
-@endphp
 @if(session()->has('message'))
     <div class="wrap">
         <div {{ $attributes->class(['custom-alert', 'custom-alert-' . session()->get('alertType', 'success')]) }}>
