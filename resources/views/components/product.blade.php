@@ -73,7 +73,7 @@
                     <div class="Categories-block Categories-block_info">
                         <div class="Categories-info">
                             <strong>
-                                {{ $seller->title }}
+                                <a href="{{ $seller->sellerUrl }}">{{ $seller->title }}</a>
                             </strong>
                         </div>
                     </div>
