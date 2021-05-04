@@ -1,7 +1,7 @@
 {{--Таблица сравнения товаров--}}
 @extends('layouts.layout')
 
-@section('title', 'Сравнение товаров')
+@section('title', __('comparePage.title'))
 
 @section('middle-header-h1', __('navigation.compare'))
 
@@ -9,14 +9,13 @@
     <div class="Section">
         <div class="wrap">
             <article class="Article">
-                <p>Разнообразный и богатый опыт постоянный количественный рост и сфера нашей активности обеспечивает широкому кругу (специалистов) участие в формировании системы обучения кадров, соответствует насущным потребностям. Идейные соображения высшего порядка, а также консультация с широким активом требуют определения и уточнения соответствующий условий активизации.
-                </p>
+                <p>{{ __('comparePage.description') }}</p>
             </article>
             @if ($products->count())
             <div class="Compare">
                 <div class="Compare-header">
                     <label class="toggle Compare-checkDifferent">
-                        <input type="checkbox" name="differentFeature" value="true" checked="checked"/><span class="toggle-box"></span><span class="toggle-text">Только различающиеся характеристики</span>
+                        <input type="checkbox" name="differentFeature" value="true" checked="checked"/><span class="toggle-box"></span><span class="toggle-text">{{ __('comparePage.onlyDiffSpecifications') }}</span>
                     </label>
                 </div>
                 {{-- Заголовки --}}
@@ -45,7 +44,7 @@
                 @endforeach
                 {{-- Цены товаров --}}
                 <div class="Compare-row">
-                    <div class="Compare-title">Цена
+                    <div class="Compare-title">{{ __('comparePage.price') }}
                     </div>
                     <div class="Compare-products">
                         @foreach($products as $product)
@@ -55,7 +54,7 @@
                 </div>
             </div>
             @else
-                <h2>В списке сравнения товаров пока пусто</h2>
+                <h2>{{ __('comparePage.compareListIsEmpty') }}</h2>
             @endif
         </div>
     </div>
