@@ -61,10 +61,6 @@ class AppServiceProvider extends ServiceProvider
             VisitorService::class
         );
 
-        //Передача количества товаров в списке сравнения в хедер
-        view()->composer('layouts.header.cart_block', function($view) {
-            $view->with('compareCount', $this->app->make(CompareProductsService::class)->count());
-        });
     }
 
     /**
