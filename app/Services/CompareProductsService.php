@@ -5,17 +5,18 @@ namespace App\Services;
 
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Collection;
+use App\Repository\CompareProductRepository;
 
 class CompareProductsService
 {
-    private $visitorService;
+    private $compareProductRepository;
 
     /**
-     * @param VisitorService $visitorService
+     * @param CompareProductRepository $compareProductRepository
      */
-    public function __construct(VisitorService $visitorService)
+    public function __construct(CompareProductRepository $compareProductRepository)
     {
-        $this->visitorService = $visitorService;
+        $this->compareProductRepository = $compareProductRepository;
     }
 
     /**
@@ -24,10 +25,8 @@ class CompareProductsService
      */
     public function add(Product $product) : bool
     {
-        $compareProducts = $this->visitorService->get()->compareProducts();
-
-        if (!$compareProducts->get()->contains($product)) {
-            $compareProducts->attach($product);
+        if (!$this->compareProductRepository->contains($product->id)) {
+            $this->compareProductRepository->add($product);
 
             return true;
         }
@@ -41,10 +40,8 @@ class CompareProductsService
      */
     public function remove(Product $product) : bool
     {
-        $compareProducts = $this->visitorService->get()->compareProducts();
-
-        if ($compareProducts->findOrFail($product->id)) {
-            $compareProducts->detach($product);
+        if ($this->compareProductRepository->contains($product->id)) {
+            $this->compareProductRepository->remove($product);
 
             return true;
         }
@@ -59,9 +56,8 @@ class CompareProductsService
     public function getProducts($count = 3) : Collection|Array
     {
         return $this
-            ->visitorService
+            ->compareProductRepository
             ->get()
-            ->compareProducts
             ->load('images')
             ->load('specifications')
             ->take($count);
@@ -73,9 +69,7 @@ class CompareProductsService
     public function count() : int
     {
         return $this
-            ->visitorService
-            ->get()
-            ->compareProducts
+            ->compareProductRepository
             ->count();
     }
 
