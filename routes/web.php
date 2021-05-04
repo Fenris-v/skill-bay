@@ -3,6 +3,7 @@
 use App\Http\Controllers\HistoryProductController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellerController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -71,3 +72,39 @@ Route::get('/account/views', [HistoryProductController::class, 'index'])
                 ->push(__('navigation.history'), route('viewed_history'));
         }
     );
+
+Route::get('/order/personal', [OrderController::class, 'stepPersonal'])
+    ->name('order.personal')
+    ->breadcrumbs(fn (Trail $trail) =>
+    $trail
+        ->parent('index')
+        ->push(__('orderPage.title'), route('order.personal'))
+    )
+;
+
+Route::get('/order/delivery', [OrderController::class, 'stepDelivery'])
+    ->name('order.delivery')
+    ->breadcrumbs(fn (Trail $trail) =>
+    $trail
+        ->parent('index')
+        ->push(__('orderPage.title'), route('order.delivery'))
+    )
+;
+
+Route::get('/order/payment', [OrderController::class, 'stepPayment'])
+    ->name('order.payment')
+    ->breadcrumbs(fn (Trail $trail) =>
+    $trail
+        ->parent('index')
+        ->push(__('orderPage.title'), route('order.payment'))
+    )
+;
+
+Route::get('/order/accept', [OrderController::class, 'stepAccept'])
+    ->name('order.accept')
+    ->breadcrumbs(fn (Trail $trail) =>
+    $trail
+        ->parent('index')
+        ->push(__('orderPage.title'), route('order.accept'))
+    )
+;
