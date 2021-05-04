@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Str;
-use App\Http\Requests\{StoreUserRequest, AuthRequest, ForgotPasswordRequest, ResetPasswordRequest};
+use App\Http\Requests\{RegisterUserRequest, AuthRequest, ForgotPasswordRequest, ResetPasswordRequest};
 
 class UserController extends Controller
 {
