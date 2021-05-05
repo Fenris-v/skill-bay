@@ -1,6 +1,6 @@
 {{--Элемент выпадающего меню--}}
 <div class="CategoriesButton-link"><a href="{{ route('catalog_category', $node->slug) }}">
-        <div class="CategoriesButton-icon"><img src="{{ $node->image->getUrl() }}" alt="{{ $node->image->path }}"/>
+        <div class="CategoriesButton-icon"><img src="{{ $node->image->url() }}" alt="{{ $node->image->path }}"/>
         </div>
         <span class="CategoriesButton-text">{{ $node->name }}</span></a>
         @if($node->children->count())
