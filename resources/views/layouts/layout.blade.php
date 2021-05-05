@@ -41,12 +41,12 @@ p.error-browser
                     <x-wrappers.breadcrumbs />
                 </div>
             </div>
-            <x-notification />
         </div>
+        <x-alert />
         @yield('content')
     </div>
 @else
-    <x-notification />
+    <x-alert />
     @yield('content')
 @endif
 

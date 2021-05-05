@@ -560,6 +560,16 @@
             };
         };
         Pagination().init();
+        var Alert = function () {
+            var $alert = $('.custom-alert');
+            var $closebtn = $('.closebtn');
+            return {
+                init: function () {
+                    $closebtn.on('click', () => $alert.fadeOut());
+                }
+            }
+        };
+        Alert().init();
         var Sort = function () {
             return {
                 init: function () {
