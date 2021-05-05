@@ -39,6 +39,10 @@ Route::get('/catalog/{slug?}', [ProductController::class, 'index'])
     )
 ;
 
+Route::get('/products', fn() => redirect()->route('products.index'))
+    ->name('products')
+;
+
 Route::get('/products/{slug}', [ProductController::class, 'show'])
     ->name('products.show')
     ->breadcrumbs(fn (Trail $trail, $product) =>
