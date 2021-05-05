@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\Pivots\ProductSeller;
 use App\Models\Order;
 use App\Traits\CacheFlushableAfterCRUDModelTrait;
@@ -41,9 +42,9 @@ class Cart extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function order(): BelongsTo
+    public function order(): HasOne
     {
-        return $this->BelongsTo(Order::class);
+        return $this->hasOne(Order::class);
     }
 
     public function getCurrentPriceAttribute(): float

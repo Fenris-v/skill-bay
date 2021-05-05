@@ -14,15 +14,6 @@ class UpdateCartTable extends Migration
     public function up()
     {
         Schema::table('carts', function (Blueprint $table) {
-            $table->unsignedBigInteger('order_id')->nullable();
-            $table
-                ->foreign('order_id')
-                ->references('id')
-                ->on('orders')
-                ->onUpdate('cascade')
-                ->onDelete('cascade')
-            ;
-
             $table->unsignedBigInteger('user_id')->nullable()->change();
             $table->uuid('guest_id')->nullable()->unique();
         });
@@ -36,7 +27,7 @@ class UpdateCartTable extends Migration
     public function down()
     {
         Schema::table('carts', function (Blueprint $table) {
-            $table->dropColumn(['order_id', 'guest_id']);
+            $table->dropColumn(['guest_id']);
             $table->unsignedBigInteger('user_id')->change();
         });
     }

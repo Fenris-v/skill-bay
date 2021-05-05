@@ -7,6 +7,12 @@ use App\Repository\FilterRepository;
 use App\Repository\CatalogRepository;
 use App\Repository\ProductRepository;
 use App\Repository\SellerRepository;
+use App\Models\Product;
+use App\Models\ProductReview;
+use App\Models\Seller;
+use App\Models\Attachment;
+use App\Models\Specification;
+use App\Repository\ConfigRepository;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use App\Services\ProductCartService;
@@ -88,9 +94,9 @@ class ProductController extends Controller
         ProductCartService $productCartService,
         string $slug
     ) {
-        $amount = (int) $request->validate([
+        $amount = (int) current($request->validate([
             'amount' => 'required|integer|min:1',
-        ])['amount'];
+        ]));
 
         if ($productCartService->add(
             $this->productRepository->getProductBySlug($slug),

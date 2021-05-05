@@ -31,6 +31,7 @@ __webpack_require__(/*! slick-carousel */ "./node_modules/slick-carousel/slick/s
 __webpack_require__(/*! ./scripts */ "./resources/js/scripts.js");
 
 /***/ }),
+
 /***/ "./resources/js/scripts.js":
 /*!*********************************!*\
   !*** ./resources/js/scripts.js ***!
@@ -611,6 +612,20 @@ __webpack_require__(/*! ./scripts */ "./resources/js/scripts.js");
 
     Pagination().init();
 
+    var Alert = function Alert() {
+      var $alert = $('.custom-alert');
+      var $closebtn = $('.closebtn');
+      return {
+        init: function init() {
+          $closebtn.on('click', function () {
+            return $alert.fadeOut();
+          });
+        }
+      };
+    };
+
+    Alert().init();
+
     var Sort = function Sort() {
       return {
         init: function init() {}
@@ -740,7 +755,7 @@ __webpack_require__(/*! ./scripts */ "./resources/js/scripts.js");
             e.preventDefault();
             var $inputThis = $(this).siblings($input).filter($input);
             var value = parseFloat($inputThis.val());
-            $inputThis.val(value > 0 ? value - 1 : 0);
+            $inputThis.val(value > 1 ? value - 1 : 1);
           });
           $removeInCart.on('click', function (e) {
             $(this).closest('.form').submit();
@@ -977,6 +992,19 @@ __webpack_require__(/*! ./scripts */ "./resources/js/scripts.js");
   });
 })(jQuery);
 
+/***/ }),
+
+/***/ "./resources/css/admin.sass":
+/*!**********************************!*\
+  !*** ./resources/css/admin.sass ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
 /***/ })
 
 },
@@ -984,7 +1012,7 @@ __webpack_require__(/*! ./scripts */ "./resources/js/scripts.js");
 /******/ "use strict";
 /******/ 
 /******/ var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-/******/ __webpack_require__.O(0, ["/assets/js/vendor"], () => (__webpack_exec__("./resources/js/app.js")));
+/******/ __webpack_require__.O(0, ["assets/css/admin","/assets/js/vendor"], () => (__webpack_exec__("./resources/js/app.js"), __webpack_exec__("./resources/css/admin.sass")));
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);

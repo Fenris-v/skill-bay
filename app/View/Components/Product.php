@@ -30,6 +30,10 @@ class Product extends Component
                 'products.addToCartWithSeller',
                 ['productSlug' => $product->slug, 'sellerSlug' => $seller->slug]
             );
+            $seller->sellerUrl = route(
+                'sellers',
+                ['seller' => $seller->slug]
+            );
             return $seller;
         });
     }

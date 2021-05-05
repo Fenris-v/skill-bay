@@ -17,5 +17,6 @@ mix.js('resources/js/app.js', 'public/assets/js')
         'resources/css/basic.css',
         'resources/css/extra.css',
     ], 'public/assets/css/app.css')
+    .sass('resources/css/admin.sass', 'public/assets/css')
     .extract()
     .version();

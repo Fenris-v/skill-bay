@@ -51,33 +51,6 @@ class ProductRepository
     /**
      * Возвращает товар по его slug.
      *
-     * @param  string  $productSlug
-     * @param string $sellerSlug
-     * @return Seller
-     */
-    public function getSellerOfProductBySlug(
-        string $productSlug,
-        string $sellerSlug
-    ): Seller {
-        return Cache::tags([
-            ConfigRepository::GLOBAL_CACHE_TAG,
-            Product::class,
-            Seller::class,
-        ])->remember(
-            'product|' . $productSlug . '|seller|' . $sellerSlug,
-            $this->ttl,
-            fn() => Seller
-                ::where('slug', $sellerSlug)
-                ->with([
-                    'products' => fn($query) => $query->where('slug', $productSlug)
-                ])
-                ->firstOrFail()
-        );
-    }
-
-    /**
-     * Возвращает товар по его slug.
-     *
      * @param Cart $cart
      * @param  string  $slug
      * @return Product

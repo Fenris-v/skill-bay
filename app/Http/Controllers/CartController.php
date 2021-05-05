@@ -6,19 +6,25 @@ use App\Repository\SellerRepository;
 use Illuminate\Http\Request;
 use App\Services\ProductCartService;
 use App\Repository\ProductRepository;
+use App\Services\AlertFlashService;
 
 class CartController extends Controller
 {
     public function __construct(
         protected ProductCartService $productCartService,
-        protected ProductRepository $productRepository
+        protected ProductRepository $productRepository,
+        protected AlertFlashService $alert
     ) {
         //
     }
 
     protected function getResultIndex(bool $result)
     {
-        return $result ? 'success' : 'result';
+        if (!$result) {
+            $this->alert->danger();
+        }
+
+        return $result ? 'success' : 'error';
     }
 
     public function show() {
@@ -32,10 +38,13 @@ class CartController extends Controller
     ) {
         $result = $this->productCartService->remove($this->productRepository->getProductBySlug($slug));
 
-        return back()
-            ->withInput()
-            ->with('message', __('cartMessages.productRemove.' . $this->getResultIndex($result)))
-        ;
+        $this->alert->lang('cartMessages.productRemove.' .  $this->getResultIndex($result));
+
+        if ($result) {
+            $this->alert->warning();
+        }
+
+        return back();
     }
 
     public function changeProductAmount(
@@ -48,10 +57,9 @@ class CartController extends Controller
 
         $result = $this->productCartService->changeAmount($this->productRepository->getProductBySlug($slug), $amount);
 
-        return back()
-            ->withInput()
-            ->with('message', __('cartMessages.changeProductAmount.' . $this->getResultIndex($result)))
-        ;
+        $this->alert->lang('cartMessages.changeProductAmount.' . $this->getResultIndex($result));
+
+        return back();
     }
 
     public function changeProductSeller(
@@ -69,9 +77,8 @@ class CartController extends Controller
             $sellerRepository->getSellerBySlugFromProduct($product, $sellerSlug)
         );
 
-        return back()
-            ->withInput()
-            ->with('message', __('cartMessages.changeProductSeller.' . $this->getResultIndex($result)))
-        ;
+        $this->alert->lang('cartMessages.changeProductSeller.' . $this->getResultIndex($result));
+
+        return back();
     }
 }

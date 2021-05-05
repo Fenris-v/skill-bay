@@ -4,8 +4,8 @@
             <a class="Cart-pict" href="{{ $productLink }}">
                 <img
                     class="Cart-img"
-                    src="{{ $product->images->first()?->getUrl() }}"
-                    alt="{{ $product->images?->first() }}"
+                    src="{{ $product->image->url }}"
+                    alt="{{ $product->image->url }}"
                 />
             </a>
         </div>

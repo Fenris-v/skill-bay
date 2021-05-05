@@ -64,7 +64,7 @@ class CartRepository
      */
     public function getGuestCart(string $guest_id): Cart
     {
-        return Cache::tags([
+        $cart = Cache::tags([
             ConfigRepository::GLOBAL_CACHE_TAG,
             Cart::class,
         ])->remember(
@@ -75,6 +75,9 @@ class CartRepository
                 ->doesntHave('order')
                 ->firstOrNew()
         );
+        $cart->guest_id = $guest_id;
+
+        return $cart;
     }
 
     /**
@@ -96,15 +99,15 @@ class CartRepository
                 'amount' => $item->pivot->amount,
             ]
         ];
-        $userCart->guest_id = $guestCart->guest_id;
         $mergedCartProducts = $userCart->products->mapWithKeys($prepareCollection);
-
         foreach ($guestCart->products->mapWithKeys($prepareCollection) as $productKey => $guestCartProduct) {
             $mergedCartProducts[$productKey] = $guestCartProduct;
         }
+        $userCart->products()->sync($mergedCartProducts->toArray());
 
-        $userCart->products()->sync($mergedCartProducts);
-        $guestCart->forceDelete();
+        if ($guestCart->id) {
+            $guestCart->forceDelete();
+        }
         Cache::tags([Cart::class])->flush();
 
         return $userCart;
@@ -129,7 +132,6 @@ class CartRepository
                 $this->getUserCart(auth()->user())
             );
         } else {
-            $guestCart->guest_id = session('guest_id');
             $guestCart->save();
             return $guestCart;
         }

@@ -33,10 +33,21 @@ return [
         'fields' => [
             'per_page' => 'Количество объектов на странице',
             'cache_lifetime' => 'Время жизни кэша',
-
-            // TODO: delete next examples
-            'stroka-naprimer' => 'Строка, например',
-            'a-vot-i-cekboks' => 'А вот и чекбокс',
+            'history_size' => 'Количество просмотренных',
+            'phone' => 'Телефон',
+            'country' => 'Страна',
+            'region' => 'Область',
+            'city' => 'Город',
+            'address' => 'Адрес',
+            'email' => 'Email',
+            'facebook' => 'Facebook',
+            'twitter' => 'Twitter',
+            'linkedin' => 'Linkedin',
+            'about_us' => 'О нас',
+            'store_history' => 'Наша история'
+        ],
+        'contacts' => [
+            'title' => 'Контактные данные'
         ]
     ],
     'product' => [
@@ -85,9 +96,11 @@ return [
             'title_edit' => 'Редактирование ":title"',
             'success_create' => 'Вы успешно создали баннер ":title"',
             'success_edit' => 'Вы успешно изменили баннер ":title"',
+            'success_delete' => 'Вы успешно удалили баннер ":title"',
             'buttons' => [
                 'create' => 'Создать баннер',
                 'edit' => 'Редактировать баннер',
+                'remove' => 'Удалить баннер',
             ],
             'labels' => [
                 'title' => 'Название',
@@ -117,4 +130,13 @@ return [
             ],
         ],
     ],
+    'callback' => [
+        'title' => 'Обратная связь',
+        'name' => 'Имя',
+        'email' => 'Email',
+        'created_at' => 'Отправлено',
+        'message' => 'Сообщение',
+        'show' => 'Заявка'
+    ],
+    'back' => 'Назад'
 ];
