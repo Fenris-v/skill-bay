@@ -6,7 +6,6 @@ use Orchid\Platform\Dashboard;
 use Orchid\Platform\ItemMenu;
 use Orchid\Platform\ItemPermission;
 use Orchid\Platform\OrchidServiceProvider;
-use Orchid\Support\Color;
 
 class PlatformProvider extends OrchidServiceProvider
 {
@@ -30,6 +29,10 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('settings')
                 ->route('platform.edit.config'),
 
+            ItemMenu::label(__('admin.config.contacts.title'))
+                ->icon('notebook')
+                ->route('platform.edit.contacts'),
+
             ItemMenu::label(__('admin.product.products'))
                 ->title(__('admin.lists'))
                 ->icon('list')
@@ -42,6 +45,10 @@ class PlatformProvider extends OrchidServiceProvider
             ItemMenu::label(__('admin.order.orders'))
                 ->icon('list')
                 ->route('platform.order.list'),
+
+            ItemMenu::label(__('admin.callback.title'))
+                ->icon('list')
+                ->route('platform.callback.list'),
         ];
     }
 

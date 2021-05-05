@@ -33,7 +33,21 @@ return [
         'fields' => [
             'per_page' => 'Количество объектов на странице',
             'cache_lifetime' => 'Время жизни кэша',
-            'history_size' => 'Количество просмотренных'
+            'history_size' => 'Количество просмотренных',
+            'phone' => 'Телефон',
+            'country' => 'Страна',
+            'region' => 'Область',
+            'city' => 'Город',
+            'address' => 'Адрес',
+            'email' => 'Email',
+            'facebook' => 'Facebook',
+            'twitter' => 'Twitter',
+            'linkedin' => 'Linkedin',
+            'about_us' => 'О нас',
+            'store_history' => 'Наша история'
+        ],
+        'contacts' => [
+            'title' => 'Контактные данные'
         ]
     ],
     'product' => [
@@ -116,4 +130,13 @@ return [
             ],
         ],
     ],
+    'callback' => [
+        'title' => 'Обратная связь',
+        'name' => 'Имя',
+        'email' => 'Email',
+        'created_at' => 'Отправлено',
+        'message' => 'Сообщение',
+        'show' => 'Заявка'
+    ],
+    'back' => 'Назад'
 ];
