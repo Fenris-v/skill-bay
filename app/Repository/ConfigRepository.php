@@ -3,8 +3,8 @@
 namespace App\Repository;
 
 use App\Models\Admin\Config;
-use Illuminate\Support\Collection;
 use Cache;
+use Illuminate\Support\Collection;
 
 class ConfigRepository
 {
@@ -30,12 +30,127 @@ class ConfigRepository
     /**
      * Выбирает из коллекции конкретную настройку и возвращает ее значение
      * @param string $slug
-     * @param mixed $default
+     * @param mixed|null $default
      * @return mixed
      */
-    public function getValueBySlug(string $slug, $default = null)
+    public function getValueBySlug(string $slug, mixed $default = null): mixed
     {
         return $this->all()->where('slug', $slug)->first()->value ?? $default;
+    }
+
+    /**
+     * Алиас, возвращающий facebook
+     * @param string|null $default
+     * @return string|null
+     */
+    public function getFacebook(?string $default = null): ?string
+    {
+        return $this->getValueBySlug('facebook', $default);
+    }
+
+    /**
+     * Алиас, возвращающий linkedin
+     * @param string|null $default
+     * @return string|null
+     */
+    public function getLinkedin(?string $default = null): ?string
+    {
+        return $this->getValueBySlug('linkedin', $default);
+    }
+
+    /**
+     * Алиас, возвращающий twitter
+     * @param string|null $default
+     * @return string|null
+     */
+    public function getTwitter(?string $default = null): ?string
+    {
+        return $this->getValueBySlug('twitter', $default);
+    }
+
+    /**
+     * Алиас, возвращающий телефон
+     * @param string|null $default
+     * @return string|null
+     */
+    public function getPhone(?string $default = null): ?string
+    {
+        return $this->getValueBySlug('phone', $default);
+    }
+
+    /**
+     * Алиас, возвращающий email
+     * @param string|null $default
+     * @return string|null
+     */
+    public function getEmail(?string $default = null): ?string
+    {
+        return $this->getValueBySlug('email', $default);
+    }
+
+    /**
+     * Алиас, возвращающий страну
+     * @param string|null $default
+     * @return string|null
+     */
+    public function getCountry(?string $default = null): ?string
+    {
+        return $this->getValueBySlug('country', $default);
+    }
+
+    /**
+     * Алиас, возвращающий страну
+     * @param string|null $default
+     * @return string|null
+     */
+    public function getRegion(?string $default = null): ?string
+    {
+        return $this->getValueBySlug('region', $default);
+    }
+
+    /**
+     * Алиас, возвращающий страну
+     * @param string|null $default
+     * @return string|null
+     */
+    public function getCity(?string $default = null): ?string
+    {
+        return $this->getValueBySlug('city', $default);
+    }
+
+    /**
+     * Алиас, возвращающий страну
+     * @param string|null $default
+     * @return string|null
+     */
+    public function getAddress(?string $default = null): ?string
+    {
+        return $this->getValueBySlug('address', $default);
+    }
+
+    /**
+     * Алиас, возвращающий полный адрес
+     * @param string|null $default
+     * @return string|null
+     */
+    public function getFullAddress(?string $default = null): ?string
+    {
+        $address = [
+            $this->getCountry() ?? null,
+            $this->getRegion() ?? null,
+            $this->getCity() ?? null,
+            $this->getAddress() ?? null,
+        ];
+
+        $address = array_filter($address, function ($var) {
+            return $var;
+        });
+
+        if (empty($address)) {
+            return $default;
+        }
+
+        return implode(', ', $address);
     }
 
     /**

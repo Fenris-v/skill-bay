@@ -2544,3 +2544,11 @@ button.link {
 .wrap-content {
   margin: 0 auto;
 }
+
+.danger {
+  color: darkred;
+}
+
+.green {
+  color: green;
+}

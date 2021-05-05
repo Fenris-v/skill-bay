@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HistoryProductController;
+use App\Http\Controllers\InfoPageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellerController;
 use Illuminate\Support\Facades\Route;
@@ -69,5 +70,25 @@ Route::get('/account/views', [HistoryProductController::class, 'index'])
         function (Trail $trail) {
             $trail->parent('index')
                 ->push(__('navigation.history'), route('viewed_history'));
+        }
+    );
+
+Route::get('/contacts', [InfoPageController::class, 'contacts'])
+    ->name('contacts')
+    ->breadcrumbs(
+        function (Trail $trail) {
+            $trail->parent('index')
+                ->push(__('navigation.contacts'), route('contacts'));
+        }
+    );
+
+Route::post('contacts', [InfoPageController::class, 'store']);
+
+Route::get('/about', [InfoPageController::class, 'about'])
+    ->name('about')
+    ->breadcrumbs(
+        function (Trail $trail) {
+            $trail->parent('index')
+                ->push(__('navigation.about'), route('about'));
         }
     );
