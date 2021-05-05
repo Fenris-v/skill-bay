@@ -29,7 +29,6 @@ class CatalogRepository
      */
     public function getPaginateProducts(array $params, ?Category $category): Paginator
     {
-        return $this->getProducts($params, $category->id ?? null);
         return Cache::tags(
             [ConfigRepository::GLOBAL_CACHE_TAG, Product::PRODUCT_CACHE_TAGS]
         )->remember(
