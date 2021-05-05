@@ -7,25 +7,23 @@ use Illuminate\Database\Eloquent\Model;
 use Orchid\Screen\Field;
 use Orchid\Screen\Fields\CheckBox;
 use Orchid\Screen\Fields\Input;
+use Orchid\Screen\Fields\Quill;
 
 trait Fieldable
 {
     /**
      * Метод для создания поля
      * @param Model $model
-     * @return CheckBox|Input
+     * @return Field
      */
     private function makeField(Model $model): Field
     {
-        switch ($model->type_id) {
-            case Config::INT_TYPE:
-                return $this->makeInput($model, 'number');
-            case Config::CHECKBOX_TYPE:
-                return $this->makeCheckbox($model);
-            case Config::STRING_TYPE:
-            default:
-                return $this->makeInput($model, 'string');
-        }
+        return match ($model->type_id) {
+            Config::INT_TYPE => $this->makeInput($model, 'number'),
+            Config::CHECKBOX_TYPE => $this->makeCheckbox($model),
+            Config::WYSIWYG_TYPE => $this->makeWysiwyg($model),
+            default => $this->makeInput($model, 'string'),
+        };
     }
 
     /**
@@ -39,6 +37,19 @@ trait Fieldable
         return Input::make($model->slug)
             ->title(__("admin.config.fields.{$model->slug}"))
             ->type($type)
+            ->value($model->value)
+            ->placeholder(__("admin.config.fields.{$model->slug}"));
+    }
+
+    /**
+     * Метод для создания поля ввода
+     * @param Model $model
+     * @return Quill
+     */
+    private function makeWysiwyg(Model $model): Quill
+    {
+        return Quill::make($model->slug)
+            ->title(__("admin.config.fields.{$model->slug}"))
             ->value($model->value)
             ->placeholder(__("admin.config.fields.{$model->slug}"));
     }

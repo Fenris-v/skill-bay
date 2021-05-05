@@ -32,7 +32,7 @@ class Banner extends Model
      */
     public function image()
     {
-        return $this->belongsTo(Image::class);
+        return $this->belongsTo(Attachment::class);
     }
 
     /**
