@@ -2,77 +2,54 @@
 
 namespace App\Services;
 
-use App\Models\Product;
-use Illuminate\Database\Eloquent\Collection;
 use App\Contracts\ProductViewHistoryService as ProductViewHistoryServiceContract;
+use App\Models\Product;
+use App\Models\User;
+use App\Repository\ProductViewHistoryRepository;
+use Illuminate\Support\Collection;
 
 /**
  * Класс-сервис, который отвечает за историю просмотров товаров.
- *
- * @author Roman Sarvarov <roman.sarvarov@gmail.com>
  */
 class ProductViewHistoryService implements ProductViewHistoryServiceContract
 {
+    public function __construct(
+        public ProductViewHistoryRepository $history,
+        protected ?User $user
+    ) {
+    }
+
     /**
      * Добавление товара в список просмотренных товаров.
      *
-     * @param  Product  $product
+     * @param Product $product
      * @return bool
      */
-    public function add(Product $product)
+    public function add(Product $product): bool
     {
-        // @todo Реализовать метод
+        if (!$this->user) {
+            return false;
+        }
 
-        return true;
-    }
-
-    /**
-     * Удаление товара из списка просмотренных товаров.
-     *
-     * @param  Product  $product
-     * @return bool
-     */
-    public function remove(Product $product)
-    {
-        // @todo Реализовать метод
-
-        return true;
-    }
-
-    /**
-     * Возвращает булево значение факта просмотра товара.
-     *
-     * @param  Product  $product
-     * @return bool
-     */
-    public function has(Product $product)
-    {
-        // @todo Реализовать метод
-
-        return true;
+        return $this->history->add($product->id, $this->user->id);
     }
 
     /**
      * Возвращает коллекцию просмотренных товаров.
      *
-     * @return  Collection|Product[]
+     * @return  Collection
      */
-    public function get()
+    public function get(): Collection
     {
-        // @todo Реализовать метод
-
-        return Product::factory()->count(5)->make();
+        return $this->history->get($this->user->id);
     }
 
     /**
      * Возвращает количество просмотренных товаров.
-     *
      * @return  int
      */
-    public function count()
+    public function count(): int
     {
-        // @todo Реализовать метод
-
-        return $this->get()->count();
+        return $this->history->count($this->user->id);
     }
 }

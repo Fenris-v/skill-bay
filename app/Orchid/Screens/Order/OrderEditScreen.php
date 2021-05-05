@@ -4,7 +4,7 @@ namespace App\Orchid\Screens\Order;
 
 use Alert;
 use App\Models\Order;
-use App\Models\Image;
+use App\Models\Attachment;
 use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Input;

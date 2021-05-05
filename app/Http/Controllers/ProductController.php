@@ -10,7 +10,7 @@ use App\Repository\CatalogRepository;
 use App\Models\Product;
 use App\Models\ProductReview;
 use App\Models\Seller;
-use App\Models\Image;
+use App\Models\Attachment;
 use App\Models\Specification;
 use App\Repository\ConfigRepository;
 use Illuminate\Contracts\Foundation\Application;
@@ -67,7 +67,8 @@ class ProductController extends Controller
     /**
      * Метод для отображения карточки товара
      * @param ConfigRepository $configs
-     * @param string $slug
+     * @param ProductViewHistoryService $productViewHistoryService
+     * @param string|null $slug
      * @return View
      */
     public function show(
@@ -80,7 +81,7 @@ class ProductController extends Controller
                 ConfigRepository::GLOBAL_CACHE_TAG,
                 Product::class,
                 Seller::class,
-                Image::class,
+                Attachment::class,
                 Specification::class,
                 ProductReview::class,
             ]
@@ -142,9 +143,9 @@ class ProductController extends Controller
 
     /**
      * Метод для добавления товара в корзину
-     * @param  Request  $request
-     * @param  ProductCartService  $productCartService
-     * @param  Product  $product
+     * @param Request $request
+     * @param ProductCartService $productCartService
+     * @param Product $product
      * @return null
      */
     public function addToCart(
@@ -169,9 +170,10 @@ class ProductController extends Controller
 
         return back()->withInput()->with('message', $message);
     }
+
     /**
      * Метод для добавления товара в корзину с указанием продавца
-     * @param ConfigRepository $configs
+     * @param ProductCartService $productCartService
      * @param Product $product
      * @param Seller $seller
      * @return null
@@ -199,8 +201,7 @@ class ProductController extends Controller
 
     /**
      * Метод для добавления товара для сравнения
-     * @param Request $request
-     * @param ConfigRepository $configs
+     * @param CompareProductsService $compareProductsService
      * @param Product $product
      * @return null
      */

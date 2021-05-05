@@ -104,20 +104,25 @@ class Product extends Model
     }
 
     /**
+     * @return BelongsToMany
+     */
+    public function images()
+    {
+        return $this->belongsToMany(
+            Attachment::class,
+            'image_product',
+            null,
+            'image_id'
+        );
+    }
+
+    /**
      * Связь с главной картинкой.
      *
      * @return BelongsTo
      */
     public function image(): BelongsTo
     {
-        return $this->belongsTo(Image::class, 'main_image_id');
-    }
-
-    /**
-     * @return BelongsToMany
-     */
-    public function images()
-    {
-        return $this->belongsToMany(Image::class);
+        return $this->belongsTo(Attachment::class, 'main_image_id');
     }
 }
