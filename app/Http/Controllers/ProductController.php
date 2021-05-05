@@ -106,7 +106,7 @@ class ProductController extends Controller
         Product $product
     ) {
         $amount = current($request->validate([
-            'amount' => 'required|integer',
+            'amount' => 'required|integer|min:1',
         ]));
 
         if ($productCartService->add(
