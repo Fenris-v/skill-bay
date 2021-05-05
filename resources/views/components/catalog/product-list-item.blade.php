@@ -1,6 +1,6 @@
 <div class="Card">
     <a class="Card-picture" href="{{ route('products.show', $product) }}">
-        <img src="{{ $product->image->getUrl() }}" alt="card.jpg"/>
+        <img src="{{ $product->image->url() }}" alt="card.jpg"/>
     </a>
     <div class="Card-content">
         <strong class="Card-title">

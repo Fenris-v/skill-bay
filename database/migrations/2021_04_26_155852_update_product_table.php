@@ -18,7 +18,7 @@ class UpdateProductTable extends Migration
 
             $table->foreign('main_image_id')
                 ->references('id')
-                ->on('images');
+                ->on('attachments');
         });
     }
 

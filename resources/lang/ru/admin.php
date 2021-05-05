@@ -82,9 +82,11 @@ return [
             'title_edit' => 'Редактирование ":title"',
             'success_create' => 'Вы успешно создали баннер ":title"',
             'success_edit' => 'Вы успешно изменили баннер ":title"',
+            'success_delete' => 'Вы успешно удалили баннер ":title"',
             'buttons' => [
                 'create' => 'Создать баннер',
                 'edit' => 'Редактировать баннер',
+                'remove' => 'Удалить баннер',
             ],
             'labels' => [
                 'title' => 'Название',

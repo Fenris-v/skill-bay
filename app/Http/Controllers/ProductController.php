@@ -8,7 +8,7 @@ use App\Repository\CatalogRepository;
 use App\Models\Product;
 use App\Models\ProductReview;
 use App\Models\Seller;
-use App\Models\Image;
+use App\Models\Attachment;
 use App\Models\Specification;
 use App\Repository\ConfigRepository;
 use Illuminate\Contracts\View\View;
@@ -76,7 +76,7 @@ class ProductController extends Controller
                 ConfigRepository::GLOBAL_CACHE_TAG,
                 Product::class,
                 Seller::class,
-                Image::class,
+                Attachment::class,
                 Specification::class,
                 ProductReview::class,
             ]
