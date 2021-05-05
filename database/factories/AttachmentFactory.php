@@ -36,6 +36,10 @@ class AttachmentFactory extends Factory
 
         $folderPath = storage_path("app/public/$year/$month/$day/");
 
+        if (! is_dir($folderPath)) {
+            mkdir($folderPath);
+        }
+
         $image = $this->faker->image(
             $folderPath, 735, 434, null, false
         );
