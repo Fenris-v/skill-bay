@@ -7,10 +7,10 @@
                         {{ $discount }}%
                     </div>
                 @endif
-                <img src="{{ $product->images->first()?->url() }}" alt=""/>
+                <img src="{{ $product->image->url() }}" alt=""/>
             </div>
             <div class="ProductCard-picts">
-                @foreach($product->images as $key => $image)
+                @foreach($product->allImages as $key => $image)
                     <a class="ProductCard-pict ProductCard-pict{{ !$key ? '_ACTIVE' : '' }}" href="{{ $image->url() }}">
                         <img src="{{ $image->url() }}" alt=""/>
                     </a>
