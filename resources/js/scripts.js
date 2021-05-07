@@ -687,7 +687,7 @@
             return {
                 init: function () {
                     $next.add($navigate.find('.menu-link')).on('click', function (e) {
-                        e.preventDefault();
+                        //e.preventDefault();
                         var $this = $(this),
                             href = $this.attr('href'),
                             error = false,

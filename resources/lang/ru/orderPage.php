@@ -15,19 +15,15 @@ return [
     ],
     'formElements' => [
         'personal' => [
-            'fullName' => 'ФИО',
-            'phone' => 'Телефон',
-            'email' => 'E-mail',
-            'password' => 'Пароль',
-            'confirmPassword' => 'Подтверждение пароля',
+            'fullName' => ['label' => 'ФИО', 'placeholder' => 'Ваше ФИО'],
+            'phone' => ['label' => 'Телефон', 'placeholder' => '+70000000000'],
+            'email' => ['label' => 'E-mail', 'placeholder' => 'client@example.com'],
+            'password' => ['label' => 'Пароль', 'placeholder' => 'Тут можно изменить пароль'],
+            'confirmPassword' => ['label' => 'Подтверждение пароля', 'placeholder' => 'Введите пароль повторно'],
         ],
         'delivery' => [
-            'city' => 'Город',
-            'address' => 'Адрес',
-            'type' => 'Тип доставки'
-        ],
-        'payment' => [
-            'type' => 'Оплата'
+            'city' => ['label' => 'Город', 'placeholder' => 'Город доставки'],
+            'address' => ['label' => 'Адрес', 'placeholder' => 'Адрес доставки'],
         ],
     ],
     'buttons' => [

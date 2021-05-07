@@ -14,7 +14,7 @@
                 <x-order.progress :completed-steps="$completedSteps"/>
             </div>
             <div class="Section-content">
-                <x-order.personal />
+                <x-dynamic-component component="{{ $component }}" />
             </div>
         </div>
     </div>

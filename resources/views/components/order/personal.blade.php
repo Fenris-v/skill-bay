@@ -5,32 +5,44 @@
     <x-wrappers.form>
         <div class="row">
             <div class="row-block">
-                <div class="form-group">
-                    <label class="form-label" for="name">ФИО</label>
-                    <input class="form-input" id="name" name="name" type="text" value="Иванов Иван Иванович" placeholder="Ваше ФИО"/>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="phone">Телефон</label>
-                    <input class="form-input" id="phone" name="phone" type="text" value="+70000000000" placeholder="+70000000000"/>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="mail">E-mail</label>
-                    <input class="form-input" id="mail" name="mail" type="text" value="" data-validate="require" placeholder="client@example.com"/>
-                </div>
+                <x-form-elements.element-input
+                    label="{{ __('orderPage.formElements.personal.fullName.label') }}"
+                    name="name"
+                    placeholder="{{ __('orderPage.formElements.personal.fullName.placeholder') }}"
+                />
+                <x-form-elements.element-input
+                    label="{{ __('orderPage.formElements.personal.phone.label') }}"
+                    name="phone"
+                    placeholder="{{ __('orderPage.formElements.personal.phone.placeholder') }}"
+                />
+                <x-form-elements.element-input
+                    label="{{ __('orderPage.formElements.personal.email.label') }}"
+                    name="mail"
+                    placeholder="{{ __('orderPage.formElements.personal.email.placeholder') }}"
+                />
             </div>
             <div class="row-block">
+                <x-form-elements.element-input
+                    label="{{ __('orderPage.formElements.personal.password.label') }}"
+                    name="password"
+                    placeholder="{{ __('orderPage.formElements.personal.password.placeholder') }}"
+                />
+                <x-form-elements.element-input
+                    label="{{ __('orderPage.formElements.personal.confirmPassword.label') }}"
+                    name="passwordReply"
+                    placeholder="{{ __('orderPage.formElements.personal.confirmPassword.placeholder') }}"
+                />
                 <div class="form-group">
-                    <label class="form-label" for="password">Пароль</label>
-                    <input class="form-input" id="password" name="password" type="password" placeholder="Тут можно изменить пароль"/>
+                    <a class="btn btn_muted Order-btnReg" href="#">
+                        {{ __('orderPage.buttons.login') }}
+                    </a>
                 </div>
-                <div class="form-group">
-                    <label class="form-label" for="passwordReply">Подтверждение пароля</label>
-                    <input class="form-input" id="passwordReply" name="passwordReply" type="password" placeholder="Введите пароль повторно"/>
-                </div>
-                <div class="form-group"><a class="btn btn_muted Order-btnReg" href="#">Я уже зарегистрирован</a></div>
             </div>
         </div>
-        <div class="Order-footer"><a class="btn btn_success" href="/order/delivery">Дальше</a>
+        <div class="Order-footer">
+            <a class="btn btn_success" href="/order/delivery">
+                {{ __('orderPage.buttons.next') }}
+            </a>
         </div>
     </x-wrappers.form>
 </div>
