@@ -5,7 +5,7 @@
             name="{{ $name }}"
             title="{{ $item['title'] }}"
             value="{{ $item['value'] }}"
-            checked="{{ $item['checked'] }}"
+            checked="{{ old($name) ? ($item['value'] === old($name)) : $item['checked'] }}"
         />
     @endforeach
 </x-form-elements.form-group>

@@ -11,5 +11,6 @@ return [
     'seller' => 'О продавце',
     'product' => 'О товаре',
     'history' => 'История просмотра',
-    'navigation' => 'Навигация'
+    'navigation' => 'Навигация',
+    'about' => 'О нас'
 ];

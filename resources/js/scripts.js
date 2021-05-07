@@ -560,6 +560,16 @@
             };
         };
         Pagination().init();
+        var Alert = function () {
+            var $alert = $('.custom-alert');
+            var $closebtn = $('.closebtn');
+            return {
+                init: function () {
+                    $closebtn.on('click', () => $alert.fadeOut());
+                }
+            }
+        };
+        Alert().init();
         var Sort = function () {
             return {
                 init: function () {
@@ -674,7 +684,7 @@
                         e.preventDefault();
                         var $inputThis = $(this).siblings($input).filter($input);
                         var value = parseFloat($inputThis.val());
-                        $inputThis.val(value > 0 ? value - 1 : 0);
+                        $inputThis.val(value > 1 ? value - 1 : 1);
                     });
                 }
             };

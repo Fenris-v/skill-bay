@@ -14,7 +14,13 @@
                 <x-order.progress :completed-steps="$completedSteps"/>
             </div>
             <div class="Section-content">
-                <x-dynamic-component component="{{ $component }}" />
+                <form class="form" action="{{ url()->current() }}" method="post">
+                    @csrf
+                    @if(auth()->check())
+                        @method('patch')
+                    @endif
+                    <x-dynamic-component :component="$component" />
+                </form>
             </div>
         </div>
     </div>

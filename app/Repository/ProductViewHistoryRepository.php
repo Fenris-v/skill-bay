@@ -9,10 +9,10 @@ class ProductViewHistoryRepository
 {
     public int $historySize;
 
-    public function __construct(public ConfigRepository $configs)
-    {
-        $this->historySize = $this->configs->getHistorySize();
-    }
+//    public function __construct(public ConfigRepository $configs)
+//    {
+//        $this->historySize = $this->configs->getHistorySize();
+//    }
 
     /**
      * Добавление товара в список просмотренных товаров.

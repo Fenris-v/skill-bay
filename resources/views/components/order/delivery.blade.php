@@ -12,10 +12,9 @@
             name="name"
             placeholder="{{ __('orderPage.formElements.delivery.city.placeholder') }}"
         />
-        <x-form-elements.element-input
+        <x-form-elements.element-textarea
             label="{{ __('orderPage.formElements.delivery.address.label') }}"
             name="name"
-            placeholder="{{ __('orderPage.formElements.delivery.address.placeholder') }}"
         />
         <div class="Order-footer">
             <a class="btn btn_success" href="/order/payment">

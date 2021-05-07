@@ -18,7 +18,7 @@
             @if($banner->image)
                 <div class="row-block">
                     <div class="Slider-img">
-                        <img src="{{ $banner->image->getUrl() }}" />
+                        <img src="{{ $banner->image->url() }}" />
                     </div>
                 </div>
             @endif

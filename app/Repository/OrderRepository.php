@@ -7,11 +7,6 @@ use App\Repository\ConfigRepository;
 use Cache;
 use Illuminate\Database\Eloquent\Builder;
 
-/**
- * Class ProductRepository
- *
- * @author Roman Sarvarov <roman.sarvarov@gmail.com>
- */
 class OrderRepository
 {
     private ConfigRepository $configRepository;

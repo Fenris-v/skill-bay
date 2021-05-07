@@ -19,7 +19,7 @@
 
                 <div class="form-group">
                     <input class="form-input form-input_full" id="title" name="filter[title]"
-                           type="text" value="{{ request()->get('title') }}"
+                           type="text" value="{{ request()->get('filter')['title'] ?? '' }}"
                            placeholder="{{ __('catalog.search') }}"/>
                 </div>
                 <div class="form-group">

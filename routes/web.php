@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HistoryProductController;
+use App\Http\Controllers\InfoPageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\OrderController;
@@ -39,6 +40,10 @@ Route::get('/catalog/{slug?}', [ProductController::class, 'index'])
     )
 ;
 
+Route::get('/products', fn() => redirect()->route('products.index'))
+    ->name('products')
+;
+
 Route::get('/products/{slug}', [ProductController::class, 'show'])
     ->name('products.show')
     ->breadcrumbs(fn (Trail $trail, $product) =>
@@ -74,16 +79,32 @@ Route::get('/account/views', [HistoryProductController::class, 'index'])
     );
 
 Route::get('/order/personal', [OrderController::class, 'stepPersonal'])
-    ->name('order.personal')
+    ->name('order.personal.get')
     ->breadcrumbs(fn (Trail $trail) =>
     $trail
         ->parent('index')
-        ->push(__('orderPage.title'), route('order.personal'))
+        ->push(__('orderPage.title'), route('order.personal.get'))
+    )
+;
+Route::post('/order/personal', [OrderController::class, 'stepPersonalStore'])
+    ->name('order.personal.store')
+    ->breadcrumbs(fn (Trail $trail) =>
+    $trail
+        ->parent('index')
+        ->push(__('orderPage.title'), route('order.personal.store'))
+    )
+;
+Route::patch('/order/personal', [OrderController::class, 'stepPersonalUpdate'])
+    ->name('order.personal.update')
+    ->breadcrumbs(fn (Trail $trail) =>
+    $trail
+        ->parent('index')
+        ->push(__('orderPage.title'), route('order.personal.update'))
     )
 ;
 
 Route::get('/order/delivery', [OrderController::class, 'stepDelivery'])
-    ->name('order.delivery')
+    ->name('order.delivery.get')
     ->breadcrumbs(fn (Trail $trail) =>
     $trail
         ->parent('index')
@@ -92,7 +113,7 @@ Route::get('/order/delivery', [OrderController::class, 'stepDelivery'])
 ;
 
 Route::get('/order/payment', [OrderController::class, 'stepPayment'])
-    ->name('order.payment')
+    ->name('order.payment.get')
     ->breadcrumbs(fn (Trail $trail) =>
     $trail
         ->parent('index')
@@ -101,10 +122,29 @@ Route::get('/order/payment', [OrderController::class, 'stepPayment'])
 ;
 
 Route::get('/order/accept', [OrderController::class, 'stepAccept'])
-    ->name('order.accept')
+    ->name('order.accept.get')
     ->breadcrumbs(fn (Trail $trail) =>
     $trail
         ->parent('index')
         ->push(__('orderPage.title'), route('order.accept'))
     )
 ;
+Route::get('/contacts', [InfoPageController::class, 'contacts'])
+    ->name('contacts')
+    ->breadcrumbs(
+        function (Trail $trail) {
+            $trail->parent('index')
+                ->push(__('navigation.contacts'), route('contacts'));
+        }
+    );
+
+Route::post('contacts', [InfoPageController::class, 'store']);
+
+Route::get('/about', [InfoPageController::class, 'about'])
+    ->name('about')
+    ->breadcrumbs(
+        function (Trail $trail) {
+            $trail->parent('index')
+                ->push(__('navigation.about'), route('about'));
+        }
+    );

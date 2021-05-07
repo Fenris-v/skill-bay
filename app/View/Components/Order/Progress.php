@@ -13,22 +13,22 @@ class Progress extends Component
         $this->steps = [
             [
                 'title' => __('orderPage.steps.personal'),
-                'url' => route('order.personal'),
+                'url' => route('order.personal.get'),
                 'isCompleted' => in_array('personal', $completedSteps),
             ],
             [
                 'title' => __('orderPage.steps.delivery'),
-                'url' => route('order.delivery'),
+                'url' => route('order.delivery.get'),
                 'isCompleted' => in_array('delivery', $completedSteps),
             ],
             [
                 'title' => __('orderPage.steps.payment'),
-                'url' => route('order.payment'),
+                'url' => route('order.payment.get'),
                 'isCompleted' => in_array('payment', $completedSteps),
             ],
             [
                 'title' => __('orderPage.steps.accept'),
-                'url' => route('order.accept'),
+                'url' => route('order.accept.get'),
                 'isCompleted' => in_array('accept', $completedSteps),
             ],
         ];
