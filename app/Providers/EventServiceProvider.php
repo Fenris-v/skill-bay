@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Models\Banner;
+use App\Models\Category;
 use App\Models\Product;
 use App\Observers\BannerObserver;
+use App\Observers\CategoryObserver;
 use App\Observers\ProductObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -33,5 +35,6 @@ class EventServiceProvider extends ServiceProvider
     {
         Banner::observe(BannerObserver::class);
         Product::observe(ProductObserver::class);
+        Category::observe(CategoryObserver::class);
     }
 }
