@@ -152,6 +152,37 @@ class ProductController extends Controller
     }
 
     /**
+     * Метод для отображения страницы со списком товаров
+     * @param CompareProductsService $compareProductsService
+     * @return null
+     */
+    public function compare(
+        CompareProductsService $compareProductsService,
+    ) {
+        $products = $compareProductsService->getProducts();
+
+        //Выбор типов спецификаций
+        $commonSpecTitles = $products
+            ->map(function($product) {
+                return $product->specifications;
+            })
+            ->collapse()
+            ->pluck('title')
+            ->duplicates()
+            ->unique();
+
+        //Выбор спецификаций сгруппированных по типу
+        $allCommonSpecifications = $products
+            ->map(function ($product) use ($commonSpecTitles) {
+                return $product->specifications->whereIn('title', $commonSpecTitles);
+            })
+            ->collapse()
+            ->groupBy('title');
+
+        return view('pages.catalog.compare', compact(['products', 'allCommonSpecifications']));
+    }
+
+    /**
      * Метод для добавления товара для сравнения
      * @param CompareProductsService $compareProductsService
      * @param Product $product
@@ -165,6 +196,25 @@ class ProductController extends Controller
             $message = __('productMessages.addToCompare.success');
         } else {
             $message = __('productMessages.addToCompare.error');
+        }
+
+        return back()->withInput()->with('message', $message);
+    }
+
+    /**
+     * Метод для удаление товара из списка сравнения
+     * @param CompareProductsService $compareProductsService
+     * @param Product $product
+     * @return null
+     */
+    public function removeFromCompare(
+        CompareProductsService $compareProductsService,
+        Product $product
+    ) {
+        if ($compareProductsService->remove($product)) {
+            $message = __('productMessages.removeFromCompare.success');
+        } else {
+            $message = __('productMessages.removeFromCompare.error');
         }
 
         return back()->withInput()->with('message', $message);

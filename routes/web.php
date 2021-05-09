@@ -3,6 +3,7 @@
 use App\Http\Controllers\HistoryProductController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellerController;
+use App\Http\Controllers\CompareProductController;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -56,12 +57,23 @@ Route::get('/sellers/{seller}', [SellerController::class, 'show'])
     )
 ;
 
+Route::get('/compare', [ProductController::class, 'compare'])
+    ->name('compare')
+    ->breadcrumbs(fn (Trail $trail) =>
+    $trail
+        ->parent('index')
+        ->push(__('navigation.compare'), route('compare'))
+    )
+;
+
 Route::post('/product/{product}/add-to-cart', [ProductController::class, 'addToCart'])
     ->name('products.addToCart');
 Route::post('/product/{product}/seller/{seller}/add-to-cart', [ProductController::class, 'addToCartWithSeller'])
     ->name('products.addToCartWithSeller');
 Route::post('/product/{product}/add-to-compare', [ProductController::class, 'addToCompare'])
     ->name('products.addToCompare');
+Route::post('/product/{product}/remove-from-compare', [ProductController::class, 'removeFromCompare'])
+    ->name('products.removeFromCompare');
 
 Route::get('/account/views', [HistoryProductController::class, 'index'])
     ->name('viewed_history')
