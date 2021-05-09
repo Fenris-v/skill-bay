@@ -3,12 +3,20 @@
 namespace App\Orchid\Screens\Order;
 
 use Alert;
+use App\Models\Cart;
+use App\Models\DeliveryType;
 use App\Models\Order;
 use App\Models\Attachment;
+use App\Models\PaymentType;
+use App\Models\User;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
+use Orchid\Screen\Fields\Relation;
 use Orchid\Screen\Fields\Select;
+use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
 
@@ -22,11 +30,6 @@ class OrderEditScreen extends Screen
     public $name = 'admin.order.edit.title';
 
     /**
-     * @var bool
-     */
-    public $exists = false;
-
-    /**
      * Query data.
      *
      * @param  Order  $order
@@ -34,7 +37,10 @@ class OrderEditScreen extends Screen
      */
     public function query(Order $order): array
     {
-        $this->exists = $order->exists;
+        $this->name = __(
+            'admin.order.edit.title',
+            ['id' => $order->id]
+        );
 
         return compact('order');
     }
@@ -56,13 +62,35 @@ class OrderEditScreen extends Screen
     /**
      * Views.
      *
-     * @return \Orchid\Screen\Layout[]|string[]
+     * @throws BindingResolutionException
+     * @return array
      */
     public function layout(): array
     {
         return [
             Layout::rows([
-                // @todo
+                Relation::make('order.user_id')
+                    ->required()
+                    ->title(__('admin.order.edit.labels.user'))
+                    ->fromModel(User::class, 'name'),
+                Relation::make('order.delivery_type_id')
+                    ->required()
+                    ->title(__('admin.order.edit.labels.delivery_type'))
+                    ->fromModel(DeliveryType::class, 'name'),
+                Relation::make('order.payment_type_id')
+                    ->required()
+                    ->title(__('admin.order.edit.labels.payment_type'))
+                    ->fromModel(PaymentType::class, 'name'),
+                Input::make('order.city')
+                    ->required()
+                    ->title(__('admin.order.edit.labels.city')),
+                TextArea::make('order.address')
+                    ->required()
+                    ->title(__('admin.order.edit.labels.address')),
+                Relation::make('order.cart_id')
+                    ->required()
+                    ->title(__('admin.order.edit.labels.cart'))
+                    ->fromModel(Cart::class, 'id'),
             ]),
         ];
     }
