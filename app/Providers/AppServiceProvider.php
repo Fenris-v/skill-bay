@@ -15,6 +15,8 @@ use App\Services\VisitorService;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use App\Contracts\AlertFlashService as AlertFlashServiceContract;
+use App\Services\AlertFlashService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -61,6 +63,11 @@ class AppServiceProvider extends ServiceProvider
             VisitorService::class
         );
 
+        // Сервис для работы с flash-сообщениями для отображения сервисных alert сообщений.
+        $this->app->singleton(
+            AlertFlashServiceContract::class,
+            AlertFlashService::class
+        );
     }
 
     /**

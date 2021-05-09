@@ -4,9 +4,10 @@ namespace App\Orchid\Screens\Banner;
 
 use Alert;
 use App\Models\Banner;
-use App\Models\Image;
+use App\Models\Attachment;
 use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Fields\Cropper;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Screen;
@@ -63,6 +64,11 @@ class BannerEditScreen extends Screen
                 ->icon('note')
                 ->method('createOrUpdate')
                 ->canSee($this->exists),
+
+            Button::make(__('admin.banner.edit.buttons.remove'))
+                ->icon('trash')
+                ->method('remove')
+                ->canSee($this->exists),
         ];
     }
 
@@ -82,10 +88,11 @@ class BannerEditScreen extends Screen
                     ->title(__('admin.banner.edit.labels.description')),
                 Input::make('banner.url')
                     ->title(__('admin.banner.edit.labels.url')),
-                Select::make('banner.image_id')
-                    ->required()
-                    ->fromModel(Image::class, 'path', 'id')
-                    ->title(__('admin.banner.edit.labels.image')),
+                Cropper::make('banner.image_id')
+                    ->targetId()
+                    ->title(__('admin.banner.edit.labels.image'))
+                    ->width(735)
+                    ->height(434),
             ]),
         ];
     }
@@ -106,6 +113,24 @@ class BannerEditScreen extends Screen
                     : 'admin.banner.edit.success_edit',
                 ['title' => $banner->title]
             )
+        );
+
+        return redirect()->route('platform.banner.list');
+    }
+
+    /**
+     * @param Banner $banner
+     *
+     * @throws \Exception
+     *@return \Illuminate\Http\RedirectResponse
+     */
+    public function remove(Banner $banner)
+    {
+        $banner->delete();
+
+        Alert::info(
+            __('admin.banner.edit.success_delete',
+                ['title' => $banner->title])
         );
 
         return redirect()->route('platform.banner.list');

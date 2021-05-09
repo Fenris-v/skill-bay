@@ -8,6 +8,7 @@ use App\Traits\Models\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Orchid\Screen\AsSource;
 
@@ -71,7 +72,7 @@ class Product extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
     public function sellers()
     {
@@ -79,21 +80,32 @@ class Product extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
     public function specifications()
     {
         return $this->belongsToMany(Specification::class)->withPivot('value');
     }
 
+    /**
+     * @return float
+     */
     public function getCurrentPriceAttribute(): float
     {
         return $this->averagePrice - $this->discount * $this->averagePrice / 100;
     }
 
+    /**
+     * @return BelongsToMany
+     */
     public function images()
     {
-        return $this->belongsToMany(Image::class);
+        return $this->belongsToMany(
+            Attachment::class,
+            'image_product',
+            null,
+            'image_id'
+        );
     }
 
     /**
@@ -102,7 +114,7 @@ class Product extends Model
      */
     public function image(): BelongsTo
     {
-        return $this->belongsTo(Image::class, 'main_image_id');
+        return $this->belongsTo(Attachment::class, 'main_image_id');
     }
 
     /**
@@ -111,5 +123,10 @@ class Product extends Model
     public function reviews()
     {
         return $this->hasMany(ProductReview::class);
+    }
+
+    public function getAllImagesAttribute()
+    {
+        return collect([$this->image])->merge($this->images);
     }
 }

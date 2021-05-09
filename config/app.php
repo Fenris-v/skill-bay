@@ -186,6 +186,7 @@ return [
         App\Providers\Repositories\CatalogServiceProvider::class,
         App\Providers\Repositories\FilterServiceProvider::class,
         App\Providers\Repositories\ProductViewHistoryProvider::class,
+        App\Providers\Repositories\CallbackServiceProvider::class,
     ],
 
     /*

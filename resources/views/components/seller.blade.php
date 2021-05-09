@@ -14,7 +14,7 @@
     <x-wrappers.row class="row_verticalCenter row_maxHalf">
         <x-wrappers.row-block>
             <div class="pict">
-                <img src="{{ $seller->image->getUrl() }}" alt="{{ $seller->image->path }}"/>
+                <img src="{{ $seller->image->url() }}" alt="{{ $seller->image->path }}"/>
             </div>
         </x-wrappers.row-block>
         <x-wrappers.row-block>

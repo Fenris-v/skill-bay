@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Banner;
-use App\Models\Image;
+use App\Models\Attachment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class BannerFactory extends Factory
@@ -27,7 +27,7 @@ class BannerFactory extends Factory
             'description' => $this->faker->sentence(10),
             'url' => '/#',
             'is_active' => 1,
-            'image_id' => Image::factory(),
+            'image_id' => Attachment::factory(),
         ];
     }
 }

@@ -13,7 +13,7 @@
             <a class="menu-link" href="sale.html">{{ __('navigation.discounts') }}</a>
         </li>
         <li class="menu-item">
-            <a class="menu-link" href="contacts.html">{{ __('navigation.contacts') }}</a>
+            <a class="menu-link" href="{{ route('contacts') }}">{{ __('navigation.contacts') }}</a>
         </li>
     </ul>
 </div>
