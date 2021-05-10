@@ -88,19 +88,6 @@ Route::get('/order/personal', [OrderController::class, 'stepPersonal'])
 ;
 Route::post('/order/personal', [OrderController::class, 'stepPersonalStore'])
     ->name('order.personal.store')
-    ->breadcrumbs(fn (Trail $trail) =>
-    $trail
-        ->parent('index')
-        ->push(__('orderPage.title'), route('order.personal.store'))
-    )
-;
-Route::patch('/order/personal', [OrderController::class, 'stepPersonalUpdate'])
-    ->name('order.personal.update')
-    ->breadcrumbs(fn (Trail $trail) =>
-    $trail
-        ->parent('index')
-        ->push(__('orderPage.title'), route('order.personal.update'))
-    )
 ;
 
 Route::get('/order/delivery', [OrderController::class, 'stepDelivery'])
@@ -108,8 +95,11 @@ Route::get('/order/delivery', [OrderController::class, 'stepDelivery'])
     ->breadcrumbs(fn (Trail $trail) =>
     $trail
         ->parent('index')
-        ->push(__('orderPage.title'), route('order.delivery'))
+        ->push(__('orderPage.title'), route('order.personal.get'))
     )
+;
+Route::post('/order/delivery', [OrderController::class, 'stepDeliveryStore'])
+    ->name('order.delivery.store')
 ;
 
 Route::get('/order/payment', [OrderController::class, 'stepPayment'])
@@ -117,8 +107,11 @@ Route::get('/order/payment', [OrderController::class, 'stepPayment'])
     ->breadcrumbs(fn (Trail $trail) =>
     $trail
         ->parent('index')
-        ->push(__('orderPage.title'), route('order.payment'))
+        ->push(__('orderPage.title'), route('order.payment.get'))
     )
+;
+Route::post('/order/payment', [OrderController::class, 'stepPaymentStore'])
+    ->name('order.payment.store')
 ;
 
 Route::get('/order/accept', [OrderController::class, 'stepAccept'])
@@ -126,9 +119,10 @@ Route::get('/order/accept', [OrderController::class, 'stepAccept'])
     ->breadcrumbs(fn (Trail $trail) =>
     $trail
         ->parent('index')
-        ->push(__('orderPage.title'), route('order.accept'))
+        ->push(__('orderPage.title'), route('order.personal.get'))
     )
 ;
+
 Route::get('/contacts', [InfoPageController::class, 'contacts'])
     ->name('contacts')
     ->breadcrumbs(

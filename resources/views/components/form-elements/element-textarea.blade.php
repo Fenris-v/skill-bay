@@ -7,7 +7,5 @@
         class="form-textarea"
         name="{{ $name }}"
         id="{{ $name }}"
-    >
-        {{ $value }}
-    </textarea>
+    >{{ old($name) ?? $value ?? null }}</textarea>
 </x-form-elements.form-group>

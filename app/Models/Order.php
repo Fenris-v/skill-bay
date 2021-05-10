@@ -12,6 +12,11 @@ class Order extends Model
     use HasFactory,
         SoftDeletes;
 
+    protected $fillable = [
+        'city',
+        'address',
+    ];
+
     /**
      * @return BelongsTo
      */

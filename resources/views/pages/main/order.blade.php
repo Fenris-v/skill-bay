@@ -16,10 +16,10 @@
             <div class="Section-content">
                 <form class="form" action="{{ url()->current() }}" method="post">
                     @csrf
-                    @if(auth()->check())
-                        @method('patch')
-                    @endif
-                    <x-dynamic-component :component="$component" />
+                    <x-dynamic-component
+                        :component="$component"
+                        :user="auth()->user()"
+                    />
                 </form>
             </div>
         </div>

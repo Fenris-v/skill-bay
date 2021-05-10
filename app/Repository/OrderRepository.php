@@ -2,10 +2,13 @@
 
 namespace App\Repository;
 
+use App\Models\DeliveryType;
 use App\Models\Order;
+use App\Models\PaymentType;
 use App\Repository\ConfigRepository;
 use Cache;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Validator;
 
 class OrderRepository
 {
@@ -19,6 +22,23 @@ class OrderRepository
     }
 
     /**
+     * Осуществляет валидацию пользовательского ввода
+     *
+     * @param array $values
+     * @param array $rules
+     * @return bool
+     */
+    protected function validate(array $values, array $rules)
+    {
+        Validator::make(
+            $values,
+            $rules
+        )
+            ->validate()
+        ;
+    }
+
+    /**
      * Возвращает текущий (неоформленный) заказ.
      *
      * @return Order
@@ -26,8 +46,8 @@ class OrderRepository
     public function getCurrentOrder()
     {
         $user = auth()->user();
-        if ($user) {
-            return new Order;
+        if (!$user) {
+            return Order::make();
         }
 
         return Cache::tags([
@@ -42,7 +62,45 @@ class OrderRepository
                     fn(Builder $query) => $query->where('id', $user->id)
                 )
                 ->whereDoesntHave('cart')
-                ->first()
+                ->firstOrNew()
         );
+    }
+
+    /**
+     * Сохраняет данные доставки.
+     *
+     * @param array $input
+     * @return Order
+     */
+    public function saveDeliveryStep(array $input): Order
+    {
+        $this->validate($input, [
+            'city' => 'required|min:3|max:255',
+            'address' => 'required|min:3|max:255',
+            'delivery' => 'required|numeric',
+        ]);
+        $order = $this->getCurrentOrder();
+        $order->deliveryType()->associate(DeliveryType::where('id', $input['delivery'])->firstOrFail());
+        $order->update(collect($input)->only(['city', 'address'])->toArray());
+
+        return $order;
+    }
+
+    /**
+     * Возвращает данные оплаты.
+     *
+     * @param array $input
+     * @return Order
+     */
+    public function savePaymentStep(array $input): Order
+    {
+        $this->validate($input, [
+            'payment' => 'required|numeric',
+        ]);
+        $order = $this->getCurrentOrder();
+        $order->paymentType()->associate(PaymentType::where('id', $input['payment'])->firstOrFail());
+        $order->save();
+
+        return $order;
     }
 }

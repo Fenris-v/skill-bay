@@ -1,11 +1,19 @@
 @props(['name', 'items' => []])
-<x-form-elements.form-group>
+<x-form-elements.form-group name="{{ $name }}">
     @foreach($items as $item)
+        @if($item['checked'])
         <x-form-elements.toggle
             name="{{ $name }}"
             title="{{ $item['title'] }}"
             value="{{ $item['value'] }}"
-            checked="{{ old($name) ? ($item['value'] === old($name)) : $item['checked'] }}"
+            checked="checked"
         />
+        @else
+        <x-form-elements.toggle
+            name="{{ $name }}"
+            title="{{ $item['title'] }}"
+            value="{{ $item['value'] }}"
+        />
+        @endif
     @endforeach
 </x-form-elements.form-group>

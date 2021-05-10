@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Models\User;
 use App\Repository\ConfigRepository;
 use Cache;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
@@ -23,13 +24,13 @@ class UserRepository
      * Осуществляет валидацию пользовательского ввода
      *
      * @param array $values
-     * @return bool
+     * @param array $rules
      */
-    protected function validate(array $values)
+    protected function validate(array $values, array $rules)
     {
         Validator::make(
             $values,
-            $this->getRules(array_keys($values)),
+            $rules,
             $messages = [
                 'unique' => __('orderPage.errors.userAlreadyExists'),
             ]
@@ -39,37 +40,23 @@ class UserRepository
     }
 
     /**
-     * Возвращает правила валидации
-     *
-     * @param array $needField
-     * @return array
-     */
-    protected function getRules(array $needField): array
-    {
-        return collect([
-            'name' => 'required|min:3|max:255',
-            'email' => 'required|email|unique:App\Models\User,email',
-            'password' => 'required|confirmed',
-            'phone' => ['required', 'regex:/^\+7 \([0-9]{3}\) - [0-9]{3} - [0-9]{2} - [0-9]{2}$/']
-        ])
-            ->reduceWithKeys(
-                fn($rules, $rule, $field) => in_array($field, $needField) ? array_merge($rules, [$field => $rule]) : $rules,
-                []
-            )
-        ;
-    }
-
-    /**
      * Возвращает сведения о том, существует ли пользователь с переданным email.
      *
      * @param array $input
-     * @return bool
+     * @return User
      */
-    public function store(array $input): bool
+    public function store(array $input): User
     {
-        $this->validate($input);
-        $user = User::create(collect($input)->except(['password_confirmation'])->toArray());
-        dd($user);
+        $this->validate($input, [
+            'name' => 'required|min:3|max:255',
+            'email' => 'required|email|unique:App\Models\User,email',
+            'password' => 'required|confirmed',
+            'phone' => ['required', 'regex:/^\+7 \(\d{3}\) \d{3} - \d{2} - \d{2}$/']
+        ]);
+        $user = User::create(collect($input)->only(['name', 'phone', 'email', 'password'])->toArray());
+        Auth::login($user);
+
+        return $user;
     }
 
 }

@@ -3,20 +3,22 @@
 namespace App\View\Components\Order;
 
 use App\Models\PaymentType;
+use App\Repository\OrderRepository;
 use Illuminate\View\Component;
 
 class Payment extends Component
 {
     public array $payments;
 
-    public function __construct()
+    public function __construct(OrderRepository $orderRepository)
     {
+        $order = $orderRepository->getCurrentOrder();
         $this->payments = PaymentType
             ::all()
             ->map(fn($item) => [
                 'title' => $item->name,
                 'value' => $item->id,
-                'checked' => true,
+                'checked' => $order->paymentType?->id === $item->id,
             ])
             ->toArray()
         ;
