@@ -88,6 +88,14 @@ class Product extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function reviews()
+    {
+        return $this->hasMany(ProductReview::class)->latest();
+    }
+
+    /**
      * @return float
      */
     public function getCurrentPriceAttribute(): float
@@ -109,7 +117,8 @@ class Product extends Model
     }
 
     /**
-     * Связь с главной картинкой
+     * Связь с главной картинкой.
+     *
      * @return BelongsTo
      */
     public function image(): BelongsTo
@@ -118,13 +127,8 @@ class Product extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Support\Collection
      */
-    public function reviews()
-    {
-        return $this->hasMany(ProductReview::class);
-    }
-
     public function getAllImagesAttribute()
     {
         return collect([$this->image])->merge($this->images);

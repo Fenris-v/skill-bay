@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\ProductReviewService;
+use App\Http\Requests\ProductReviewStoreRequest;
 use App\Models\Category;
 use App\Repository\FilterRepository;
 use App\Repository\CatalogRepository;
@@ -11,7 +13,10 @@ use App\Models\Seller;
 use App\Models\Attachment;
 use App\Models\Specification;
 use App\Repository\ConfigRepository;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use App\Services\ProductCartService;
@@ -91,6 +96,49 @@ class ProductController extends Controller
         $productViewHistoryService->add($product);
 
         return view('pages.main.product', compact('product'));
+    }
+
+    /**
+     * Сохранение отзыва.
+     *
+     * @param  ProductReviewStoreRequest  $request
+     * @param  Product  $product
+     * @param  ProductReviewService  $productReviewService
+     * @return RedirectResponse
+     */
+    public function storeReview(
+        ProductReviewStoreRequest $request,
+        Product $product,
+        ProductReviewService $productReviewService
+    ) {
+        $name = $request->get('name');
+        $email = $request->get('email');
+        $comment = $request->get('comment');
+
+        $productReviewService->addReview(
+            $product, $name, $email, $comment
+        );
+
+        return back()->withInput();
+    }
+
+    /**
+     * Возвращает HTML отзывов по товару.
+     *
+     * @param  Product  $product
+     * @param  ProductReviewService  $productReviewService
+     * @return Application|Factory|View
+     */
+    public function reviews(
+        Product $product,
+        ProductReviewService $productReviewService
+    ) {
+        $reviews = $productReviewService->getReviewListPaginator($product);
+
+        return view(
+            'components.product.product-review-list',
+            compact('reviews')
+        );
     }
 
     /**

@@ -818,9 +818,8 @@
                         }
 
                     });
-                    $tabs.each(function () {
-                        $(this).find($tabsLink).eq(0).trigger('click');
-                    });
+
+                  $tabsLink.filter('.Tabs-link_ACTIVE').trigger('click');
                 }
             };
         };
@@ -903,6 +902,40 @@
 //END
 
 
+        var ProductReviews = function () {
+            return {
+                init: function () {
+                    $('#reviewsLoadMore').on('click', function () {
+                        const
+                          currentPage = +$('[data-reviews-page]').attr('data-reviews-page'),
+                          lastPage = +$('[data-reviews-lastpage]').attr('data-reviews-lastpage'),
+                          nextPage = currentPage + 1,
+                          loadUrl = $(this).data('load-url') + `?page=${nextPage}`,
+                          originalText = $(this).text();
+
+                        $(this).text('Идет загрузка...');
+                        $(this).addClass('reviewsLoading');
+
+                        $.get(loadUrl, (data) => {
+                            if (!data) {
+                                $(this).remove();
+                                return;
+                            }
+
+                            $('.Comments-list').append(data);
+                            $(this).text(originalText);
+                            $(this).removeClass('reviewsLoading');
+                            $('[data-reviews-page]').attr('data-reviews-page', nextPage);
+
+                            if (lastPage === nextPage) {
+                                $(this).remove();
+                            }
+                        });
+                    });
+                }
+            };
+        };
+        ProductReviews().init();
     });
 
 

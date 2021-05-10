@@ -10,6 +10,11 @@ class ProductReview extends Model
     use HasFactory;
 
     /**
+     * @var string[]
+     */
+    protected $fillable = ['name', 'email', 'comment'];
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function product()
