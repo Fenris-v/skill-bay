@@ -13,6 +13,8 @@ use App\Orchid\Screens\Order\OrderListScreen;
 use App\Orchid\Screens\PlatformScreen;
 use App\Orchid\Screens\Product\ProductEditScreen;
 use App\Orchid\Screens\Product\ProductListScreen;
+use App\Orchid\Screens\ProductReview\ProductReviewEditScreen;
+use App\Orchid\Screens\ProductReview\ProductReviewListScreen;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
@@ -129,6 +131,16 @@ Route::screen('products/{product}', ProductEditScreen::class)
 
 Route::screen('products', ProductListScreen::class)
     ->name('platform.product.list');
+
+// Отзывы к товарам.
+Route::screen('product-reviews/create', ProductReviewEditScreen::class)
+    ->name('platform.product-review.create');
+
+Route::screen('product-reviews/{productReview}', ProductReviewEditScreen::class)
+    ->name('platform.product-review.edit');
+
+Route::screen('product-reviews', ProductReviewListScreen::class)
+    ->name('platform.product-review.list');
 
 // Баннеры.
 Route::screen('banners/create', BannerEditScreen::class)
