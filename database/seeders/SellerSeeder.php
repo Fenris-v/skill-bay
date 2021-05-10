@@ -6,9 +6,12 @@ use Illuminate\Database\Seeder;
 use App\Models\Seller;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
+use Database\Seeders\Traits\ReplicateAttachmentWithoutGenerateImageTrait;
 
 class SellerSeeder extends Seeder
 {
+    use ReplicateAttachmentWithoutGenerateImageTrait;
+
     /**
      * Run the database seeds.
      *
@@ -17,7 +20,9 @@ class SellerSeeder extends Seeder
     public function run()
     {
         $products = Product::select('id')->get();
-        Seller::factory()
+        Seller::factory([
+            'image_id' => $this->getRandomAttachmentId(),
+        ])
             ->count($products->count())
             ->create()
             ->each(
