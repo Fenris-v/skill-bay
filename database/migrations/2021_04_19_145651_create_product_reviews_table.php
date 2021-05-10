@@ -15,6 +15,9 @@ class CreateProductReviewsTable extends Migration
     {
         Schema::create('product_reviews', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->comment('Имя автора');
+            $table->string('email')->comment('Email автора');
+            $table->text('comment')->comment('Тело отзыва');
             $table->foreignId('product_id')->constrained();
             $table->timestamps();
             $table->softDeletes();

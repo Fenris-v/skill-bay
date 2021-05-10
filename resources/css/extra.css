@@ -2146,6 +2146,10 @@ a.Cart-title {
   letter-spacing: 1.1px;
   display: block;
 }
+.Comments-loadMore {
+  text-align: center;
+  margin-top: 15px;
+}
 .Comment-date {
   color: #8f959f;
   font-size: 13px;
@@ -2188,6 +2192,11 @@ a.Cart-title {
   position: absolute;
   right: 24px;
   top: 21px;
+}
+
+.reviewsLoading {
+  opacity: .5;
+  pointer-events: none;
 }
 
 .Contacts {

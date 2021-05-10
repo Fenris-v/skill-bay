@@ -78,6 +78,38 @@ return [
             ],
         ],
     ],
+    'product-review' => [
+        'product-reviews' => 'Отзывы к товарам',
+        'list' => [
+            'title' => 'Список отзывов к товарам',
+            'description' => 'Просмотр и управление отзывами',
+            'table' => [
+                'id' => 'ID',
+                'comment' => 'Отзыв',
+            ],
+            'buttons' => [
+                'add' => 'Добавить отзыв',
+            ],
+        ],
+        'edit' => [
+            'title_create' => 'Создание отзыва',
+            'title_edit' => 'Редактирование отзыва',
+            'success_create' => 'Вы успешно создали отзыв к товару ":product"',
+            'success_edit' => 'Вы успешно изменили отзыв к товару ":product"',
+            'success_delete' => 'Вы успешно удалили отзыв к товару ":product"',
+            'buttons' => [
+                'create' => 'Создать отзыв',
+                'edit' => 'Редактировать отзыв',
+                'remove' => 'Удалить отзыв',
+            ],
+            'labels' => [
+                'name' => 'Автор',
+                'email' => 'Email',
+                'comment' => 'Отзыв',
+            ],
+            'select_product' => 'Выберите товар',
+        ],
+    ],
     'banner' => [
         'banners' => 'Баннеры',
         'list' => [

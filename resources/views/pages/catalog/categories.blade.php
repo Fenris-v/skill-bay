@@ -13,7 +13,7 @@
                                          :specifications-values="$specificationsValues" :min-max-price="$minMaxPrice"/>
 
                 <div class="Section-content">
-                    <x-catalog.sort sort-props="popularity,price,feedbacks,newer"/>
+                    <x-catalog.sort sort-props="popularity,price,reviews,newer"/>
 
                     <x-catalog.product-list :products="$products"/>
 

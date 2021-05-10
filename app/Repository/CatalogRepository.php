@@ -11,14 +11,11 @@ use Illuminate\Support\Facades\Cache;
 
 class CatalogRepository
 {
-    public int $perPage;
     public ?string $sortBy;
     public ?string $sortType;
 
-    public function __construct(
-        public ConfigRepository $configs
-    ) {
-        $this->perPage = $this->configs->getPerPage();
+    public function __construct(public ConfigRepository $configs)
+    {
     }
 
     /**
@@ -64,9 +61,10 @@ class CatalogRepository
 
         $sortBy = $params['sort']['by'] ?? 'rating_sort';
         $sortType = $params['sort']['type'] ?? 'asc';
+
         $this->sort($query, $sortBy, $sortType);
 
-        return $query->paginate($this->perPage);
+        return $query->paginate($this->configs->getPerPage());
     }
 
     /**
@@ -227,7 +225,7 @@ class CatalogRepository
         match ($sortBy) {
             'popularity' => $query, // TODO: сделать, когда появятся популярные товары
             'price' => $query->orderBy('average_price', $sortType),
-            'feedbacks' => $query, // TODO: сделать, когда появятся отзывы
+            'reviews' => $query->withCount('reviews')->orderBy('reviews_count', $sortType),
             'newer' => $query->orderBy('created_at', $sortType),
             default => $query->orderBy('rating_sort', $sortType),
         };
@@ -249,7 +247,7 @@ class CatalogRepository
 
         $cacheKey .= serialize($params);
 
-        $cacheKey .= '_' . $this->perPage;
+        $cacheKey .= '_' . $this->configs->getPerPage();
 
         return $cacheKey;
     }

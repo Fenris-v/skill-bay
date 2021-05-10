@@ -7,11 +7,8 @@ use Illuminate\Support\Collection;
 
 class ProductViewHistoryRepository
 {
-    public int $historySize;
-
     public function __construct(public ConfigRepository $configs)
     {
-        $this->historySize = $this->configs->getHistorySize();
     }
 
     /**
@@ -35,8 +32,10 @@ class ProductViewHistoryRepository
 
         $count = $this->count($userId);
 
-        if ($count > $this->historySize) {
-            $this->remove($count - $this->historySize, $userId);
+        $historySize = $this->configs->getHistorySize();
+
+        if ($count > $historySize) {
+            $this->remove($count - $historySize, $userId);
         }
 
         return $added->exists();
