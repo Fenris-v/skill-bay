@@ -11,14 +11,11 @@ use Illuminate\Support\Facades\Cache;
 
 class CatalogRepository
 {
-    public int $perPage;
     public ?string $sortBy;
     public ?string $sortType;
 
-    public function __construct(
-        public ConfigRepository $configs
-    ) {
-        $this->perPage = $this->configs->getPerPage();
+    public function __construct(public ConfigRepository $configs)
+    {
     }
 
     /**
@@ -66,7 +63,7 @@ class CatalogRepository
         $sortType = $params['sort']['type'] ?? 'asc';
         $this->sort($query, $sortBy, $sortType);
 
-        return $query->paginate($this->perPage);
+        return $query->paginate($this->configs->getPerPage());
     }
 
     /**
@@ -249,7 +246,7 @@ class CatalogRepository
 
         $cacheKey .= serialize($params);
 
-        $cacheKey .= '_' . $this->perPage;
+        $cacheKey .= '_' . $this->configs->getPerPage();
 
         return $cacheKey;
     }
