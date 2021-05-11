@@ -15,7 +15,7 @@ class UpdateSellerTable extends Migration
     {
         Schema::table('sellers', function (Blueprint $table) {
             $table->unsignedBigInteger('image_id');
-            $table->foreign('image_id')->references('id')->on('images')->onUpdate('cascade');
+            $table->foreign('image_id')->references('id')->on('attachments')->onUpdate('cascade');
         });
     }
 

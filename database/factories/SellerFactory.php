@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Seller;
-use App\Models\Image;
+use App\Models\Attachment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -30,7 +30,7 @@ class SellerFactory extends Factory
             'phone' => $this->faker->phoneNumber,
             'email' => $this->faker->unique()->email,
             'address' => $this->faker->streetAddress,
-            'image_id' => Image::factory(),
+            'image_id' => Attachment::factory(),
         ];
     }
 }

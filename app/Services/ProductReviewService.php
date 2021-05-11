@@ -4,8 +4,9 @@ namespace App\Services;
 
 use App\Models\Product;
 use App\Models\ProductReview;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use App\Contracts\ProductReviewService as ProductReviewServiceContract;
+use Illuminate\Database\Eloquent\Model;
 
 class ProductReviewService implements ProductReviewServiceContract
 {
@@ -13,27 +14,33 @@ class ProductReviewService implements ProductReviewServiceContract
      * Добавить отзыв к товару.
      *
      * @param  Product  $product
-     * @param  string  $review
-     * @return ProductReview
+     * @param  string  $name
+     * @param  string  $email
+     * @param  string  $comment
+     * @return ProductReview|Model
      */
-    public function addReview(Product $product, string $review)
-    {
-        // @todo Реализовать метод
-
-        return new ProductReview();
+    public function addReview(
+        Product $product,
+        string $name,
+        string $email,
+        string $comment
+    ) {
+        return $product->reviews()->create(
+            compact('name', 'email', 'comment')
+        );
     }
 
     /**
      * Возвращает список отзывов к товару.
      *
      * @param  Product  $product
-     * @return Collection|ProductReview[]
+     * @return LengthAwarePaginator
      */
-    public function getReviews(Product $product)
+    public function getReviewListPaginator(Product $product)
     {
-        // @todo Реализовать метод
-
-        return $product->reviews;
+        return $product->reviews()->paginate(
+            config('product.reviews_per_page')
+        );
     }
 
     /**
@@ -44,6 +51,6 @@ class ProductReviewService implements ProductReviewServiceContract
      */
     public function getReviewCount(Product $product)
     {
-        return $this->getReviews($product)->count();
+        return $product->reviews()->count();
     }
 }

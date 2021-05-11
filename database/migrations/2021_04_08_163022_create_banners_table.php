@@ -18,7 +18,7 @@ class CreateBannersTable extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('url')->nullable();
-            $table->foreignId('image_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('image_id')->nullable()->constrained('attachments')->nullOnDelete();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

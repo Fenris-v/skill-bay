@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\ProductReview;
 use Illuminate\Database\Seeder;
 use App\Models\Product;
-use App\Models\Image;
+use App\Models\Attachment;
 
 class ProductSeeder extends Seeder
 {
@@ -17,9 +18,10 @@ class ProductSeeder extends Seeder
     {
         Product::factory()
             ->count(50)
+            ->has(ProductReview::factory()->count(5), 'reviews')
             ->create()
             ->each(fn($product) => $product->images()->attach(
-                Image::factory()
+                Attachment::factory()
                     ->count(2)
                     ->create()
             ))

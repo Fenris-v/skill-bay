@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
                 DiscountSeeder::class,
                 DiscountUnitableSeeder::class,
                 HistoryProductSeeder::class,
+                CallbackSeeder::class
             ]
         );
     }

@@ -13,7 +13,7 @@ return [
     'sort-by' => 'Сортировать по',
     'by-popularity' => 'Популярности',
     'by-price' => 'Цене',
-    'by-feedbacks' => 'Отзывам',
+    'by-reviews' => 'Отзывам',
     'by-newer' => 'Новизне',
     'not-selected' => 'Не выбрано',
     'catalog_top' => 'Топ товаров',

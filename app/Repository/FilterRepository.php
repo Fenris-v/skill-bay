@@ -12,11 +12,8 @@ use Illuminate\Support\Facades\Cache;
 
 class FilterRepository
 {
-    public int $perPage;
-
     public function __construct(public ConfigRepository $configs)
     {
-        $this->perPage = $this->configs->getPerPage();
     }
 
     /**
