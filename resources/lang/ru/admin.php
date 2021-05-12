@@ -33,10 +33,21 @@ return [
         'fields' => [
             'per_page' => 'Количество объектов на странице',
             'cache_lifetime' => 'Время жизни кэша',
-
-            // TODO: delete next examples
-            'stroka-naprimer' => 'Строка, например',
-            'a-vot-i-cekboks' => 'А вот и чекбокс',
+            'history_size' => 'Количество просмотренных',
+            'phone' => 'Телефон',
+            'country' => 'Страна',
+            'region' => 'Область',
+            'city' => 'Город',
+            'address' => 'Адрес',
+            'email' => 'Email',
+            'facebook' => 'Facebook',
+            'twitter' => 'Twitter',
+            'linkedin' => 'Linkedin',
+            'about_us' => 'О нас',
+            'store_history' => 'Наша история'
+        ],
+        'contacts' => [
+            'title' => 'Контактные данные'
         ]
     ],
     'product' => [
@@ -47,6 +58,9 @@ return [
             'table' => [
                 'id' => 'ID',
                 'title' => 'Название',
+                'amount' => 'Количество',
+                'total_price' => 'Суммарная стоимость (руб.)',
+                'seller' => 'Продавец',
             ],
             'buttons' => [
                 'add' => 'Добавить товар',
@@ -58,13 +72,43 @@ return [
             'success_create' => 'Вы успешно создали товар ":title"',
             'success_edit' => 'Вы успешно изменили товар ":title"',
             'buttons' => [
-                'create' => 'Создать товар',
-                'edit' => 'Редактировать товар',
+                'save' => 'Сохранить',
             ],
             'labels' => [
                 'title' => 'Название',
                 'vendor' => 'Производитель',
             ],
+        ],
+    ],
+    'product-review' => [
+        'product-reviews' => 'Отзывы к товарам',
+        'list' => [
+            'title' => 'Список отзывов к товарам',
+            'description' => 'Просмотр и управление отзывами',
+            'table' => [
+                'id' => 'ID',
+                'comment' => 'Отзыв',
+            ],
+            'buttons' => [
+                'add' => 'Добавить отзыв',
+            ],
+        ],
+        'edit' => [
+            'title_create' => 'Создание отзыва',
+            'title_edit' => 'Редактирование отзыва',
+            'success_create' => 'Вы успешно создали отзыв к товару ":product"',
+            'success_edit' => 'Вы успешно изменили отзыв к товару ":product"',
+            'success_delete' => 'Вы успешно удалили отзыв к товару ":product"',
+            'buttons' => [
+                'save' => 'Сохранить',
+                'remove' => 'Удалить отзыв',
+            ],
+            'labels' => [
+                'name' => 'Автор',
+                'email' => 'Email',
+                'comment' => 'Отзыв',
+            ],
+            'select_product' => 'Выберите товар',
         ],
     ],
     'banner' => [
@@ -85,9 +129,11 @@ return [
             'title_edit' => 'Редактирование ":title"',
             'success_create' => 'Вы успешно создали баннер ":title"',
             'success_edit' => 'Вы успешно изменили баннер ":title"',
+            'success_delete' => 'Вы успешно удалили баннер ":title"',
             'buttons' => [
                 'create' => 'Создать баннер',
                 'edit' => 'Редактировать баннер',
+                'remove' => 'Удалить баннер',
             ],
             'labels' => [
                 'title' => 'Название',
@@ -104,17 +150,41 @@ return [
             'description' => 'Просмотр и управление заказами',
             'table' => [
                 'id' => 'ID',
+                'delivery_address' => 'Адрес доставки',
+                'supplier' => 'Покупатель',
+                'delivery_type' => 'Способ доставки',
+                'payment_type' => 'Способ оплаты',
+                'created_at' => 'Дата и время',
+                'actions' => 'Действия',
             ],
             'buttons' => [
                 'add' => 'Добавить заказ',
+                'show' => 'Просмотр',
             ],
         ],
         'edit' => [
-            'title' => 'Редактирование заказа №":id"',
-            'success_edit' => 'Вы успешно изменили заказ №":id"',
+            'title' => 'Редактирование заказа №:id',
+            'success_edit' => 'Вы успешно изменили заказ №:id',
             'buttons' => [
-                'edit' => 'Редактировать заказ',
+                'save' => 'Сохранить',
+            ],
+            'labels' => [
+                'user' => 'Покупатель',
+                'delivery_type' => 'Способ доставки',
+                'payment_type' => 'Способ оплаты',
+                'city' => 'Город доставки',
+                'address' => 'Адрес доставки',
+                'cart' => 'Корзина',
             ],
         ],
     ],
+    'callback' => [
+        'title' => 'Обратная связь',
+        'name' => 'Имя',
+        'email' => 'Email',
+        'created_at' => 'Отправлено',
+        'message' => 'Сообщение',
+        'show' => 'Заявка'
+    ],
+    'back' => 'Назад'
 ];

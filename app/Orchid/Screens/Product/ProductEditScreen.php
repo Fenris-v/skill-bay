@@ -52,12 +52,12 @@ class ProductEditScreen extends Screen
     public function commandBar(): array
     {
         return [
-            Button::make(__('admin.product.edit.buttons.create'))
+            Button::make(__('admin.product.edit.buttons.save'))
                 ->icon('pencil')
                 ->method('createOrUpdate')
                 ->canSee(! $this->exists),
 
-            Button::make(__('admin.product.edit.buttons.edit'))
+            Button::make(__('admin.product.edit.buttons.save'))
                 ->icon('note')
                 ->method('createOrUpdate')
                 ->canSee($this->exists),

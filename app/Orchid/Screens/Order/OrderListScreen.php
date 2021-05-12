@@ -4,7 +4,6 @@ namespace App\Orchid\Screens\Order;
 
 use App\Models\Order;
 use App\Orchid\Layouts\Order\OrderListLayout;
-use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
 
 class OrderListScreen extends Screen
@@ -31,7 +30,7 @@ class OrderListScreen extends Screen
     public function query(): array
     {
         return [
-            'orders' => Order::paginate(),
+            'orders' => Order::with('paymentType', 'user', 'deliveryType')->paginate(),
         ];
     }
 

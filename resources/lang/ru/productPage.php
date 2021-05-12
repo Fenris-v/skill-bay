@@ -5,4 +5,9 @@
  */
 return [
     'title' => 'Товар',
+    'review_form' => [
+        'comment' => 'Ваш комментарий...',
+        'name' => 'Ваше Имя',
+        'email' => 'Ваш Email',
+    ],
 ];

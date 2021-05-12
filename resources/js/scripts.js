@@ -560,6 +560,16 @@
             };
         };
         Pagination().init();
+        var Alert = function () {
+            var $alert = $('.custom-alert');
+            var $closebtn = $('.closebtn');
+            return {
+                init: function () {
+                    $closebtn.on('click', () => $alert.fadeOut());
+                }
+            }
+        };
+        Alert().init();
         var Sort = function () {
             return {
                 init: function () {
@@ -674,7 +684,7 @@
                         e.preventDefault();
                         var $inputThis = $(this).siblings($input).filter($input);
                         var value = parseFloat($inputThis.val());
-                        $inputThis.val(value > 0 ? value - 1 : 0);
+                        $inputThis.val(value > 1 ? value - 1 : 1);
                     });
                 }
             };
@@ -808,9 +818,8 @@
                         }
 
                     });
-                    $tabs.each(function () {
-                        $(this).find($tabsLink).eq(0).trigger('click');
-                    });
+
+                  $tabsLink.filter('.Tabs-link_ACTIVE').trigger('click');
                 }
             };
         };
@@ -893,6 +902,40 @@
 //END
 
 
+        var ProductReviews = function () {
+            return {
+                init: function () {
+                    $('#reviewsLoadMore').on('click', function () {
+                        const
+                          currentPage = +$('[data-reviews-page]').attr('data-reviews-page'),
+                          lastPage = +$('[data-reviews-lastpage]').attr('data-reviews-lastpage'),
+                          nextPage = currentPage + 1,
+                          loadUrl = $(this).data('load-url') + `?page=${nextPage}`,
+                          originalText = $(this).text();
+
+                        $(this).text('Идет загрузка...');
+                        $(this).addClass('reviewsLoading');
+
+                        $.get(loadUrl, (data) => {
+                            if (!data) {
+                                $(this).remove();
+                                return;
+                            }
+
+                            $('.Comments-list').append(data);
+                            $(this).text(originalText);
+                            $(this).removeClass('reviewsLoading');
+                            $('[data-reviews-page]').attr('data-reviews-page', nextPage);
+
+                            if (lastPage === nextPage) {
+                                $(this).remove();
+                            }
+                        });
+                    });
+                }
+            };
+        };
+        ProductReviews().init();
     });
 
 
