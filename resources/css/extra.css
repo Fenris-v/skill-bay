@@ -3774,7 +3774,6 @@ a.Cart-title {
   z-index: 10;
 }
 .Profile-fileLabel {
-  width: 140px;
   height: 100px;
   position: absolute;
   left: 50%;
@@ -3785,6 +3784,9 @@ a.Cart-title {
   justify-content: center;
   text-align: center;
   align-items: center;
+}
+.form-group label.Profile-fileLabel {
+  width: 140px;
 }
 .Profile-avatar {
   height: 293px;

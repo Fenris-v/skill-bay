@@ -12,7 +12,9 @@
             @include('pages.account.aside')
 
             <div class="Section-content">
-                <x-catalog.product-list :products="$products" />
+                <x-account.orders-list :orders="$history" />
+
+                {{ $history->links() }}
             </div>
         </div>
     </div>

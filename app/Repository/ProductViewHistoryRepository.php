@@ -44,15 +44,21 @@ class ProductViewHistoryRepository
     /**
      * Возвращает коллекцию просмотренных товаров.
      *
-     * @param $userId
+     * @param int $userId
+     * @param int|null $limit
      * @return  Collection
      */
-    public function get($userId): Collection
+    public function get(int $userId, ?int $limit = null): Collection
     {
         return HistoryView::with('products')
             ->byUser($userId)
             ->latest('updated_at')
-            ->get()
+            ->when(
+                $limit,
+                function ($query) use ($limit) {
+                    $query->take($limit);
+                }
+            )->get()
             ->pluck('products');
     }
 

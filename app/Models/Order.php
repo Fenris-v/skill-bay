@@ -23,6 +23,15 @@ class Order extends Model
     ];
 
     /**
+     * Считает цену заказа с учетом скидки
+     * @return float
+     */
+    public function getPriceWithoutDiscountAttribute(): float
+    {
+        return $this->price + $this->discount;
+    }
+
+    /**
      * @return BelongsTo
      */
     public function user()
