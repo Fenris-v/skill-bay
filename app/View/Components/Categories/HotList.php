@@ -21,7 +21,7 @@ class HotList extends Component
      */
     public function __construct()
     {
-        $this->hotCategories = Category::take(3)->get();
+        $this->hotCategories = Category::hot()->take(3)->get();
     }
 
     /**

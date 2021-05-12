@@ -6,6 +6,7 @@ use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\File;
 use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Fields\CheckBox;
 use Orchid\Screen\Fields\Relation;
 use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Screen;
@@ -87,7 +88,7 @@ class CategoryEditScreen extends Screen
                 Input::make('category.name')
                     ->required()
                     ->title(__('admin.category.edit.labels.name')),
-                input::make('category.icon')
+                Input::make('category.icon')
                     ->required()
                     ->title(__('admin.category.edit.labels.icon')),
                 Select::make('category.parent_id')
@@ -98,12 +99,24 @@ class CategoryEditScreen extends Screen
                                 ->where('id', '!=', $this->category->id);
                         }),'name')
                     ->title(__('admin.category.edit.labels.parent')),
+                CheckBox::make('category.is_hot')
+                    ->required()
+                    ->sendTrueOrFalse()
+                    ->placeholder(__('admin.category.edit.labels.is_hot')),
+                Input::make('category.hot_order')
+                    ->title(__('admin.category.edit.labels.hot_order'))
+                    ->type('number')
+                    ->min(0)->max(2)
+                    ->help(__('admin.category.edit.labels.hot_order_tip')),
             ]),
         ];
     }
 
     public function createOrUpdate(Category $category, Request $request)
     {
+        $request->validate([
+            'category.hot_order' => ['nullable', 'numeric', 'min:0', 'max:2'],
+        ]);
 
         $category->fill($request->get('category'))->save();
 
