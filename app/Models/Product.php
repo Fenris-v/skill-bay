@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Orchid\Screen\AsSource;
 
@@ -132,5 +133,14 @@ class Product extends Model
     public function getAllImagesAttribute()
     {
         return collect([$this->image])->merge($this->images);
+    }
+
+    /**
+     * Связь с просмотренными товарами
+     * @return HasMany
+     */
+    public function historyViews(): HasMany
+    {
+        return $this->HasMany(HistoryView::class);
     }
 }
