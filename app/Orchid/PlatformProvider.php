@@ -33,6 +33,11 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('notebook')
                 ->route('platform.edit.contacts'),
 
+            ItemMenu::label(__('admin.users'))
+                ->route('platform.systems.users')
+                ->icon('people')
+                ->title(__('admin.users')),
+
             ItemMenu::label(__('admin.product.products'))
                 ->title(__('admin.lists'))
                 ->icon('list')
