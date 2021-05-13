@@ -87,7 +87,8 @@ class CategoryEditScreen extends Screen
                 Input::make('category.name')
                     ->required()
                     ->title(__('admin.category.edit.labels.name')),
-                input::make('category.icon')
+                Select::make('category.icon')
+                    ->options(config('icons.departments'))
                     ->required()
                     ->title(__('admin.category.edit.labels.icon')),
                 Select::make('category.parent_id')
