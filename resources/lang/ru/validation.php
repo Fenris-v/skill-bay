@@ -40,7 +40,7 @@ return [
     'distinct' => ':attribute поле имеет повторяющееся значение.',
     'email' => ':attribute должен быть валидным email адресом.',
     'ends_with' => ':attribute должно заканчиваться одним из следующих: :values.',
-    'exists' => 'выбранный :attribute не допустим',
+    'exists' => 'выбранный :attribute не существует',
     'file' => ':attribute должен быть файлом.',
     'filled' => ':attribute поле должно иметь значение.',
     'gt' => [
