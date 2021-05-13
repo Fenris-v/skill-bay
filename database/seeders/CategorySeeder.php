@@ -15,9 +15,18 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        Category::factory()
+        $categories = Category::factory()
             ->count(5)
             ->has(Category::factory()->count(2), 'children')
             ->create();
+
+        $hotCategories = $categories->random(3);
+
+        $hotCatI = 0;
+        foreach ($hotCategories as $hotCategory) {
+            $hotCategory->is_hot = true;
+            $hotCategory->hot_order = $hotCatI++;
+            $hotCategory->save();
+        }
     }
 }

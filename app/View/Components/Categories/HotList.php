@@ -2,7 +2,9 @@
 
 namespace App\View\Components\Categories;
 
+use App\Contracts\HotProductCategoriesService;
 use App\Models\Category;
+use App\Repository\ConfigRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\View\Component;
 
@@ -16,12 +18,19 @@ class HotList extends Component
     /**
      * Create a new component instance.
      *
-     * @return void
+     * @param  HotProductCategoriesService  $service
      * @throws \Exception
      */
-    public function __construct()
+    public function __construct(HotProductCategoriesService $service)
     {
-        $this->hotCategories = Category::hot()->take(3)->get();
+        $this->hotCategories = \Cache::tags([ConfigRepository::GLOBAL_CACHE_TAG])
+            ->remember(
+                'hot_categories',
+                now()->addDay(),
+                function () use ($service) {
+                    return $service->get();
+                }
+            );
     }
 
     /**

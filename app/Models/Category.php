@@ -26,6 +26,7 @@ class Category extends Model
         'parent_id',
         'is_hot',
         'hot_order',
+        'image_id',
     ];
 
     protected $casts = [
@@ -35,6 +36,33 @@ class Category extends Model
     public function getRouteKeyName()
     {
         return 'slug';
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function image()
+    {
+        return $this->belongsTo(Attachment::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function productSellers()
+    {
+        return $this->hasManyThrough(
+            ProductSeller::class,
+            Product::class
+        );
     }
 
     /**

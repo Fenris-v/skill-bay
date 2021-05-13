@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\File;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\CheckBox;
+use Orchid\Screen\Fields\Cropper;
 use Orchid\Screen\Fields\Relation;
 use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Screen;
@@ -108,6 +109,11 @@ class CategoryEditScreen extends Screen
                     ->type('number')
                     ->min(0)->max(2)
                     ->help(__('admin.category.edit.labels.hot_order_tip')),
+                Cropper::make('category.image_id')
+                    ->targetId()
+                    ->title(__('admin.category.edit.labels.image'))
+                    ->width(214)
+                    ->height(162),
             ]),
         ];
     }
@@ -115,7 +121,7 @@ class CategoryEditScreen extends Screen
     public function createOrUpdate(Category $category, Request $request)
     {
         $request->validate([
-            'category.hot_order' => ['nullable', 'numeric', 'min:0', 'max:2'],
+            'category.hot_order' => ['nullable', 'numeric', 'min:0', 'max:100'],
         ]);
 
         $category->fill($request->get('category'))->save();

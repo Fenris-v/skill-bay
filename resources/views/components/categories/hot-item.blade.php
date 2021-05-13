@@ -3,11 +3,21 @@
     <div class="BannersHomeBlock-row">
         <div class="BannersHomeBlock-block">
             <strong class="BannersHomeBlock-title">{{ $category->name }}</strong>
-            <div class="BannersHomeBlock-content">от&#32;<span class="BannersHomeBlock-price">$210.00</span>
+            @if($category->product_sellers_min_price)
+                <div class="BannersHomeBlock-content">
+                    @lang('category.price_from')
+                    <span class="BannersHomeBlock-price">
+                        {{ floor($category->product_sellers_min_price) }}&#8381;
+                    </span>
+                </div>
+            @endif
+        </div>
+        @if($category->image)
+            <div class="BannersHomeBlock-block">
+                <div class="BannersHomeBlock-img">
+                    <img src="{{ $category->image->url() }}" />
+                </div>
             </div>
-        </div>
-        <div class="BannersHomeBlock-block">
-            <div class="BannersHomeBlock-img"><img src="assets/img/content/home/videoca.png" alt="videoca.png"/></div>
-        </div>
+        @endif
     </div>
 </a>
