@@ -20,7 +20,7 @@
     </div>
     <div class="Section">
       <div class="wrap">
-		<x-reset-password-form/>
+		<x-reset-password-form :token="$token"/>
       </div>
     </div>
   </div>

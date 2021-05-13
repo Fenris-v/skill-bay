@@ -13,6 +13,7 @@ return [
     'phone' => 'Телефон',
     'register' => 'Зарегистрироваться',
     'reset_password'=>'Сбросить пароль',
+    'forgot_password' => 'Забыли пароль',
     'login' => 'Войти',
     'placeholder_mail' => 'send@test.test',
     'placeholder_password' => 'Выберите пароль',

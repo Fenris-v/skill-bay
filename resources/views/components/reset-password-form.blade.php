@@ -1,3 +1,4 @@
+@props(['token'])
 <form class="form Authorization" action="{{route('reset-password-send')}}" method="post">
 	@csrf
 	@include('includes.validate')
