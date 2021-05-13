@@ -1269,6 +1269,7 @@ a.Cart-title {
   text-transform: uppercase;
   letter-spacing: 1.3px;
   display: block;
+  white-space: nowrap;
 }
 
 .Categories {

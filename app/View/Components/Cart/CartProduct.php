@@ -24,12 +24,12 @@ class CartProduct extends Component
         $this->sellers = $product->sellers->map(fn($seller) => [
             'value' => $seller->slug,
             'title' => $seller->title,
-            'selected' => $product->pivot->seller->id === $seller->id,
+            'selected' => $product->seller_id === $seller->id,
         ]);
         $this->productLink = route('products.show', $product->slug);
-        $this->priceOld = $product->pivot->price;
-        $this->price = $product->pivot->price;
-        $this->amount = $product->pivot->amount;
+        $this->priceOld = $product->price;
+        $this->price = $product->price;
+        $this->amount = $product->amount;
         $this->removeProductFromCartUrl = route('cart.removeProduct', $product->slug);
         $this->changeProductSellerUrl = route('cart.changeProductSeller', $product->slug);
         $this->changeProductAmountUrl = route('cart.changeProductAmount', $product->slug);

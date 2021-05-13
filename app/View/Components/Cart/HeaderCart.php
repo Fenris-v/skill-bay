@@ -4,7 +4,6 @@ namespace App\View\Components\Cart;
 
 use Illuminate\View\Component;
 use App\Services\ProductCartService;
-use App\Repository\CartRepository;
 
 class HeaderCart extends Component
 {
@@ -13,12 +12,11 @@ class HeaderCart extends Component
     public float $price;
 
     public function __construct(
-        ProductCartService $productCartService,
-        CartRepository $cartRepository
+        ProductCartService $productCartService
     ) {
         $this->link = route('cart.show');
         $this->amount = $productCartService->count();
-        $this->price = $cartRepository->getCart()->currentPrice;
+        $this->price = (float) $productCartService->total()['current'];
     }
 
     /**

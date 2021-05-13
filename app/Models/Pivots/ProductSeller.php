@@ -12,7 +12,8 @@ class ProductSeller extends Pivot
 {
     public function seller(): BelongsTo
     {
-        return $this->belongsTo(Seller::class);
+        return $this->belongsTo(Seller::class)
+        ;
     }
 
     public function product(): BelongsTo
@@ -20,7 +21,7 @@ class ProductSeller extends Pivot
         return $this->belongsTo(Product::class);
     }
 
-    public function getPriceAttribute(): float
+    public function getPricesAttribute(): float
     {
         return $this->seller->products->firstWhere('id', $this->product->id)->pivot->price;
     }

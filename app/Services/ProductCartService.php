@@ -159,8 +159,10 @@ class ProductCartService implements ProductCartServiceContract
     public function total()
     {
         return [
-            'current' => $this->cartRepository->currentPrice,
-            'old' => $this->cartRepository->oldPrice,
+            'current' => $currentPrice = $this->cartRepository
+                ->getCartProducts()
+                ->reduce(fn($totalPrice, $product) => $totalPrice + $product->price * $product->amount),
+            'old' => $currentPrice,
         ];
     }
 }

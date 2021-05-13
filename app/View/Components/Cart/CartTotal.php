@@ -2,19 +2,19 @@
 
 namespace App\View\Components\Cart;
 
+use App\Services\ProductCartService;
 use Illuminate\View\Component;
-use App\Repository\CartRepository;
 
 class CartTotal extends Component
 {
     public float $currentTotal;
     public float $oldTotal;
 
-    public function __construct(CartRepository $cartRepository)
+    public function __construct(ProductCartService $productCartService)
     {
-        $cart = $cartRepository->getCart();
-        $this->currentTotal = $cart->currentPrice;
-        $this->oldTotal = $cart->oldPrice;
+        $total = $productCartService->total();
+        $this->currentTotal = $total['current'];
+        $this->oldTotal = $total['old'];
     }
 
     /**

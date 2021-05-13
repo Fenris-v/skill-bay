@@ -11,42 +11,14 @@ use Cache;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Collection;
+use App\Traits\TimeToLiveCacheTrait;
 
 class CartRepository
 {
-    private ConfigRepository $configRepository;
+    use TimeToLiveCacheTrait;
 
-    public function __construct()
-    {
-        $this->configRepository = app(ConfigRepository::class);
-        $this->ttl = $this->configRepository->getCacheLifetime(now()->addDay());
-    }
-
-    /**
-     * Генерирует guest_id, который гарантированно не встречается в БД.
-     *
-     * @return string
-     */
-    protected function getGuestId(): string
-    {
-        $guest_id = Str::uuid();
-        while($this->guestIdExists($guest_id)) {
-            $guest_id = Str::uuid();
-        }
-
-        return $guest_id;
-    }
-
-    /**
-     * Проверяет, есть ли guest_id в БД.
-     *
-     * @param string $guest_id
-     * @return bool
-     */
-    protected function guestIdExists(string $guest_id): bool
-    {
-        return Cart::where('guest_id', $guest_id)->exists();
-    }
+    public function __construct(private ConfigRepository $configRepository)
+    {}
 
     /**
      * Возвращает корзину пользователя.
@@ -61,7 +33,7 @@ class CartRepository
             Cart::class,
         ])->remember(
             'cart_user|' . $user->id,
-            $this->ttl,
+            $this->ttl(),
             function() use ($user) {
                 $cart = Cart
                     ::whereHas(
@@ -93,7 +65,7 @@ class CartRepository
             Cart::class,
         ])->remember(
             'cart_guest|' . $guest_id,
-            $this->ttl,
+            $this->ttl(),
             fn() => Cart::where('guest_id', $guest_id)
                 ->with('products')
                 ->doesntHave('order')
@@ -182,12 +154,19 @@ class CartRepository
             Seller::class,
         ])->remember(
             'cart|' . $cart->id . '|products',
-            $this->ttl,
-            fn() => $cart->products()->with([
-                'sellers',
-                'images',
-            ])
-            ->get()
+            $this->ttl(),
+            fn() => Product::with(['sellers'])
+                ->join('cart_product_seller', fn ($join) =>
+                    $join->on('products.id', '=', 'cart_product_seller.product_id')
+                        ->where('cart_product_seller.cart_id', '=', $cart->id)
+                )
+                ->join('product_seller', fn ($join) =>
+                    $join
+                        ->on('products.id', '=', 'product_seller.product_id')
+                        ->on('cart_product_seller.seller_id', '=', 'product_seller.seller_id')
+                )
+                ->select('products.*', 'product_seller.price', 'cart_product_seller.amount', 'product_seller.seller_id')
+                ->get()
         );
     }
 
@@ -205,7 +184,7 @@ class CartRepository
             Cart::class,
         ])->remember(
             'cart|' . $cart->id . '|products_count',
-            $this->ttl,
+            $this->ttl(),
             fn() => $cart->products()->count()
         );
     }
