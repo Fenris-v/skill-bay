@@ -8,10 +8,8 @@ use App\Models\ProductReview;
 use App\Models\Seller;
 use App\Models\Cart;
 use App\Models\Specification;
-use App\Repository\ConfigRepository;
 use Cache;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class ProductRepository
@@ -21,12 +19,10 @@ use Illuminate\Database\Eloquent\Builder;
 class ProductRepository
 {
     private ConfigRepository $configRepository;
-    private int $ttl;
 
-    public function __construct()
+    public function __construct(ConfigRepository $configRepository)
     {
-        $this->configRepository = app(ConfigRepository::class);
-        $this->ttl = $this->configRepository->getCacheLifetime(now()->addDay());
+        $this->configRepository = $configRepository;
     }
 
     /**
@@ -37,8 +33,7 @@ class ProductRepository
      */
     public function getTopProducts($amount = 8)
     {
-        $configRepository = app(ConfigRepository::class);
-        $ttl = $configRepository->getCacheLifetime(now()->addDay());
+        $ttl = $this->configRepository->getCacheLifetime(now()->addDay());
 
         return Cache::tags([
             ConfigRepository::GLOBAL_CACHE_TAG,
@@ -66,7 +61,7 @@ class ProductRepository
             ProductReview::class,
         ])->remember(
             'cart_product|' . $slug,
-            $this->ttl,
+            $this->configRepository->getCacheLifetime(now()->addDay()),
             fn() => Product
                 ::where('slug', $slug)
                 ->with([

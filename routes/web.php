@@ -62,11 +62,11 @@ Route::get('/sellers/{seller}', [SellerController::class, 'show'])
     )
 ;
 
-Route::post('/product/{slug}/add-to-cart', [ProductController::class, 'addToCart'])
+Route::post('/products/{slug}/add-to-cart', [ProductController::class, 'addToCart'])
     ->name('products.addToCart');
-Route::post('/product/{productSlug}/seller/{sellerSlug}/add-to-cart', [ProductController::class, 'addToCartWithSeller'])
+Route::post('/products/{productSlug}/seller/{sellerSlug}/add-to-cart', [ProductController::class, 'addToCartWithSeller'])
     ->name('products.addToCartWithSeller');
-Route::post('/product/{slug}/add-to-compare', [ProductController::class, 'addToCompare'])
+Route::post('/products/{slug}/add-to-compare', [ProductController::class, 'addToCompare'])
     ->name('products.addToCompare');
 
 Route::get('/cart', [CartController::class, 'show'])

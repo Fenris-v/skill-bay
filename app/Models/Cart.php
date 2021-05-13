@@ -50,7 +50,7 @@ class Cart extends Model
     public function getCurrentPriceAttribute(): float
     {
         return $this->products->reduce(
-            fn($accum, $product) => $accum + $product->currentPrice * $product->pivot->amount,
+            fn($accum, $product) => $accum + ($product->pivot->price - $product->discount) * $product->pivot->amount,
             0
         );
     }
@@ -58,7 +58,7 @@ class Cart extends Model
     public function getOldPriceAttribute(): float
     {
         return $this->products->reduce(
-            fn($accum, $product) => $accum + $product->averagePrice * $product->pivot->amount,
+            fn($accum, $product) => $accum + $product->pivot->price * $product->pivot->amount,
             0
         );
     }

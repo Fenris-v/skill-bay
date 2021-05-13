@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Cart;
-use App\Models\Image;
 use App\Models\Seller;
 use App\Repository\ConfigRepository;
 use Cache;
@@ -16,12 +15,37 @@ use Illuminate\Database\Eloquent\Collection;
 class CartRepository
 {
     private ConfigRepository $configRepository;
-    private int $ttl;
 
     public function __construct()
     {
         $this->configRepository = app(ConfigRepository::class);
         $this->ttl = $this->configRepository->getCacheLifetime(now()->addDay());
+    }
+
+    /**
+     * Генерирует guest_id, который гарантированно не встречается в БД.
+     *
+     * @return string
+     */
+    protected function getGuestId(): string
+    {
+        $guest_id = Str::uuid();
+        while($this->guestIdExists($guest_id)) {
+            $guest_id = Str::uuid();
+        }
+
+        return $guest_id;
+    }
+
+    /**
+     * Проверяет, есть ли guest_id в БД.
+     *
+     * @param string $guest_id
+     * @return bool
+     */
+    protected function guestIdExists(string $guest_id): bool
+    {
+        return Cart::where('guest_id', $guest_id)->exists();
     }
 
     /**
@@ -59,7 +83,7 @@ class CartRepository
     /**
      * Возвращает корзину неавторизованного пользователя.
      *
-     * @param  string  $guest_id
+     * @param string $guest_id
      * @return Cart
      */
     public function getGuestCart(string $guest_id): Cart
@@ -75,7 +99,11 @@ class CartRepository
                 ->doesntHave('order')
                 ->firstOrNew()
         );
-        $cart->guest_id = $guest_id;
+
+        if (!$cart->guest_id) {
+            session(['guest_id' => Str::uuid()]);
+            $cart->guest_id = session('guest_id');
+        }
 
         return $cart;
     }
@@ -204,6 +232,7 @@ class CartRepository
                 ]
             )
         ;
+        Cache::tags([Cart::class])->flush();
 
         return true;
     }
@@ -219,6 +248,7 @@ class CartRepository
         $this->getCart()
             ->products()->detach($product)
         ;
+        Cache::tags([Cart::class])->flush();
 
         return true;
     }
@@ -241,6 +271,7 @@ class CartRepository
             ->products()->updateExistingPivot($product->id, [
                 'amount' => $amount,
             ]);
+        Cache::tags([Cart::class])->flush();
 
         return true;
     }
@@ -260,6 +291,7 @@ class CartRepository
             ->products()->updateExistingPivot($product->id, [
                 'seller_id' => $seller->id,
             ]);
+        Cache::tags([Cart::class])->flush();
 
         return true;
     }
@@ -282,6 +314,7 @@ class CartRepository
                 'seller_id' => $seller->id,
                 'amount' => $amount,
             ]);
+        Cache::tags([Cart::class])->flush();
 
         return true;
     }

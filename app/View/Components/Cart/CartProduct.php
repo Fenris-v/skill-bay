@@ -27,8 +27,8 @@ class CartProduct extends Component
             'selected' => $product->pivot->seller->id === $seller->id,
         ]);
         $this->productLink = route('products.show', $product->slug);
-        $this->priceOld = $product->averagePrice;
-        $this->price = $product->currentPrice;
+        $this->priceOld = $product->pivot->price;
+        $this->price = $product->pivot->price;
         $this->amount = $product->pivot->amount;
         $this->removeProductFromCartUrl = route('cart.removeProduct', $product->slug);
         $this->changeProductSellerUrl = route('cart.changeProductSeller', $product->slug);
