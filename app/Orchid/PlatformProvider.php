@@ -58,6 +58,10 @@ class PlatformProvider extends OrchidServiceProvider
             ItemMenu::label(__('admin.callback.title'))
                 ->icon('list')
                 ->route('platform.callback.list'),
+
+            ItemMenu::label(__('admin.seller.title'))
+                ->icon('list')
+                ->route('platform.seller.list'),
         ];
     }
 
