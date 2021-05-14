@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Orchid\Platform\Models\User as Authenticatable;
 
 class User extends Authenticatable
@@ -72,5 +75,23 @@ class User extends Authenticatable
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'role_users');
+    }
+
+    /**
+     * Связь с посетителями
+     * @return HasOne
+     */
+    public function visitor(): HasOne
+    {
+        return $this->HasOne(Visitor::class);
+    }
+
+    /**
+     * Связь с просмотренными товарами
+     * @return HasMany
+     */
+    public function historyViews(): HasMany
+    {
+        return $this->HasMany(HistoryView::class);
     }
 }

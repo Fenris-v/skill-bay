@@ -7,10 +7,10 @@
                         {{ $discount }}%
                     </div>
                 @endif
-                <img src="{{ $product->images->first()?->url() }}" alt=""/>
+                <img src="{{ $product->image->url() }}" alt=""/>
             </div>
             <div class="ProductCard-picts">
-                @foreach($product->images as $key => $image)
+                @foreach($product->allImages as $key => $image)
                     <a class="ProductCard-pict ProductCard-pict{{ !$key ? '_ACTIVE' : '' }}" href="{{ $image->url() }}">
                         <img src="{{ $image->url() }}" alt=""/>
                     </a>
@@ -55,6 +55,7 @@
             </x-wrappers.form>
         </div>
     </div>
+
     <x-wrappers.tabs
         :links="[
             ['id' => '#description', 'title' => __('components.product.tabs.description')],
@@ -62,6 +63,7 @@
             ['id' => '#addit', 'title' => __('components.product.tabs.addit')],
             ['id' => '#reviews', 'title' => __('components.product.tabs.reviews')],
         ]"
+        :active="old('review') ? '#reviews' : '#description'"
     >
         <div class="Tabs-block" id="description">
             {{ $product->description }}
@@ -111,49 +113,9 @@
                 @endforeach
             </div>
         </div>
-        <!--Для дальнейшей правки-->
+
         <div class="Tabs-block" id="reviews">
-            <div class="Comments">
-                <div class="Comment">
-                    <div class="Comment-column Comment-column_pict">
-                        <div class="Comment-avatar">
-                        </div>
-                    </div>
-                    <div class="Comment-column">
-                        <header class="Comment-header">
-                            <div>
-                                <strong class="Comment-title">Alexandra Brownie
-                                </strong><span class="Comment-date">22:50 - 25 Декабря 2020</span>
-                            </div>
-                        </header>
-                        <div class="Comment-content">Lorem ipsum dolor sit amet, consectetuer adipiscing elit doli. Aenean commodo ligula eget dolor. Aenean massa. Cumtipsu sociis natoque penatibus et magnis dis parturient montesti, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eutu, pretiumem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justotuio, rhoncus ut loret, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus element semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae.
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <header class="Section-header Section-header_product">
-                <h3 class="Section-title">Оставить отзыв</h3>
-            </header>
-            <div class="Tabs-addComment">
-                <form class="form" action="#" method="post">
-                    <div class="form-group">
-                        <textarea class="form-textarea" name="review" id="review" placeholder="Ваш комментарий..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="row-block">
-                                <input class="form-input" id="name" name="name" type="text" placeholder="Ваше Имя"/>
-                            </div>
-                            <div class="row-block">
-                                <input class="form-input" id="email" name="email" type="text" placeholder="Ваш Email"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <button class="btn btn_muted" type="submit">Оставить отзыв</button>
-                    </div>
-                </form>
-            </div>
+            <x-product.product-reviews :product="$product" />
         </div>
     </x-wrappers.tabs>
 </div>

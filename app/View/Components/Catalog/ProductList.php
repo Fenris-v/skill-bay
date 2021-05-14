@@ -10,13 +10,16 @@ use Illuminate\View\Component;
 
 class ProductList extends Component
 {
+    public string $class;
+
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct(public Paginator|Collection $products)
+    public function __construct(public Paginator|Collection $products, string $class = '')
     {
+        $this->class = $class;
     }
 
     /**

@@ -2147,6 +2147,10 @@ a.Cart-title {
   letter-spacing: 1.1px;
   display: block;
 }
+.Comments-loadMore {
+  text-align: center;
+  margin-top: 15px;
+}
 .Comment-date {
   color: #8f959f;
   font-size: 13px;
@@ -2189,6 +2193,11 @@ a.Cart-title {
   position: absolute;
   right: 24px;
   top: 21px;
+}
+
+.reviewsLoading {
+  opacity: .5;
+  pointer-events: none;
 }
 
 .Contacts {
@@ -3766,7 +3775,6 @@ a.Cart-title {
   z-index: 10;
 }
 .Profile-fileLabel {
-  width: 140px;
   height: 100px;
   position: absolute;
   left: 50%;
@@ -3777,6 +3785,9 @@ a.Cart-title {
   justify-content: center;
   text-align: center;
   align-items: center;
+}
+.form-group label.Profile-fileLabel {
+  width: 140px;
 }
 .Profile-avatar {
   height: 293px;

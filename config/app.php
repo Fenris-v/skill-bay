@@ -180,10 +180,8 @@ return [
         App\Providers\DiscountServiceProvider::class,
         App\Providers\CartServiceProvider::class,
         App\Providers\ProductsReviewServiceProvider::class,
-        App\Providers\CompareProductsServiceProvider::class,
         App\Providers\PaymentServiceProvider::class,
         App\Providers\ProductViewHistoryServiceProvider::class,
-
         App\Providers\Repositories\ConfigServiceProvider::class,
         App\Providers\Repositories\CatalogServiceProvider::class,
         App\Providers\Repositories\FilterServiceProvider::class,
@@ -192,6 +190,7 @@ return [
         App\Providers\Repositories\ProductServiceProvider::class,
         App\Providers\Repositories\CartServiceProvider::class,
         App\Providers\Repositories\SellerServiceProvider::class,
+        App\Providers\Repositories\OrderServiceProvider::class,
     ],
 
     /*
