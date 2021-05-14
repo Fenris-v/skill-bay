@@ -16,4 +16,4 @@ yarn-error.log
 /.phpstorm.meta.php
 /supervisord.pid
 /supervisord.log
-docker-compose.yml
+
