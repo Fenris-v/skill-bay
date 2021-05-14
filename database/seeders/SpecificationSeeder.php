@@ -18,16 +18,23 @@ class SpecificationSeeder extends Seeder
     {
         $products = Product::select('id')->get();
         Specification::factory()
-            ->count(10)
+            ->count(5)
             ->create()
-            ->each(fn($specification) => $specification
-                ->products()
-                ->attach(
-                    $products
-                        ->random(rand(4, 8))
-                        ->mapWithKeys(fn($item) => [$item->id => ['value' => $faker->word]])
-                )
-            )
-        ;
+            ->each(
+                fn($specification) => $specification->products()
+                    ->attach(
+                        $products
+                            ->random(rand(4, 8))
+                            ->mapWithKeys(
+                                fn($item) => [
+                                    $item->id => [
+                                        'value' => $specification->type === Specification::CHECKBOX
+                                            ? $faker->numberBetween(0, 1)
+                                            : $faker->word
+                                    ]
+                                ]
+                            )
+                    )
+            );
     }
 }

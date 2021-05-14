@@ -13,16 +13,26 @@ class CreateProductsTable extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->softDeletes();
-            $table->string('title', 255);
-            $table->string('slug', 255)->unique();
-            $table->text('description')->nullable();
-            $table->string('vendor', 255);
-            $table->integer('rating_sort')->default(0);
-        });
+        Schema::create(
+            'products',
+            function (Blueprint $table) {
+                $table->id();
+                $table->string('title', 255);
+                $table->string('slug', 255)->unique();
+                $table->text('description')->nullable();
+                $table->string('vendor', 255);
+                $table->integer('rating_sort')->default(0);
+                $table->unsignedBigInteger('category_id');
+                $table->softDeletes();
+                $table->timestamps();
+
+                $table->foreign('category_id')
+                    ->references('id')
+                    ->on('categories')
+                    ->cascadeOnDelete()
+                    ->cascadeOnUpdate();
+            }
+        );
     }
 
     /**

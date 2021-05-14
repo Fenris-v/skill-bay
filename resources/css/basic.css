@@ -863,7 +863,7 @@ select + select {
   width: 100%;
   box-sizing: border-box;
   padding: 5px 21px;
-  border-radius: 0px;
+  border-radius: 0;
   border: 1px solid #e0e0e0;
   background: #f9fafc;
   background: transparent;
@@ -871,9 +871,6 @@ select + select {
   background-image: none;
   font-size: 18px;
   line-height: 1.2em;
-}
-.form .form-select:not([multiple]) {
-  height: 56px;
 }
 .form .form-select[multiple] {
   min-height: 56px;
@@ -898,7 +895,7 @@ select + select {
   bottom: 1px;
   border-radius: 0 3px 3px 0;
   width: 40px;
-  background: #f9fafc url("../img/icons/arrowMuted.svg") center center no-repeat;
+  background: #f9fafc url("/assets/img/icons/arrowMuted.svg") center center no-repeat;
 }
 .form .form-btn {
   margin-top: 20px;
@@ -922,6 +919,12 @@ select + select {
 .form-group + .form-group {
   margin-top: 25px;
 }
+.form-group label {
+  width: 100%;
+}
+.form-group label .form-selectWrap {
+  margin-top: 5px;
+}
 .form_contacts .form-input {
   min-width: auto;
 }
@@ -935,7 +938,7 @@ select + select {
 }
 .selectList-icon {
   display: block;
-  background: url("../img/icons/arrowMuted.svg") 0 0 no-repeat;
+  background: url("/assets/img/icons/arrowMuted.svg") 0 0 no-repeat;
   width: 12px;
   height: 8px;
   margin-left: 15px;
@@ -2540,4 +2543,12 @@ button.link {
 }
 .wrap-content {
   margin: 0 auto;
+}
+
+.danger {
+  color: darkred;
+}
+
+.green {
+  color: green;
 }

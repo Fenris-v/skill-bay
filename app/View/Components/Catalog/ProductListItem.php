@@ -2,29 +2,27 @@
 
 namespace App\View\Components\Catalog;
 
-use Closure;
+use App\Models\Product;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class ProductListItem extends Component
 {
-    public $product;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($product)
+    public function __construct(public Product $product)
     {
-        $this->product = $product;
     }
 
     /**
      * Get the view / contents that represent the component.
      *
-     * @return View|Closure|string
+     * @return View
      */
-    public function render()
+    public function render(): View
     {
         return view('components.catalog.product-list-item');
     }

@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 use App\Orchid\Screens\Banner\BannerEditScreen;
 use App\Orchid\Screens\Banner\BannerListScreen;
+use App\Orchid\Screens\Callback\CallbackListScreen;
+use App\Orchid\Screens\Callback\CallbackShowScreen;
 use App\Orchid\Screens\Config\ConfigsEditScreen;
-use App\Orchid\Screens\Examples\ExampleCardsScreen;
-use App\Orchid\Screens\Examples\ExampleChartsScreen;
-use App\Orchid\Screens\Examples\ExampleFieldsAdvancedScreen;
-use App\Orchid\Screens\Examples\ExampleFieldsScreen;
-use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
-use App\Orchid\Screens\Examples\ExampleScreen;
-use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
+use App\Orchid\Screens\Config\InfoEditScreen;
 use App\Orchid\Screens\Order\OrderEditScreen;
 use App\Orchid\Screens\Order\OrderListScreen;
 use App\Orchid\Screens\PlatformScreen;
 use App\Orchid\Screens\Product\ProductEditScreen;
 use App\Orchid\Screens\Product\ProductListScreen;
+use App\Orchid\Screens\ProductReview\ProductReviewEditScreen;
+use App\Orchid\Screens\ProductReview\ProductReviewListScreen;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
+use App\Orchid\Screens\Seller\SellerEditScreen;
+use App\Orchid\Screens\Seller\SellerListScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -121,6 +121,9 @@ Route::screen('roles', RoleListScreen::class)
 Route::screen('config/edit', ConfigsEditScreen::class)
     ->name('platform.edit.config');
 
+Route::screen('contacts/edit', InfoEditScreen::class)
+    ->name('platform.edit.contacts');
+
 // Товары.
 Route::screen('products/create', ProductEditScreen::class)
     ->name('platform.product.create');
@@ -130,6 +133,16 @@ Route::screen('products/{product}', ProductEditScreen::class)
 
 Route::screen('products', ProductListScreen::class)
     ->name('platform.product.list');
+
+// Отзывы к товарам.
+Route::screen('product-reviews/create', ProductReviewEditScreen::class)
+    ->name('platform.product-review.create');
+
+Route::screen('product-reviews/{productReview}', ProductReviewEditScreen::class)
+    ->name('platform.product-review.edit');
+
+Route::screen('product-reviews', ProductReviewListScreen::class)
+    ->name('platform.product-review.list');
 
 // Баннеры.
 Route::screen('banners/create', BannerEditScreen::class)
@@ -150,3 +163,20 @@ Route::screen('orders/{order}', OrderEditScreen::class)
 
 Route::screen('orders', OrderListScreen::class)
     ->name('platform.order.list');
+
+// Обратная связь
+Route::screen('callbacks', CallbackListScreen::class)
+    ->name('platform.callback.list');
+
+Route::screen('callback/{callback}', CallbackShowScreen::class)
+    ->name('platform.callback.show');
+
+//Продавцы
+Route::screen('sellers/create', SellerEditScreen::class)
+    ->name('platform.seller.create');
+
+Route::screen('sellers/{seller}', SellerEditScreen::class)
+    ->name('platform.seller.edit');
+
+Route::screen('sellers', SellerListScreen::class)
+    ->name('platform.seller.list');

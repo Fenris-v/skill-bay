@@ -16,4 +16,10 @@ yarn-error.log
 /.phpstorm.meta.php
 /supervisord.pid
 /supervisord.log
-
+/public/assets/js/app.js
+/public/assets/js/manifest.js
+/public/assets/js/vendor.js
+/public/assets/js/vendor.js.LICENSE.txt
+/public/assets/css/app.css
+/public/assets/css/admin.css
+/public/mix-manifest.json
