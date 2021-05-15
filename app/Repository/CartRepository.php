@@ -96,7 +96,7 @@ class CartRepository
         $prepareCollection = fn($item) => [
             $item->id => [
                 'seller_id' => $item->pivot->seller->id,
-                'amount' => $item->pivot->amount,
+                'amount' => $item->amount,
             ]
         ];
         $mergedCartProducts = $userCart->products->mapWithKeys($prepareCollection);
@@ -155,17 +155,8 @@ class CartRepository
         ])->remember(
             'cart|' . $cart->id . '|products',
             $this->ttl(),
-            fn() => Product::with(['sellers'])
-                ->join('cart_product_seller', fn ($join) =>
-                    $join->on('products.id', '=', 'cart_product_seller.product_id')
-                        ->where('cart_product_seller.cart_id', '=', $cart->id)
-                )
-                ->join('product_seller', fn ($join) =>
-                    $join
-                        ->on('products.id', '=', 'product_seller.product_id')
-                        ->on('cart_product_seller.seller_id', '=', 'product_seller.seller_id')
-                )
-                ->select('products.*', 'product_seller.price', 'cart_product_seller.amount', 'product_seller.seller_id')
+            fn() => $cart->products()
+                ->with(['sellers'])
                 ->get()
         );
     }
@@ -202,12 +193,43 @@ class CartRepository
         int  $amount,
         Seller $seller = null
     ): bool {
+        if ($seller) {
+            return $this->addWithSeller($product, $amount, $seller);
+        }
+
         $this->getCart()->products()
             ->attach(
                 $product,
                 [
                     'amount' => $amount,
-                    'seller_id' => $seller->id ?? $product->sellers->random()->id,
+                    'seller_id' => $product->sellers->random()->id,
+                ]
+            )
+        ;
+        Cache::tags([Cart::class])->flush();
+
+        return true;
+    }
+
+    /**
+     * Добавление товара в корзину при явном указании продавца.
+     *
+     * @param  Product $product
+     * @param  int  $amount
+     * @param Seller $seller
+     * @return bool
+     */
+    public function addWithSeller(
+        Product $product,
+        int  $amount,
+        Seller $seller
+    ): bool {
+        $this->getCart()->products()
+            ->attach(
+                $product,
+                [
+                    'amount' => $amount,
+                    'seller_id' => $seller->id,
                 ]
             )
         ;

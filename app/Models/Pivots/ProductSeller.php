@@ -20,9 +20,4 @@ class ProductSeller extends Pivot
     {
         return $this->belongsTo(Product::class);
     }
-
-    public function getPricesAttribute(): float
-    {
-        return $this->seller->products->firstWhere('id', $this->product->id)->pivot->price;
-    }
 }

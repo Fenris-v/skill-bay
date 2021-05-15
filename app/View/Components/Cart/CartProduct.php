@@ -24,7 +24,7 @@ class CartProduct extends Component
         $this->sellers = $product->sellers->map(fn($seller) => [
             'value' => $seller->slug,
             'title' => $seller->title,
-            'selected' => $product->seller_id === $seller->id,
+            'selected' => $product->pivot->seller_id === $seller->id,
         ]);
         $this->productLink = route('products.show', $product->slug);
         $this->priceOld = $product->price;

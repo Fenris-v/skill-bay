@@ -8,6 +8,6 @@
         @endforeach
         <x-cart.cart-total />
     @else
-        <strong>Ваша корзина пуста :(</strong>
+        <strong>{{ __('cartPage.empty') }}</strong>
     @endif
 </div>

@@ -49,8 +49,8 @@ class ProductCartService implements ProductCartServiceContract
         if ($amount > 0) {
             $productInCart = $this->cartRepository->getCart()->products->firstWhere('slug', $product->slug);
             if ($productInCart) {
-                $amount += $productInCart->pivot->amount;
-                if ($seller && $productInCart->pivot->amount !== $amount) {
+                $amount += $productInCart->amount;
+                if ($seller && $productInCart->amount !== $amount) {
                     return $this->changeSellerAndAmount($product, $seller, $amount);
                 } elseif ($seller) {
                     return $this->changeSeller($product, $seller);
@@ -159,10 +159,8 @@ class ProductCartService implements ProductCartServiceContract
     public function total()
     {
         return [
-            'current' => $currentPrice = $this->cartRepository
-                ->getCartProducts()
-                ->reduce(fn($totalPrice, $product) => $totalPrice + $product->price * $product->amount),
-            'old' => $currentPrice,
+            'current' => $this->cartRepository->getCart()->currentPrice,
+            'old' => $this->cartRepository->getCart()->oldPrice,
         ];
     }
 }

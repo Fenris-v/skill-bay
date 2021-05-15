@@ -23,8 +23,14 @@ class Cart extends Model
     {
         return $this
             ->belongsToMany(Product::class, 'cart_product_seller')
+            ->join('product_seller', fn ($join) =>
+                $join
+                    ->on('products.id', '=', 'product_seller.product_id')
+                    ->on('cart_product_seller.seller_id', '=', 'product_seller.seller_id')
+                )
+            ->select('products.*', 'product_seller.price', 'cart_product_seller.amount')
             ->using(ProductSeller::class)
-            ->withPivot('amount', 'seller_id')
+            ->withPivot('seller_id')
         ;
     }
 
