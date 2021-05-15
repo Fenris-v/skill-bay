@@ -12,8 +12,7 @@ class ProductSeller extends Pivot
 {
     public function seller(): BelongsTo
     {
-        return $this->belongsTo(Seller::class)
-        ;
+        return $this->belongsTo(Seller::class);
     }
 
     public function product(): BelongsTo
