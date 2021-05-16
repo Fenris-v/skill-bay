@@ -17,10 +17,28 @@ class OrderController extends Controller
         protected OrdersRepository $ordersRepository
     ) {}
 
+    protected function getProgress()
+    {
+        $order = $this->ordersRepository->getCurrentOrder();
+        $completedSteps = [];
+
+        if ($order->user) {
+            $completedSteps[] = 'personal';
+        }
+        if ($order->deliveryType) {
+            $completedSteps[] = 'delivery';
+        }
+        if ($order->paymentType) {
+            $completedSteps[] = 'payment';
+        }
+
+        return $completedSteps;
+    }
+
     public function stepPersonal()
     {
         return view('pages.main.order', [
-            'completedSteps' => [],
+            'completedSteps' => $this->getProgress(),
             'component' => 'order.personal',
             'order' => $this->ordersRepository->getCurrentOrder(),
         ]);
@@ -50,7 +68,7 @@ class OrderController extends Controller
     public function stepDelivery()
     {
         return view('pages.main.order', [
-            'completedSteps' => ['personal'],
+            'completedSteps' => $this->getProgress(),
             'component' => 'order.delivery',
         ]);
     }
@@ -69,7 +87,7 @@ class OrderController extends Controller
     public function stepPayment()
     {
         return view('pages.main.order', [
-            'completedSteps' => ['personal', 'delivery'],
+            'completedSteps' => $this->getProgress(),
             'component' => 'order.payment',
         ]);
     }
@@ -86,7 +104,7 @@ public function stepPaymentStore(Request $request)
     public function stepAccept()
     {
         return view('pages.main.order', [
-            'completedSteps' => ['personal', 'delivery', 'payment'],
+            'completedSteps' => $this->getProgress(),
             'component' => 'order.accept',
         ]);
     }

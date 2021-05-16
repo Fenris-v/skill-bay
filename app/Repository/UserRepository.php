@@ -49,7 +49,7 @@ class UserRepository
         ]);
         $user = User::create(collect($input)->only(['name', 'phone', 'email', 'password'])->toArray());
         Auth::login($user);
-        Cache::tags([User::class])->flush();
+        Cache::tags([User::class, Cart::class])->flush();
 
         return $user;
     }
