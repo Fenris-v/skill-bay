@@ -31,11 +31,6 @@ class Order extends Model
         return $this->price + $this->discount;
     }
 
-    protected $fillable = [
-        'city',
-        'address',
-    ];
-
     /**
      * @return BelongsTo
      */

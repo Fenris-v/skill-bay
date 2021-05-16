@@ -2,17 +2,23 @@
 
 namespace App\Repository;
 
+use App\Models\DeliveryType;
 use App\Models\Order;
+use App\Models\PaymentType;
+use App\Models\User;
 use App\Services\OrderPaymentService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Validator;
+use Cache;
 
 class OrdersRepository
 {
     const PER_PAGE = 5;
 
-    public function __construct(public OrderPaymentService $payment)
+    public function __construct(public OrderPaymentService $payment, public ConfigRepository $configs)
     {
     }
 
@@ -102,5 +108,93 @@ class OrdersRepository
         return Order::with(['deliveryType', 'paymentType'])
             ->where('user_id', $userId)
             ->latest();
+    }
+
+    /**
+     * Осуществляет валидацию пользовательского ввода
+     *
+     * @param array $values
+     * @param array $rules
+     * @return bool
+     */
+    protected function validate(array $values, array $rules)
+    {
+        Validator::make(
+            $values,
+            $rules
+        )
+            ->validate()
+        ;
+    }
+
+    /**
+     * Возвращает текущий (неоформленный) заказ.
+     *
+     * @return Order
+     */
+    public function getCurrentOrder()
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return Order::make();
+        }
+
+        return Cache::tags([
+            ConfigRepository::GLOBAL_CACHE_TAG,
+            Order::class,
+            User::class
+        ])->remember(
+            'current_order_of_user_' . $user->id,
+            $this->configs->getCacheLifetime(now()->addDay()),
+            fn() => Order
+                ::whereHas(
+                    'user',
+                    fn(Builder $query) => $query->where('id', $user->id)
+                )
+                ->whereDoesntHave('cart')
+                ->firstOrNew()
+        );
+    }
+
+    /**
+     * Сохраняет данные доставки.
+     *
+     * @param array $input
+     * @return Order
+     */
+    public function saveDeliveryStep(array $input): Order
+    {
+        $this->validate($input, [
+            'city' => 'required|min:3|max:255',
+            'address' => 'required|min:3|max:255',
+            'delivery' => 'required|numeric',
+        ]);
+        $order = $this->getCurrentOrder();
+        $order->deliveryType()->associate(DeliveryType::where('id', $input['delivery'])->firstOrFail());
+        $order->update(collect($input)->only(['city', 'address'])->toArray());
+
+        Cache::tags([Order::class])->flush();
+
+        return $order;
+    }
+
+    /**
+     * Возвращает данные оплаты.
+     *
+     * @param array $input
+     * @return Order
+     */
+    public function savePaymentStep(array $input): Order
+    {
+        $this->validate($input, [
+            'payment' => 'required|numeric',
+        ]);
+        $order = $this->getCurrentOrder();
+        $order->paymentType()->associate(PaymentType::where('id', $input['payment'])->firstOrFail());
+        $order->save();
+
+        Cache::tags([Order::class])->flush();
+
+        return $order;
     }
 }

@@ -3,16 +3,16 @@
 namespace App\View\Components\Order;
 
 use App\Models\PaymentType;
-use App\Repository\OrderRepository;
+use App\Repository\OrdersRepository;
 use Illuminate\View\Component;
 
 class Payment extends Component
 {
     public array $payments;
 
-    public function __construct(OrderRepository $orderRepository)
+    public function __construct(OrdersRepository $ordersRepository)
     {
-        $order = $orderRepository->getCurrentOrder();
+        $order = $ordersRepository->getCurrentOrder();
         $this->payments = PaymentType
             ::all()
             ->map(fn($item) => [

@@ -1,4 +1,4 @@
-<div class="Order-block Order-block_OPEN" id="step1">
+<div class="Order-block Order-block_OPEN">
     <header class="Section-header Section-header_sm">
         <h2 class="Section-title">{{ __('orderPage.steps.delivery') }}</h2>
     </header>

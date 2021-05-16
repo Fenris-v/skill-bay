@@ -8,12 +8,9 @@ use Cache;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
-use App\Traits\TimeToLiveCacheTrait;
 
 class UserRepository
 {
-    use TimeToLiveCacheTrait;
-
     public function __construct(protected ConfigRepository $configRepository)
     {}
 
@@ -52,6 +49,7 @@ class UserRepository
         ]);
         $user = User::create(collect($input)->only(['name', 'phone', 'email', 'password'])->toArray());
         Auth::login($user);
+        Cache::tags([User::class])->flush();
 
         return $user;
     }
@@ -64,14 +62,6 @@ class UserRepository
      */
     public function getById(int $id, array $columns = ['*']): User
     {
-        return Cache::tags([
-            ConfigRepository::GLOBAL_CACHE_TAG,
-            User::class,
-        ])->remember(
-            'user|' . $id,
-            $this->ttl(),
-            function() use ($id, $columns) {
-                return User::where('id', $id)->first($columns);
-            }
-        );
+        return User::where('id', $id)->first($columns);
     }
+}

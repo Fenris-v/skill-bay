@@ -148,36 +148,43 @@ Route::post('/order/personal', [OrderController::class, 'stepPersonalStore'])
     ->name('order.personal.store')
 ;
 
-Route::get('/order/delivery', [OrderController::class, 'stepDelivery'])
-    ->name('order.delivery.get')
-    ->breadcrumbs(fn (Trail $trail) =>
-    $trail
-        ->parent('index')
-        ->push(__('orderPage.title'), route('order.personal.get'))
-    )
-;
-Route::post('/order/delivery', [OrderController::class, 'stepDeliveryStore'])
-    ->name('order.delivery.store')
-;
+Route::prefix('/order')
+    ->middleware('auth')
+    ->group(
+        function () {
+            Route::get('/delivery', [OrderController::class, 'stepDelivery'])
+                ->name('order.delivery.get')
+                ->breadcrumbs(fn (Trail $trail) =>
+                $trail
+                    ->parent('index')
+                    ->push(__('orderPage.title'), route('order.personal.get'))
+                )
+            ;
+            Route::post('/delivery', [OrderController::class, 'stepDeliveryStore'])
+                ->name('order.delivery.store')
+            ;
 
-Route::get('/order/payment', [OrderController::class, 'stepPayment'])
-    ->name('order.payment.get')
-    ->breadcrumbs(fn (Trail $trail) =>
-    $trail
-        ->parent('index')
-        ->push(__('orderPage.title'), route('order.payment.get'))
-    )
-;
-Route::post('/order/payment', [OrderController::class, 'stepPaymentStore'])
-    ->name('order.payment.store')
-;
+            Route::get('/payment', [OrderController::class, 'stepPayment'])
+                ->name('order.payment.get')
+                ->breadcrumbs(fn (Trail $trail) =>
+                $trail
+                    ->parent('index')
+                    ->push(__('orderPage.title'), route('order.payment.get'))
+                )
+            ;
+            Route::post('/payment', [OrderController::class, 'stepPaymentStore'])
+                ->name('order.payment.store')
+            ;
 
-Route::get('/order/accept', [OrderController::class, 'stepAccept'])
-    ->name('order.accept.get')
-    ->breadcrumbs(fn (Trail $trail) =>
-    $trail
-        ->parent('index')
-        ->push(__('orderPage.title'), route('order.personal.get'))
+            Route::get('/accept', [OrderController::class, 'stepAccept'])
+                ->name('order.accept.get')
+                ->breadcrumbs(fn (Trail $trail) =>
+                $trail
+                    ->parent('index')
+                    ->push(__('orderPage.title'), route('order.personal.get'))
+                )
+            ;
+        }
     )
 ;
 

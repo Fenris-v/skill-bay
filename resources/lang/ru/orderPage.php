@@ -24,6 +24,10 @@ return [
         'delivery' => [
             'city' => ['label' => 'Город', 'placeholder' => 'Город доставки'],
             'address' => ['label' => 'Адрес', 'placeholder' => 'Адрес доставки'],
+            'type' => ['label' => 'Тип доставки'],
+        ],
+        'payment' => [
+            'type' => ['label' => 'Оплата'],
         ],
     ],
     'buttons' => [

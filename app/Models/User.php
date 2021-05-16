@@ -81,12 +81,22 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class, 'role_users');
     }
 
-    public function setPasswordAttribute($value)
+    /**
+     * Мутатор пароля
+     *
+     * @param string $value
+     */
+    public function setPasswordAttribute(string $value): void
     {
-        $this->attributes['password'] = Hash::make($value);
+        $this->attributes['password'] = password_hash($value, PASSWORD_DEFAULT);
     }
 
-    public function setPhoneAttribute($value)
+    /**
+     * Мутатор номера телефона
+     *
+     * @param string $value
+     */
+    public function setPhoneAttribute(string $value): void
     {
         $this->attributes['phone'] = str_replace([' ', '(', ')', '+7', '-'], '', $value);
     }

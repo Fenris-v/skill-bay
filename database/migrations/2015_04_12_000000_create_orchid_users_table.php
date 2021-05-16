@@ -23,7 +23,7 @@ class CreateOrchidUsersTable extends Migration
             [
                 'name' => 'admin',
                 'email' => 'admin@admin.com',
-                'password' => password_hash('secret', PASSWORD_DEFAULT),
+                'password' => 'secret',
                 'permissions' => [
                     'platform.index' => true,
                     'platform.systems.index' => true,

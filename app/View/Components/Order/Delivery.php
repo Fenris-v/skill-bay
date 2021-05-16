@@ -5,16 +5,16 @@ namespace App\View\Components\Order;
 use App\Models\Order;
 use Illuminate\View\Component;
 use App\Models\DeliveryType;
-use App\Repository\OrderRepository;
+use App\Repository\OrdersRepository;
 
 class Delivery extends Component
 {
     public array $deliveries;
     public Order $order;
 
-    public function __construct(OrderRepository $orderRepository)
+    public function __construct(OrdersRepository $ordersRepository)
     {
-        $this->order = $orderRepository->getCurrentOrder();
+        $this->order = $ordersRepository->getCurrentOrder();
         $this->deliveries = DeliveryType
             ::all()
             ->map(fn($item) => [
