@@ -34,7 +34,8 @@ class ProductFactory extends Factory
             'rating_sort' => $this->faker->numberBetween(1, 999),
             'category_id' => $this->faker->randomElement($categories)->id,
             'created_at' => $this->faker->dateTimeBetween('-60 days', now()),
-            'main_image_id' => Attachment::factory()
+            'main_image_id' => Attachment::factory(),
+            'limited' => $this->faker->boolean(),
         ];
     }
 }

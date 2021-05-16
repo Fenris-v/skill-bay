@@ -23,6 +23,8 @@ class CreateProductsTable extends Migration
                 $table->string('vendor', 255);
                 $table->integer('rating_sort')->default(0);
                 $table->unsignedBigInteger('category_id');
+                $table->boolean('limited')->default(0);
+                $table->boolean('daily_offer')->default(0);
                 $table->softDeletes();
                 $table->timestamps();
 

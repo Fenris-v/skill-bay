@@ -6,6 +6,7 @@ use Alert;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Fields\CheckBox;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
@@ -79,6 +80,10 @@ class ProductEditScreen extends Screen
                 Input::make('product.vendor')
                     ->required()
                     ->title(__('admin.product.edit.labels.vendor')),
+                CheckBox::make('product.limited')
+                    ->value(0)
+                    ->title(__('admin.product.edit.labels.limited'))
+                    ->sendTrueOrFalse(),
             ]),
         ];
     }

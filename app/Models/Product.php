@@ -30,6 +30,7 @@ class Product extends Model
         'slug',
         'description',
         'vendor',
+        'limited',
     ];
 
     /**
