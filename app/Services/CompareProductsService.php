@@ -5,47 +5,62 @@ namespace App\Services;
 
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Collection;
+use App\Repository\CompareProductRepository;
 
 class CompareProductsService
 {
+    private $compareProductRepository;
 
-    private $products;
-
-    public function __construct()
+    /**
+     * @param CompareProductRepository $compareProductRepository
+     */
+    public function __construct(CompareProductRepository $compareProductRepository)
     {
-        $this->products = Product::factory()->count(5)->make();
+        $this->compareProductRepository = $compareProductRepository;
     }
 
     /**
      * @param Product $product
-     * @return $this
+     * @return bool
      */
-    public function add(Product $product) : CompareProductsService
+    public function add(Product $product) : bool
     {
-        $this->products->push($product);
-        return $this;
-    }
+        if (!$this->compareProductRepository->contains($product->id)) {
+            $this->compareProductRepository->add($product);
 
-    /**
-     * @param Product $product
-     * @return $this
-     */
-    public function remove(Product $product) : CompareProductsService
-    {
-        if ($key = $this->products->search($product)) {
-            $this->products->forget($key);
+            return true;
         }
 
-        return $this;
+        return false;
+    }
+
+    /**
+     * @param Product $product
+     * @return bool
+     */
+    public function remove(Product $product) : bool
+    {
+        if ($this->compareProductRepository->contains($product->id)) {
+            $this->compareProductRepository->remove($product);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
      * @param int $count
-     * @return Collection
+     * @return Collection|Array
      */
-    public function getProducts($count = 3) : Collection
+    public function getProducts($count = 3) : Collection|Array
     {
-        return $this->products->take($count);
+        return $this
+            ->compareProductRepository
+            ->get()
+            ->load('images')
+            ->load('specifications')
+            ->take($count);
     }
 
     /**
@@ -53,6 +68,9 @@ class CompareProductsService
      */
     public function count() : int
     {
-        return $this->products->count();
+        return $this
+            ->compareProductRepository
+            ->count();
     }
+
 }

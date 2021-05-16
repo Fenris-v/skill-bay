@@ -5,10 +5,13 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Seller;
 use App\Models\Product;
-use Illuminate\Support\Facades\DB;
+use Database\Seeders\Traits\ReplicateAttachmentWithoutGenerateImageTrait;
+use Illuminate\Support\Collection;
 
 class SellerSeeder extends Seeder
 {
+    use ReplicateAttachmentWithoutGenerateImageTrait;
+
     /**
      * Run the database seeds.
      *
@@ -16,17 +19,29 @@ class SellerSeeder extends Seeder
      */
     public function run()
     {
-        $products = Product::select('id')->get();
-        Seller::factory()
-            ->count($products->count())
-            ->create()
-            ->each(
-                fn($seller, $key) => $seller->products()->attach(
-                    (!$key ? $products : $products->filter(fn($item) => !$item->sellers->count()))
-                        ->random(rand(4, 8))
-                        ->mapWithKeys(fn($item) => [$item->id => ['price' => rand(10000, 1000000) / 100]])
-                ),
-            )
-        ;
+        $products = Product::all();
+        $doSeed = function(Collection $products, int $imageId) {
+            if ($products->isEmpty()) {
+                return null;
+            }
+            Seller::factory([
+                'image_id' => $imageId,
+            ])
+                ->hasAttached($products, fn() => [
+                    'price' => rand(10, 1000) / 100,
+                ])
+                ->create();
+        };
+        for ($i = 0; $i < 10; $i++) {
+            if (!$i) {
+                $doSeed($products, $this->getRandomAttachmentId());
+            } else {
+                $productsAmount = $products->count();
+                $doSeed(
+                    $products->random(rand(floor($productsAmount / 2), $productsAmount)),
+                    $this->getRandomAttachmentId()
+                );
+            }
+        }
     }
 }

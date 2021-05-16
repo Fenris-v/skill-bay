@@ -8,17 +8,14 @@ use Cache;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use App\Traits\TimeToLiveCacheTrait;
 
 class UserRepository
 {
-    private ConfigRepository $configRepository;
-    private int $ttl;
+    use TimeToLiveCacheTrait;
 
-    public function __construct()
-    {
-        $this->configRepository = app(ConfigRepository::class);
-        $this->ttl = $this->configRepository->getCacheLifetime(now()->addDay());
-    }
+    public function __construct(protected ConfigRepository $configRepository)
+    {}
 
     /**
      * Осуществляет валидацию пользовательского ввода
@@ -59,4 +56,22 @@ class UserRepository
         return $user;
     }
 
-}
+    /**
+     * Возвращает юзера по id
+     * @param int $id
+     * @param array $columns
+     * @return User
+     */
+    public function getById(int $id, array $columns = ['*']): User
+    {
+        return Cache::tags([
+            ConfigRepository::GLOBAL_CACHE_TAG,
+            User::class,
+        ])->remember(
+            'user|' . $id,
+            $this->ttl(),
+            function() use ($id, $columns) {
+                return User::where('id', $id)->first($columns);
+            }
+        );
+    }

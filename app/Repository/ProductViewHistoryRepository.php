@@ -9,10 +9,9 @@ class ProductViewHistoryRepository
 {
     public int $historySize;
 
-//    public function __construct(public ConfigRepository $configs)
-//    {
-//        $this->historySize = $this->configs->getHistorySize();
-//    }
+    public function __construct(public ConfigRepository $configs)
+    {
+    }
 
     /**
      * Добавление товара в список просмотренных товаров.
@@ -35,8 +34,10 @@ class ProductViewHistoryRepository
 
         $count = $this->count($userId);
 
-        if ($count > $this->historySize) {
-            $this->remove($count - $this->historySize, $userId);
+        $historySize = $this->configs->getHistorySize();
+
+        if ($count > $historySize) {
+            $this->remove($count - $historySize, $userId);
         }
 
         return $added->exists();
@@ -45,15 +46,21 @@ class ProductViewHistoryRepository
     /**
      * Возвращает коллекцию просмотренных товаров.
      *
-     * @param $userId
+     * @param int $userId
+     * @param int|null $limit
      * @return  Collection
      */
-    public function get($userId): Collection
+    public function get(int $userId, ?int $limit = null): Collection
     {
         return HistoryView::with('products')
             ->byUser($userId)
             ->latest('updated_at')
-            ->get()
+            ->when(
+                $limit,
+                function ($query) use ($limit) {
+                    $query->take($limit);
+                }
+            )->get()
             ->pluck('products');
     }
 

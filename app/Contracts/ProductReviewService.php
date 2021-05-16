@@ -5,7 +5,7 @@ namespace App\Contracts;
 
 use App\Models\Product;
 use App\Models\ProductReview;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface ProductReviewService
 {
@@ -13,18 +13,25 @@ interface ProductReviewService
      * Добавить отзыв к товару.
      *
      * @param  Product  $product
-     * @param  string  $review
+     * @param  string  $name
+     * @param  string  $email
+     * @param  string  $comment
      * @return ProductReview
      */
-    public function addReview(Product $product, string $review);
+    public function addReview(
+        Product $product,
+        string $name,
+        string $email,
+        string $comment
+    );
 
     /**
      * Возвращает список отзывов к товару.
      *
      * @param  Product  $product
-     * @return Collection|ProductReview[]
+     * @return LengthAwarePaginator
      */
-    public function getReviews(Product $product);
+    public function getReviewListPaginator(Product $product);
 
     /**
      * Получить количество отзывов для товара.

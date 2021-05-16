@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Orchid\Platform\Models\User as Authenticatable;
 use Illuminate\Support\Facades\Hash;
 
@@ -86,5 +89,23 @@ class User extends Authenticatable
     public function setPhoneAttribute($value)
     {
         $this->attributes['phone'] = str_replace([' ', '(', ')', '+7', '-'], '', $value);
+    }
+
+    /**
+     * Связь с посетителями
+     * @return HasOne
+     */
+    public function visitor(): HasOne
+    {
+        return $this->HasOne(Visitor::class);
+    }
+
+    /**
+     * Связь с просмотренными товарами
+     * @return HasMany
+     */
+    public function historyViews(): HasMany
+    {
+        return $this->HasMany(HistoryView::class);
     }
 }

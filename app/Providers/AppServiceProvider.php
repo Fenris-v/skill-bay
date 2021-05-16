@@ -5,11 +5,13 @@ namespace App\Providers;
 use App\Contracts\ProductViewHistoryService as ProductViewHistoryServiceContract;
 use App\Contracts\OrderPaymentService as OrderPaymentServiceContract;
 use App\Contracts\ProductReviewService as ProductReviewServiceContract;
+use App\Services\CompareProductsService;
 use App\Services\OrderPaymentService;
 use App\Services\ProductCartService;
 use App\Contracts\ProductCartService as ProductCartServiceContract;
 use App\Services\ProductReviewService;
 use App\Services\ProductViewHistoryService;
+use App\Services\VisitorService;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -47,6 +49,18 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(
             ProductReviewServiceContract::class,
             ProductReviewService::class
+        );
+
+        // Сервис для работы со списком товаров для сравнения
+        $this->app->singleton(
+            CompareProductsService::class,
+            CompareProductsService::class
+        );
+
+        // Сервис для получения объекта Visitor
+        $this->app->singleton(
+            VisitorService::class,
+            VisitorService::class
         );
 
         // Сервис для работы с flash-сообщениями для отображения сервисных alert сообщений.
