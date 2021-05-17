@@ -25,13 +25,20 @@ class OrderFactory extends Factory
      */
     public function definition()
     {
+        $user = User::first('id');
+
         return [
             'cart_id' => Cart::factory(),
-            'user_id' => User::factory(),
+            'user_id' => $this->faker->numberBetween(0, 1) ? $user->id : User::factory(),
             'delivery_type_id' => DeliveryType::inRandomOrder()->first(),
             'payment_type_id' => PaymentType::inRandomOrder()->first(),
             'city' => $this->faker->city,
             'address' => $this->faker->streetAddress,
+            'price' => $this->faker->randomFloat(2, 1, 500),
+            'discount' => $this->faker->numberBetween(0, 1)
+                ? $this->faker->randomFloat(2, 1, 100)
+                : null,
+            'created_at' => $this->faker->dateTimeBetween('-30 days', 'now')
         ];
     }
 }

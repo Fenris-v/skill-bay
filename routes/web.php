@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\HistoryProductController;
 use App\Http\Controllers\InfoPageController;
+use App\Http\Controllers\OrdersHistoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellerController;
-use App\Http\Controllers\CompareProductController;
+use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -26,45 +28,40 @@ Route::get(
     }
 )
     ->name('index')
-    ->breadcrumbs(fn (Trail $trail) =>
-        $trail->push(__('navigation.main'), route('index'))
-    )
-;
+    ->breadcrumbs(
+        fn(Trail $trail) => $trail->push(__('navigation.main'), route('index'))
+    );
 
 Route::get('/catalog/{slug?}', [ProductController::class, 'index'])
     ->name('products.index')
-    ->breadcrumbs(fn (Trail $trail, $slug = null) =>
-        $trail
+    ->breadcrumbs(
+        fn(Trail $trail, $slug = null) => $trail
             ->parent('index')
             ->push(__('navigation.catalog'), route('products.index', $slug))
-    )
-;
+    );
 
 Route::get('/products/{product}/reviews', [ProductController::class, 'reviews'])
     ->name('products.reviews');
 Route::post('/products/{product}', [ProductController::class, 'storeReview'])
     ->name('products.store-review');
 Route::get('/products', fn() => redirect()->route('products.index'))
-    ->name('products')
-;
+    ->name('products');
 
 Route::get('/products/{slug}', [ProductController::class, 'show'])
     ->name('products.show')
-    ->breadcrumbs(fn (Trail $trail, $product) =>
-        $trail
+    ->breadcrumbs(
+        fn(Trail $trail, $product) => $trail
             ->parent('index')
             ->push(__('navigation.product'), route('products.show', $product))
-    )
-;
+    );
 
 Route::get('/sellers/{seller}', [SellerController::class, 'show'])
     ->name('sellers')
-    ->breadcrumbs(fn (Trail $trail, $seller) =>
-        $trail
+    ->breadcrumbs(
+        fn(Trail $trail, $seller) => $trail
             ->parent('index')
             ->push(__('navigation.seller'), route('sellers', $seller))
-    )
-;
+    );
 
 Route::get('/compare', [ProductController::class, 'compare'])
     ->name('compare')
@@ -75,21 +72,93 @@ Route::get('/compare', [ProductController::class, 'compare'])
     )
 ;
 
-Route::post('/product/{product}/add-to-cart', [ProductController::class, 'addToCart'])
-    ->name('products.addToCart');
-Route::post('/product/{product}/seller/{seller}/add-to-cart', [ProductController::class, 'addToCartWithSeller'])
-    ->name('products.addToCartWithSeller');
-Route::post('/product/{product}/add-to-compare', [ProductController::class, 'addToCompare'])
-    ->name('products.addToCompare');
-Route::post('/product/{product}/remove-from-compare', [ProductController::class, 'removeFromCompare'])
-    ->name('products.removeFromCompare');
+Route::prefix('/products')
+    ->group(
+        function () {
+            Route::post('/{slug}/add-to-cart', [ProductController::class, 'addToCart'])
+                ->name('products.addToCart');
+            Route::post('/{productSlug}/seller/{sellerSlug}/add-to-cart', [ProductController::class, 'addToCartWithSeller'])
+                ->name('products.addToCartWithSeller');
+            Route::post('/{slug}/add-to-compare', [ProductController::class, 'addToCompare'])
+                ->name('products.addToCompare');
+            Route::post('/{product}/remove-from-compare', [ProductController::class, 'removeFromCompare'])
+                ->name('products.removeFromCompare');
+        }
+    )
+;
 
-Route::get('/account/views', [HistoryProductController::class, 'index'])
-    ->name('viewed_history')
-    ->breadcrumbs(
-        function (Trail $trail) {
-            $trail->parent('index')
-                ->push(__('navigation.history'), route('viewed_history'));
+Route::prefix('/cart')
+    ->group(
+        function () {
+            Route::get('/', [CartController::class, 'show'])
+                ->name('cart.show')
+                ->breadcrumbs(fn (Trail $trail) =>
+                $trail
+                    ->parent('index')
+                    ->push(__('navigation.cart'), route('cart.show'))
+                )
+            ;
+            Route::patch('/{slug}/remove', [CartController::class, 'removeProduct'])
+                ->name('cart.removeProduct');
+            Route::patch('/{slug}/change-amount', [CartController::class, 'changeProductAmount'])
+                ->name('cart.changeProductAmount');
+            Route::patch('/{productSlug}/change-seller', [CartController::class, 'changeProductSeller'])
+                ->name('cart.changeProductSeller');
+        }
+    )
+;
+
+Route::prefix('/account')
+    ->middleware('auth')
+    ->group(
+        function () {
+            Route::get('/', [AccountController::class, 'index'])
+                ->name('account')
+                ->breadcrumbs(
+                    function (Trail $trail) {
+                        $trail->parent('index')
+                            ->push(__('navigation.account'), route('account'));
+                    }
+                );
+
+            Route::get('/profile', [AccountController::class, 'show'])
+                ->name('profile')
+                ->breadcrumbs(
+                    function (Trail $trail) {
+                        $trail->parent('account')
+                            ->push(__('navigation.account'), route('profile'));
+                    }
+                );
+
+            Route::get('/views', [HistoryProductController::class, 'index'])
+                ->name('viewed_history')
+                ->breadcrumbs(
+                    function (Trail $trail) {
+                        $trail->parent('account')
+                            ->push(__('navigation.history'), route('viewed_history'));
+                    }
+                );
+
+            Route::get('/orders', [OrdersHistoryController::class, 'index'])
+                ->name('orders.index')
+                ->breadcrumbs(
+                    function (Trail $trail) {
+                        $trail->parent('account')
+                            ->push(__('navigation.orders'), route('orders.index'));
+                    }
+                );
+
+            Route::get('/orders/{order}', [OrdersHistoryController::class, 'show'])
+                ->name('orders.show')
+                ->breadcrumbs(
+                    function (Trail $trail, $order) {
+                        $trail->parent('orders.index')
+                            ->push(
+                                __('navigation.order', ['number' => $order]),
+                                route('orders.show', $order)
+                            );
+                    }
+                );
         }
     );
 
@@ -112,3 +181,11 @@ Route::get('/about', [InfoPageController::class, 'about'])
                 ->push(__('navigation.about'), route('about'));
         }
     );
+
+// TODO: заменить этот маршрут реальным
+Route::get(
+    '/login',
+    function () {
+        dd('login');
+    }
+)->name('login');

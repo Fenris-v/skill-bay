@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Pivots\CartProductSeller;
 use App\Traits\CacheFlushableAfterCRUDModelTrait;
 use Illuminate\Database\Eloquent\Builder;
 use App\Traits\Models\Sluggable;
@@ -9,6 +10,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Orchid\Screen\AsSource;
 
@@ -117,8 +120,7 @@ class Product extends Model
     }
 
     /**
-     * Связь с главной картинкой.
-     *
+     * Связь с главной картинкой
      * @return BelongsTo
      */
     public function image(): BelongsTo
@@ -132,5 +134,24 @@ class Product extends Model
     public function getAllImagesAttribute()
     {
         return collect([$this->image])->merge($this->images);
+    }
+
+    /**
+     * Связь с просмотренными товарами
+     * @return HasMany
+     * @return HasMany
+     */
+    public function historyViews(): HasMany
+    {
+        return $this->HasMany(HistoryView::class);
+    }
+
+    /**
+     * Связь с пивот моделью корзины
+     * @return HasOne
+     */
+    public function cart(): HasOne
+    {
+        return $this->hasOne(CartProductSeller::class);
     }
 }

@@ -3,12 +3,9 @@
 namespace App\Orchid\Screens\Category;
 
 use App\Models\Category;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\File;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\CheckBox;
 use Orchid\Screen\Fields\Cropper;
-use Orchid\Screen\Fields\Relation;
 use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;

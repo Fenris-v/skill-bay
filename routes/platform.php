@@ -22,6 +22,8 @@ use App\Orchid\Screens\User\UserListScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
 use App\Orchid\Screens\Category\CategoryEditScreen;
 use App\Orchid\Screens\Category\CategoryListScreen;
+use App\Orchid\Screens\Seller\SellerEditScreen;
+use App\Orchid\Screens\Seller\SellerListScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -181,3 +183,13 @@ Route::screen('callbacks', CallbackListScreen::class)
 
 Route::screen('callback/{callback}', CallbackShowScreen::class)
     ->name('platform.callback.show');
+
+//Продавцы
+Route::screen('sellers/create', SellerEditScreen::class)
+    ->name('platform.seller.create');
+
+Route::screen('sellers/{seller}', SellerEditScreen::class)
+    ->name('platform.seller.edit');
+
+Route::screen('sellers', SellerListScreen::class)
+    ->name('platform.seller.list');

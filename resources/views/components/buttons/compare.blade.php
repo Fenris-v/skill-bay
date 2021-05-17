@@ -1,5 +1,5 @@
 <x-wrappers.button
-        class="btn_default"
-        type="submit"
-        icon="icons.card.change"
+    class="btn btn_default"
+    type="submit"
+    icon="icons.card.change"
 />
