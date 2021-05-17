@@ -72,29 +72,41 @@ Route::get('/compare', [ProductController::class, 'compare'])
     )
 ;
 
-Route::post('/products/{slug}/add-to-cart', [ProductController::class, 'addToCart'])
-    ->name('products.addToCart');
-Route::post('/products/{productSlug}/seller/{sellerSlug}/add-to-cart', [ProductController::class, 'addToCartWithSeller'])
-    ->name('products.addToCartWithSeller');
-Route::post('/products/{slug}/add-to-compare', [ProductController::class, 'addToCompare'])
-    ->name('products.addToCompare');
-Route::post('/products/{product}/remove-from-compare', [ProductController::class, 'removeFromCompare'])
-    ->name('products.removeFromCompare');
-
-Route::get('/cart', [CartController::class, 'show'])
-    ->name('cart.show')
-    ->breadcrumbs(fn (Trail $trail) =>
-    $trail
-        ->parent('index')
-        ->push(__('navigation.cart'), route('cart.show'))
+Route::prefix('/products')
+    ->group(
+        function () {
+            Route::post('/{slug}/add-to-cart', [ProductController::class, 'addToCart'])
+                ->name('products.addToCart');
+            Route::post('/{productSlug}/seller/{sellerSlug}/add-to-cart', [ProductController::class, 'addToCartWithSeller'])
+                ->name('products.addToCartWithSeller');
+            Route::post('/{slug}/add-to-compare', [ProductController::class, 'addToCompare'])
+                ->name('products.addToCompare');
+            Route::post('/{product}/remove-from-compare', [ProductController::class, 'removeFromCompare'])
+                ->name('products.removeFromCompare');
+        }
     )
 ;
-Route::patch('/cart/{slug}/remove', [CartController::class, 'removeProduct'])
-    ->name('cart.removeProduct');
-Route::patch('/cart/{slug}/change-amount', [CartController::class, 'changeProductAmount'])
-    ->name('cart.changeProductAmount');
-Route::patch('/cart/{productSlug}/change-seller', [CartController::class, 'changeProductSeller'])
-    ->name('cart.changeProductSeller');
+
+Route::prefix('/cart')
+    ->group(
+        function () {
+            Route::get('/', [CartController::class, 'show'])
+                ->name('cart.show')
+                ->breadcrumbs(fn (Trail $trail) =>
+                $trail
+                    ->parent('index')
+                    ->push(__('navigation.cart'), route('cart.show'))
+                )
+            ;
+            Route::patch('/{slug}/remove', [CartController::class, 'removeProduct'])
+                ->name('cart.removeProduct');
+            Route::patch('/{slug}/change-amount', [CartController::class, 'changeProductAmount'])
+                ->name('cart.changeProductAmount');
+            Route::patch('/{productSlug}/change-seller', [CartController::class, 'changeProductSeller'])
+                ->name('cart.changeProductSeller');
+        }
+    )
+;
 
 Route::prefix('/account')
     ->middleware('auth')
