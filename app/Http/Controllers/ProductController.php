@@ -101,6 +101,10 @@ class ProductController extends Controller
         Product $product,
         ProductReviewService $productReviewService
     ) {
+        if (! auth()->check()) {
+            abort(403);
+        }
+
         $name = $request->get('name');
         $email = $request->get('email');
         $comment = $request->get('comment');
