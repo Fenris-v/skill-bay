@@ -5,6 +5,7 @@ namespace App\Contracts;
 
 
 use App\Models\Product;
+use App\Models\Seller;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -20,9 +21,14 @@ interface ProductCartService
      *
      * @param  Product  $product
      * @param  int  $amount
+     * @param  Seller|null  $seller
      * @return bool
      */
-    public function add(Product $product, int $amount = 1);
+    public function add(
+        Product $product,
+        int $amount,
+        Seller $seller = null
+    ): bool;
 
     /**
      * Удаление товара из корзины.
@@ -30,7 +36,7 @@ interface ProductCartService
      * @param  Product  $product
      * @return bool
      */
-    public function remove(Product $product);
+    public function remove(Product  $product): bool;
 
     /**
      * Изменяет количество товара в корзине.
@@ -39,7 +45,22 @@ interface ProductCartService
      * @param  int  $amount
      * @return bool
      */
-    public function changeAmount(Product $product, int $amount);
+    public function changeAmount(
+        Product  $product,
+        int $amount
+    ): bool;
+
+    /**
+     * Изменяет продавца у товара в корзине.
+     *
+     * @param  Product  $product
+     * @param  Seller  $seller
+     * @return bool
+     */
+    public function changeSeller(
+        Product  $product,
+        Seller  $seller
+    ): bool;
 
     /**
      * Возвращает коллекцию товаров в корзине.
