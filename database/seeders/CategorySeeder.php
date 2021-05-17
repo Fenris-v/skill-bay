@@ -15,7 +15,7 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        $categories = Category::factory()
+        $categories = Category::factory(['is_hot' => false])
             ->count(5)
             ->has(Category::factory()->count(2), 'children')
             ->create();

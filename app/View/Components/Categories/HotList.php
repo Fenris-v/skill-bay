@@ -23,14 +23,7 @@ class HotList extends Component
      */
     public function __construct(HotProductCategoriesService $service)
     {
-        $this->hotCategories = \Cache::tags([ConfigRepository::GLOBAL_CACHE_TAG])
-            ->remember(
-                'hot_categories',
-                now()->addDay(),
-                function () use ($service) {
-                    return $service->get();
-                }
-            );
+        $this->hotCategories = $service->get();
     }
 
     /**

@@ -43,8 +43,8 @@ class CategoryFactory extends Factory
             'slug' => $slug,
             'name' => $name,
             'icon' => $icons[rand(0, count($icons) - 1)],
-            'is_hot' => false,
-            'hot_order' => 0,
+            'is_hot' => $this->faker->boolean,
+            'hot_order' => $this->faker->numberBetween(0, 100),
             'image_id' => Attachment::factory(),
         ];
     }
