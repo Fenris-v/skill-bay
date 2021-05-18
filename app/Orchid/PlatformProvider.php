@@ -43,6 +43,10 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('list')
                 ->route('platform.product.list'),
 
+            ItemMenu::label(__('admin.category.categories'))
+                ->icon('list')
+                ->route('platform.category.list'),
+
             ItemMenu::label(__('admin.product-review.product-reviews'))
                 ->icon('list')
                 ->route('platform.product-review.list'),

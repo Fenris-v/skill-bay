@@ -20,10 +20,13 @@ use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
+use App\Orchid\Screens\Category\CategoryEditScreen;
+use App\Orchid\Screens\Category\CategoryListScreen;
 use App\Orchid\Screens\Seller\SellerEditScreen;
 use App\Orchid\Screens\Seller\SellerListScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -163,6 +166,16 @@ Route::screen('orders/{order}', OrderEditScreen::class)
 
 Route::screen('orders', OrderListScreen::class)
     ->name('platform.order.list');
+
+// Категории товаров.
+Route::screen('categories/create', CategoryEditScreen::class)
+    ->name('platform.category.create');
+
+Route::screen('categories/{category}', CategoryEditScreen::class)
+    ->name('platform.category.edit');
+
+Route::screen('categories', CategoryListScreen::class)
+    ->name('platform.category.list');
 
 // Обратная связь
 Route::screen('callbacks', CallbackListScreen::class)
