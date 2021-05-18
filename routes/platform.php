@@ -131,7 +131,7 @@ Route::screen('contacts/edit', InfoEditScreen::class)
 Route::screen('products/create', ProductEditScreen::class)
     ->name('platform.product.create');
 
-Route::screen('products/{product}', ProductEditScreen::class)
+Route::screen('product/{product}', ProductEditScreen::class)
     ->name('platform.product.edit');
 
 Route::screen('products', ProductListScreen::class)

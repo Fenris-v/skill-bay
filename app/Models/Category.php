@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Pivots\ProductSeller;
 use App\Traits\Models\Sluggable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\ProductReview;
-use Illuminate\Database\Seeder;
 use App\Models\Product;
-use App\Models\Attachment;
+use App\Models\ProductReview;
 use Database\Seeders\Traits\ReplicateAttachmentWithoutGenerateImageTrait;
+use Illuminate\Database\Seeder;
 
 class ProductSeeder extends Seeder
 {
@@ -19,17 +18,14 @@ class ProductSeeder extends Seeder
      */
     public function run()
     {
-        Product::factory([
-            'main_image_id' => '',
-        ])
+        Product::factory()
             ->count(50)
             ->has(ProductReview::factory()->count(5), 'reviews')
-            ->create([
-                'main_image_id' => $this->getRandomAttachmentId(),
-            ])
-            ->each(fn($product) => $product->images()->attach(
-                Attachment::create($this->getReplicatedAttachment())
-            ))
-        ;
+            ->create(['main_image_id' => $this->getRandomAttachmentId()])
+            ->each(
+                fn($product) => $product->images()->saveMany(
+                    [$this->getReplicatedAttachment(), $this->getReplicatedAttachment()]
+                )
+            );
     }
 }

@@ -3,9 +3,14 @@
 namespace App\Orchid\Screens\Product;
 
 use App\Models\Product;
+use App\Orchid\Layouts\Product\ProductFiltersLayout;
 use App\Orchid\Layouts\Product\ProductListLayout;
+use Illuminate\Http\Request;
+use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Link;
+use Orchid\Screen\Layout;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Toast;
 
 class ProductListScreen extends Screen
 {
@@ -31,14 +36,18 @@ class ProductListScreen extends Screen
     public function query(): array
     {
         return [
-            'products' => Product::paginate(),
+            'products' => Product::with(['category', 'image'])
+                ->filters()
+                ->defaultSort('rating_sort')
+                ->filtersApplySelection(ProductFiltersLayout::class)
+                ->paginate(),
         ];
     }
 
     /**
      * Button commands.
      *
-     * @return \Orchid\Screen\Action[]
+     * @return Action[]
      */
     public function commandBar(): array
     {
@@ -52,12 +61,25 @@ class ProductListScreen extends Screen
     /**
      * Views.
      *
-     * @return \Orchid\Screen\Layout[]|string[]
+     * @return Layout[]
      */
     public function layout(): array
     {
         return [
+            ProductFiltersLayout::class,
             ProductListLayout::class,
         ];
+    }
+
+    /**
+     * Удаление продукта
+     * @param Request $request
+     */
+    public function remove(Request $request): void
+    {
+        Product::findOrFail($request->get('id'))
+            ->delete();
+
+        Toast::error(__('admin.products.deleted'));
     }
 }
