@@ -2,10 +2,10 @@
 <div class="Section-column">
     <div class="Section-columnSection Section-columnSection_mark">
         <header class="Section-columnHeader">
-            <strong class="Section-columnTitle">Предложение дня</strong>
+            <strong class="Section-columnTitle">{{ __('dailyOffer.title') }}</strong>
         </header>
         <div class="Card">
-            <a class="Card-picture" href="{{ route('products.show', [$product]) }}"><img src="{{ $product->image->url() }}" alt="card.jpg"/></a>
+            <a class="Card-picture" href="{{ route('products.show', [$product]) }}"><img src="{{ $product->image->url() }}" alt="{{ $product->title }}"/></a>
             <div class="Card-content">
                 <strong class="Card-title"><a href="{{ route('products.show', [$product]) }}">{{ $product->title }}</a></strong>
                 <div class="Card-description">
@@ -18,22 +18,22 @@
                 <div class="CountDown" data-date="{{ $time->format('d.m.Y H:i') }}">
                     <div class="CountDown-block">
                         <div class="CountDown-wrap">
-                            <div class="CountDown-days"></div><span class="CountDown-label">дней</span>
+                            <div class="CountDown-days"></div><span class="CountDown-label">{{ __('dailyOffer.timer.days') }}</span>
                         </div>
                     </div>
                     <div class="CountDown-block">
                         <div class="CountDown-wrap">
-                            <div class="CountDown-hours"></div><span class="CountDown-label">часов</span>
+                            <div class="CountDown-hours"></div><span class="CountDown-label">{{ __('dailyOffer.timer.hours') }}</span>
                         </div>
                     </div>
                     <div class="CountDown-block">
                         <div class="CountDown-wrap">
-                            <div class="CountDown-minutes"></div><span class="CountDown-label">минут</span>
+                            <div class="CountDown-minutes"></div><span class="CountDown-label">{{ __('dailyOffer.timer.minutes') }}</span>
                         </div>
                     </div>
                     <div class="CountDown-block">
                         <div class="CountDown-wrap">
-                            <div class="CountDown-secs"></div><span class="CountDown-label">секунд</span>
+                            <div class="CountDown-secs"></div><span class="CountDown-label">{{ __('dailyOffer.timer.seconds') }}</span>
                         </div>
                     </div>
                 </div>

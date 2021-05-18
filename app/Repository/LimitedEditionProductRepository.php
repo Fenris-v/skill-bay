@@ -3,7 +3,6 @@
 
 namespace App\Repository;
 
-
 use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -11,59 +10,81 @@ use Cache;
 
 class LimitedEditionProductRepository
 {
+    /**
+     * @var ConfigRepository
+     */
     private $configRepository;
 
+    /**
+     * LimitedEditionProductRepository constructor.
+     * @param ConfigRepository $configRepository
+     */
     public function __construct(ConfigRepository $configRepository)
     {
         $this->configRepository = $configRepository;
     }
 
     /**
-     * Возвращает 16 случайных товаров с отметкой "Ограниченный тираж"
-     *
+     * Возвращает товары с отметкой "Ограниченный тираж"
      * @return Collection|Product[]
      */
     public function get($amount)
     {
-        return $this->getAll()
-            ->where('daily_offer', 0)
-            ->whereNotIn('id', $this->getDailyOffer()->id)
-            ->shuffle()
-            ->take($amount);
-    }
-
-    /**
-     * Возвращает все товары с отметкой "Ограниченный тираж"
-     *
-     * @return Collection|Product[]
-     */
-    public function getAll()
-    {
         $ttl = $this->configRepository->getCacheLifetime(now()->addDay());
+
+        $dailyOfferId = $this->getDailyOfferId();
 
         return Cache::tags([
             ConfigRepository::GLOBAL_CACHE_TAG,
             Product::PRODUCT_CACHE_TAGS
-        ])->remember('products_limited', $ttl, function () {
-            return Product::where('limited', 1)
-                ->get();
+        ])->remember(
+            'products_limited_without_' . $dailyOfferId . '_amount_' . $amount, $ttl,
+            function () use ($amount, $dailyOfferId) {
+                return Product::where('limited', 1)
+                    ->where('id', '!=', $dailyOfferId)
+                    ->orderBy('rating_sort')
+                    ->take($amount)
+                    ->with('category')
+                    ->with('image')
+                    ->get();
+            });
+    }
+
+    /**
+     * Возвращает товар "Предложение дня"
+     * @return Product
+     */
+    public function getDailyOffer()
+    {
+        $ttl = $this->configRepository->getCacheLifetime(now()->addDay());
+
+        $dailyOfferId = $this->getDailyOfferId();
+
+        return Cache::tags([
+            ConfigRepository::GLOBAL_CACHE_TAG,
+            Product::PRODUCT_CACHE_TAGS,
+        ])->remember('product_daily_offer_' . $dailyOfferId, $ttl, function () use ($dailyOfferId) {
+            return Product::where('id', $dailyOfferId)
+                ->with('category')
+                ->with('image')
+                ->first();
         });
     }
 
     /**
-     * Возвращает все товары с отметкой "Ограниченный тираж"
-     *
-     * @return Collection|Product[]
+     * Возвращает id товара "Предложение дня"
      */
-    public function getDailyOffer()
+    public function getDailyOfferId()
     {
-        $ttl = Carbon::tomorrow()->diffInSeconds();
+        $ttl = $this->configRepository->getCacheLifetime(now()->addDay());
 
-        return Cache::tags([
-            ConfigRepository::GLOBAL_CACHE_TAG,
-            Product::PRODUCT_CACHE_TAGS
-        ])->remember('products_daily_offer', $ttl, function () {
-            return $this->getAll()->random();
+        $day = Carbon::now()->day;
+
+        return Cache::remember('product_daily_offer_id_day_' . $day, $ttl, function () {
+            return Product::where('limited', 1)
+                ->inRandomOrder()
+                ->first()
+                ->id;
         });
     }
 }

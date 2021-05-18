@@ -2,24 +2,36 @@
 
 namespace App\View\Components;
 
-use App\Services\DailyOfferService;
+use App\Services\LimitedEditionProductService;
 use Carbon\Carbon;
 use Illuminate\View\Component;
 
 class DailyOffer extends Component
 {
 
-    private $dailyOfferService;
+    /**
+     * @var LimitedEditionProductService
+     */
+    private $limitedEditionProductService;
+
+    /**
+     * @var \App\Models\Product
+     */
     public $product;
+
+    /**
+     * @var Carbon
+     */
     public $time;
+
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct(DailyOfferService $dailyOfferService)
+    public function __construct(LimitedEditionProductService $limitedEditionProductService)
     {
-        $this->dailyOfferService = $dailyOfferService;
+        $this->limitedEditionProductService = $limitedEditionProductService;
     }
 
     /**
@@ -30,7 +42,7 @@ class DailyOffer extends Component
     public function render()
     {
         $this->time = Carbon::tomorrow();
-        $this->product = $this->dailyOfferService->get();
+        $this->product = $this->limitedEditionProductService->getDailyOffer();
         return view('components.daily-offer');
     }
 }
