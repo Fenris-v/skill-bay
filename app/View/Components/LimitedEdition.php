@@ -2,14 +2,20 @@
 
 namespace App\View\Components;
 
-use App\Repository\LimitedEditionProductRepository;
 use App\Services\LimitedEditionProductService;
 use Illuminate\View\Component;
+use App\Models\Product;
 
 class LimitedEdition extends Component
 {
+    /**
+     * @var LimitedEditionProductService
+     */
+    private $limitedEditionProductService;
 
-    private $limiredEditionProductService;
+    /**
+     * @var Product
+     */
     public $products;
 
     /**
@@ -17,9 +23,9 @@ class LimitedEdition extends Component
      *
      * @return void
      */
-    public function __construct(LimitedEditionProductService $limiredEditionProductService)
+    public function __construct(LimitedEditionProductService $limitedEditionProductService)
     {
-        $this->limiredEditionProductService = $limiredEditionProductService;
+        $this->limitedEditionProductService = $limitedEditionProductService;
     }
 
     /**
@@ -29,7 +35,7 @@ class LimitedEdition extends Component
      */
     public function render()
     {
-        $this->products = $this->limiredEditionProductService->get();
+        $this->products = $this->limitedEditionProductService->get();
         return view('components.limited-edition');
     }
 }
