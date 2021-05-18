@@ -121,6 +121,12 @@ class CatalogRepository
      */
     public function specificationMultiply(Builder $query, string $filter, array $props): void
     {
+        $props = array_filter($props, 'strlen');
+
+        if (empty($props)) {
+            return;
+        }
+
         $query->whereHas(
             'specifications',
             function ($query) use ($filter, $props) {

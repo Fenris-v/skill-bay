@@ -12,10 +12,12 @@
     @endif
 </div>
 
-<header class="Section-header Section-header_product">
-    <h3 class="Section-title">@lang('product.post_review')</h3>
-</header>
+@auth
+    <header class="Section-header Section-header_product">
+        <h3 class="Section-title">@lang('product.post_review')</h3>
+    </header>
 
-<div class="Tabs-addComment">
-    <x-product.product-review-form />
-</div>
+    <div class="Tabs-addComment">
+        <x-product.product-review-form />
+    </div>
+@endauth
