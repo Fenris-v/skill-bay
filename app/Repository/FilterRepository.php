@@ -3,8 +3,8 @@
 namespace App\Repository;
 
 use App\Models\Category;
-use App\Models\ProductSeller;
-use App\Models\ProductSpecification;
+use App\Models\Pivots\ProductSeller;
+use App\Models\Pivots\ProductSpecification;
 use App\Models\Seller;
 use App\Models\Specification;
 use Illuminate\Support\Collection;

@@ -51,6 +51,15 @@ return [
         ],
     ],
     'product' => [
+        'general' => 'Основное',
+        'sellers' => 'Продавцы',
+        'seller' => 'Продавец',
+        'sellers_edit' => 'Добавить/удалить продавцов',
+        'specifications_edit' => 'Добавить/удалить характеристики',
+        'seller_added' => 'Продавец добавлен. Не забудьте изменить цену',
+        'specification_edited' => 'Характеристики изменены',
+        'price' => 'Цена продавца :seller',
+        'specifications' => 'Характеристики',
         'products' => 'Товары',
         'list' => [
             'title' => 'Список товаров',
@@ -61,6 +70,9 @@ return [
                 'amount' => 'Количество',
                 'total_price' => 'Суммарная стоимость (руб.)',
                 'seller' => 'Продавец',
+                'avg_price' => 'Средняя цена',
+                'updated' => 'Обновлено',
+                'rating_sort' => 'Сортировка',
             ],
             'buttons' => [
                 'add' => 'Добавить товар',
@@ -68,7 +80,7 @@ return [
         ],
         'edit' => [
             'title_create' => 'Создание товара',
-            'title_edit' => 'Редактирование ":title"',
+            'title_edit' => 'Редактирование ":title" #:id',
             'success_create' => 'Вы успешно создали товар ":title"',
             'success_edit' => 'Вы успешно изменили товар ":title"',
             'buttons' => [
@@ -78,6 +90,11 @@ return [
                 'title' => 'Название',
                 'vendor' => 'Производитель',
             ],
+            'description' => 'Описание',
+            'category' => 'Категория',
+            'no_category' => 'Без категории',
+            'image' => 'Изображение',
+            'images' => 'Изображения',
         ],
     ],
     'product-review' => [
@@ -258,5 +275,15 @@ return [
         'show' => 'Заявка'
     ],
     'back' => 'Назад',
+    'categories' => 'Категории',
+    'products' => [
+        'id' => 'ID',
+        'title' => 'Название',
+        'avg_price' => 'Средняя цена',
+        'edit' => 'Редактировать',
+        'delete' => 'Удалить',
+        'deleted' => 'Продукт был удален',
+    ],
+    'actions' => 'Действия',
     'users' => 'Пользователи',
 ];
