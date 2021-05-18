@@ -27,8 +27,6 @@ class OrderFactory extends Factory
     {
         $user = User::first('id');
 
-        dump($user->id);
-
         return [
             'cart_id' => Cart::factory(),
             'user_id' => $this->faker->numberBetween(0, 1) ? $user->id : User::factory(),

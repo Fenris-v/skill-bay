@@ -672,6 +672,8 @@
             var $add = $('.Amount-add');
             var $input = $('.Amount-input');
             var $remove = $('.Amount-remove');
+            var $removeInCart = $('.Amount-remove-cart');
+            var $addInCart = $('.Amount-add-cart');
             return {
                 init: function () {
                     $add.on('click', function (e) {
@@ -685,6 +687,12 @@
                         var $inputThis = $(this).siblings($input).filter($input);
                         var value = parseFloat($inputThis.val());
                         $inputThis.val(value > 1 ? value - 1 : 1);
+                    });
+                    $removeInCart.on('click', function (e) {
+                        $(this).closest('.form').submit();
+                    });
+                    $addInCart.on('click', function (e) {
+                        $(this).closest('.form').submit();
                     });
                 }
             };

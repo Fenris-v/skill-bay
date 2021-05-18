@@ -1,7 +1,7 @@
-@props(['icon' => null, 'title' => null])
-<button {{ $attributes->merge(['class' => 'btn', 'type' => 'button']) }}>
+@props(['icon' => false, 'title' => null])
+<button {{ $attributes->merge(['type' => 'button']) }}>
     @if($icon)
-    <x-dynamic-component :component="$icon" />
+        <x-dynamic-component :component="$icon" />
     @endif
     @if($title)
         <span class="btn-content">{{ $title }}</span>

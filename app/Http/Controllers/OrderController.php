@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cart;
+use App\Repository\CartRepository;
 use App\Repository\UserRepository;
 use App\Repository\OrdersRepository;
 use App\Services\AlertFlashService;
+use App\Services\OrderPaymentService;
 use Illuminate\Http\Request;
-use App\Models\Order;
 
 class OrderController extends Controller
 {
@@ -46,6 +46,7 @@ class OrderController extends Controller
 
     public function stepPersonalStore(Request $request)
     {
+        $order = $this->ordersRepository->getCurrentOrder();
         $user = auth()->user()
             ?? $this->userRepository
                 ->store($request->only([
@@ -57,7 +58,6 @@ class OrderController extends Controller
                     ]
                 ))
         ;
-        $order = $this->ordersRepository->getCurrentOrder();
         $order->user()->associate($user);
 
         $order->save();
@@ -107,5 +107,21 @@ public function stepPaymentStore(Request $request)
             'completedSteps' => $this->getProgress(),
             'component' => 'order.accept',
         ]);
+    }
+
+    public function stepAcceptStore(
+        CartRepository $cartRepository,
+        OrderPaymentService $orderPaymentService
+    ) {
+        $order = $this->ordersRepository->getCurrentOrder();
+        $order->cart()->associate($cartRepository->getCart());
+        if ($orderPaymentService->pay($order)) {
+            $result = 'success';
+            $this->alert->warning();
+        }
+
+        $this->alert->lang('orderMessages.payment.' . $result);
+
+        return redirect()->route('index');
     }
 }

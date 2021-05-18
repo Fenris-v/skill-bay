@@ -48,8 +48,8 @@ class UserRepository
             'phone' => ['required', 'regex:/^\+7 \(\d{3}\) \d{3} - \d{2} - \d{2}$/']
         ]);
         $user = User::create(collect($input)->only(['name', 'phone', 'email', 'password'])->toArray());
+        Cache::tags([User::class])->flush();
         Auth::login($user);
-        Cache::tags([User::class, Cart::class])->flush();
 
         return $user;
     }
