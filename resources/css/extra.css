@@ -3226,6 +3226,11 @@ a.Cart-title {
   }
 }
 
+.Authorization {
+    display: block;
+    max-width: 500px;
+    margin: 0 auto;
+}
 .PanelAdd {
   visibility: visible;
 }
