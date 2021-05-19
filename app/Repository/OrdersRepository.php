@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Models\Cart;
 use App\Models\DeliveryType;
 use App\Models\Order;
 use App\Models\PaymentType;
@@ -179,7 +180,7 @@ class OrdersRepository
     }
 
     /**
-     * Возвращает данные оплаты.
+     * Сохраняет способ оплаты.
      *
      * @param array $input
      * @return Order
@@ -196,5 +197,21 @@ class OrdersRepository
         Cache::tags([Order::class])->flush();
 
         return $order;
+    }
+
+    /**
+     * Окончательное оформление заказа
+     *
+     * @param Cart $cart
+     * @return bool
+     */
+    public function saveAcceptStep(Cart $cart): bool
+    {
+        $order = $this->getCurrentOrder();
+        $order->cart()->associate($cart);
+        $order->save();
+        Cache::tags([Order::class, Cart::class])->flush();
+
+        return $this->payment->pay($order);
     }
 }

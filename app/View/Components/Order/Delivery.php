@@ -18,7 +18,7 @@ class Delivery extends Component
         $this->deliveries = DeliveryType
             ::all()
             ->map(fn($item) => [
-                'title' => $item->name . ($item->price ? " ($item->price)" : ''),
+                'title' => $item->name . ($item->price ? " ($item->price$)" : ''),
                 'value' => $item->id,
                 'checked' => $this->order->deliveryType?->id === $item->id,
             ])

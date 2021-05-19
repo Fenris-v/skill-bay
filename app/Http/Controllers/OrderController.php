@@ -109,14 +109,11 @@ public function stepPaymentStore(Request $request)
         ]);
     }
 
-    public function stepAcceptStore(
-        CartRepository $cartRepository,
-        OrderPaymentService $orderPaymentService
-    ) {
-        $order = $this->ordersRepository->getCurrentOrder();
-        $order->cart()->associate($cartRepository->getCart());
-        if ($orderPaymentService->pay($order)) {
+    public function stepAcceptStore(CartRepository $cartRepository) {
+        if ($this->ordersRepository->saveAcceptStep($cartRepository->getCart())) {
             $result = 'success';
+        } else {
+            $result = 'error';
             $this->alert->warning();
         }
 
