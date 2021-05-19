@@ -1,9 +1,9 @@
 {{--Оформление заказа--}}
 @extends('layouts.layout')
 
-@section('title', __('orderPagePage.title'))
+@section('title', __('orderPage.title'))
 
-@section('meta_description', __('orderPagePage.metaDescription'))
+@section('meta_description', __('orderPage.metaDescription'))
 
 @section('middle-header-h1', __('orderPage.title'))
 

@@ -9,6 +9,7 @@ use App\Http\Controllers\SellerController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 use Tabuna\Breadcrumbs\Trail;
 
 /*
@@ -238,10 +239,14 @@ Route::get('/about', [InfoPageController::class, 'about'])
         }
     );
 
-// TODO: заменить этот маршрут реальным
-Route::get(
-    '/login',
-    function () {
-        dd('login');
-    }
-)->name('login');
+
+Route::get('/registration', [UserController::class, 'create'])->middleware('guest')->name('registration');
+Route::post('/registration', [UserController::class, 'store'])->name('user.store');
+Route::get('/login', [UserController::class, 'login'])->middleware('guest')->name('login');
+Route::post('/auth', [UserController::class, 'auth'])->name('auth');
+Route::post('/logout', [UserController::class, 'logout'])->name('logout');
+Route::get('/forgot-password', [UserController::class, 'forgotPassword'])->middleware('guest')->name('forgot-password');
+Route::post('/forgot-password', [UserController::class, 'forgotPasswordSend'])->middleware('guest')->name('forgot-password-send');
+Route::get('/reset-password/{token}/', [UserController::class, 'resetPassword'])->middleware('guest')->name('password.reset');
+Route::post('/reset-password', [UserController::class, 'resetPasswordSend'])->middleware('guest')->name('reset-password-send');
+

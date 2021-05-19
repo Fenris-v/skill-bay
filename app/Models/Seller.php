@@ -33,7 +33,7 @@ class Seller extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class)->withPivot('price');
+        return $this->belongsToMany(Product::class)->using(\App\Models\Pivots\ProductSeller::class)->withPivot('price');
     }
 
     public function image()

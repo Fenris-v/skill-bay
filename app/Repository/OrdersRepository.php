@@ -112,23 +112,6 @@ class OrdersRepository
     }
 
     /**
-     * Осуществляет валидацию пользовательского ввода
-     *
-     * @param array $values
-     * @param array $rules
-     * @return bool
-     */
-    protected function validate(array $values, array $rules)
-    {
-        Validator::make(
-            $values,
-            $rules
-        )
-            ->validate()
-        ;
-    }
-
-    /**
      * Возвращает текущий (неоформленный) заказ.
      *
      * @return Order
@@ -165,11 +148,6 @@ class OrdersRepository
      */
     public function saveDeliveryStep(array $input): Order
     {
-        $this->validate($input, [
-            'city' => 'required|min:3|max:255',
-            'address' => 'required|min:3|max:255',
-            'delivery' => 'required|numeric',
-        ]);
         $order = $this->getCurrentOrder();
         $order->deliveryType()->associate(DeliveryType::where('id', $input['delivery'])->firstOrFail());
         $order->update(collect($input)->only(['city', 'address'])->toArray());
@@ -187,9 +165,6 @@ class OrdersRepository
      */
     public function savePaymentStep(array $input): Order
     {
-        $this->validate($input, [
-            'payment' => 'required|numeric',
-        ]);
         $order = $this->getCurrentOrder();
         $order->paymentType()->associate(PaymentType::where('id', $input['payment'])->firstOrFail());
         $order->save();

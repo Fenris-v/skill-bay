@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use App\Contracts\HotProductCategoriesService as HotProductCategoriesServiceContract;
 use App\Contracts\ProductViewHistoryService as ProductViewHistoryServiceContract;
 use App\Contracts\OrderPaymentService as OrderPaymentServiceContract;
 use App\Contracts\ProductReviewService as ProductReviewServiceContract;
 use App\Services\CompareProductsService;
+use App\Services\HotProductCategoriesService;
 use App\Services\OrderPaymentService;
 use App\Services\ProductCartService;
 use App\Contracts\ProductCartService as ProductCartServiceContract;
@@ -31,6 +33,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(
             ProductCartServiceContract::class,
             ProductCartService::class
+        );
+
+        // Сервис для работы с горячими категориями.
+        $this->app->singleton(
+            HotProductCategoriesServiceContract::class,
+            HotProductCategoriesService::class
         );
 
         // Сервис для работы с просмотренными товарами.

@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OrderDeliveryRequest;
+use App\Http\Requests\OrderPaymentRequest;
+use App\Http\Requests\OrderPersonalRequest;
+use App\Http\Requests\RegisterUserRequest;
 use App\Repository\CartRepository;
-use App\Repository\UserRepository;
 use App\Repository\OrdersRepository;
 use App\Services\AlertFlashService;
-use App\Services\OrderPaymentService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
     public function __construct(
         protected AlertFlashService $alert,
-        protected UserRepository $userRepository,
         protected OrdersRepository $ordersRepository
     ) {}
 
@@ -44,20 +47,23 @@ class OrderController extends Controller
         ]);
     }
 
-    public function stepPersonalStore(Request $request)
+    public function stepPersonalStore(OrderPersonalRequest $request, UserService $userService)
     {
         $order = $this->ordersRepository->getCurrentOrder();
-        $user = auth()->user()
-            ?? $this->userRepository
-                ->store($request->only([
-                        'name',
-                        'phone',
-                        'email',
-                        'password',
-                        'password_confirmation'
-                    ]
-                ))
-        ;
+
+        if (!auth()->check()) {
+            $data = $request->only([
+                'email',
+                'phone',
+                'password',
+                'name'
+            ]);
+            $user = $userService->registerUser($data);
+            Auth::login($user);
+        } else {
+            $user = auth()->user();
+        }
+
         $order->user()->associate($user);
 
         $order->save();
@@ -73,7 +79,7 @@ class OrderController extends Controller
         ]);
     }
 
-    public function stepDeliveryStore(Request $request)
+    public function stepDeliveryStore(OrderDeliveryRequest $request)
     {
         $order = $this->ordersRepository->saveDeliveryStep($request->only([
             'city',
@@ -92,7 +98,7 @@ class OrderController extends Controller
         ]);
     }
 
-public function stepPaymentStore(Request $request)
+public function stepPaymentStore(OrderPaymentRequest $request)
 {
     $this->ordersRepository->savePaymentStep($request->only([
         'payment'

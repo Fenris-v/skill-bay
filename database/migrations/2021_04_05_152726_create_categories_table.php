@@ -19,6 +19,7 @@ class CreateCategoriesTable extends Migration
             $table->string('name');
             $table->nestedSet();
             $table->string('icon');
+            $table->softDeletes();
 
         });
     }
