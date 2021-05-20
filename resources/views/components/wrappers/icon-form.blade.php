@@ -7,6 +7,7 @@
     class="Card-btn"
     id="{{ $formId }}">
     @csrf
+    {{ $slot }}
 </form>
 
 <x-wrappers.icon-link

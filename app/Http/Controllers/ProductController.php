@@ -143,13 +143,9 @@ class ProductController extends Controller
         ProductCartService $productCartService,
         string $slug
     ) {
-        if ($request->amount) {
-            $amount = (int) current($request->validate([
-                'amount' => 'required|integer|min:1',
-            ]));
-        } else {
-            $amount = 1;
-        }
+        $amount = (int) current($request->validate([
+            'amount' => 'required|integer|min:1',
+        ]));
 
         if ($productCartService->add(
             $this->productRepository->getProductBySlug($slug),
