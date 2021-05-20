@@ -109,7 +109,7 @@ class ProductController extends Controller
             $product, $name, $email, $comment
         );
 
-        return back();
+        return back()->withInput(['review' => 1])->with('success', __('productPage.review_form.success'));
     }
 
     /**
