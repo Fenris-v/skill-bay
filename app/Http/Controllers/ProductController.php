@@ -109,7 +109,7 @@ class ProductController extends Controller
             $product, $name, $email, $comment
         );
 
-        return back()->withInput();
+        return back();
     }
 
     /**
