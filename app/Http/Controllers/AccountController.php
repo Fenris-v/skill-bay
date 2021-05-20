@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Repository\OrdersRepository;
 use App\Repository\ProductViewHistoryRepository;
-use App\Repository\UserRepository;
+use App\Repository\EloquentUserRepository;
 use Illuminate\Contracts\View\View;
 
 class AccountController extends Controller
@@ -17,14 +17,14 @@ class AccountController extends Controller
      */
     public function index(
         OrdersRepository $orders,
-        UserRepository $users,
+        EloquentUserRepository $usersRepository,
         ProductViewHistoryRepository $historyRepository
     ): View {
         $userId = auth()->id();
 
         $order = $orders->getLast($userId);
 
-        $user = $users->getById($userId, ['name']);
+        $user = $usersRepository->getById($userId, ['name']);
 
         $history = $historyRepository->get($userId, 3);
 

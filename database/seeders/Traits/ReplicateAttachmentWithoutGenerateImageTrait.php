@@ -16,10 +16,7 @@ trait ReplicateAttachmentWithoutGenerateImageTrait
 
     protected function getReplicatedAttachment()
     {
-        return collect($this->images->random()->replicate())
-            ->except(['id', 'url', 'relativeUrl'])
-            ->toArray()
-        ;
+        return $this->images->random()->replicate();
     }
 
     protected function getRandomAttachmentId()

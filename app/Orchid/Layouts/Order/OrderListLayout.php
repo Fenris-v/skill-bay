@@ -26,10 +26,11 @@ class OrderListLayout extends Table
      */
     protected function columns(): array
     {
+
         return [
             TD::make('id', __('admin.order.list.table.id')),
             TD::make('user', __('admin.order.list.table.supplier'))
-                ->render(fn (Order $order) => Link::make($order->user->name)
+                ->render(fn (Order $order) => Link::make("{$order->user->name} [ID: {$order->user->id}]")
                     ->route('platform.systems.users.edit', $order->user)),
             TD::make('delivery_type', __('admin.order.list.table.delivery_type'))
                 ->render(fn (Order $order) => optional($order->deliveryType)->name),

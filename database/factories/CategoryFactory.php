@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Attachment;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Str;
@@ -42,6 +43,9 @@ class CategoryFactory extends Factory
             'slug' => $slug,
             'name' => $name,
             'icon' => $icons[rand(0, count($icons) - 1)],
+            'is_hot' => $this->faker->boolean,
+            'hot_order' => $this->faker->numberBetween(0, 100),
+            'image_id' => Attachment::factory(),
         ];
     }
 }
