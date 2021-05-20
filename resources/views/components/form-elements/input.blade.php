@@ -1,7 +1,8 @@
-@props(['value'])
+@props(['value', 'name'])
 <input
-    class="form-input"
-    id="{{ $attributes->get('name') }}"
+    {{ $attributes->class(['form-input', 'form-input_error' => $errors->get($name)]) }}
+    id="{{ $name }}"
+    name="{{ $name }}"
     {{ $attributes->merge(['type' => 'text']) }}
-    value="{{ old($attributes->get('name')) ?? $value ?? null }}"
+    value="{{ old($name) ?? $value ?? null }}"
 />
