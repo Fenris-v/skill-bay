@@ -33,43 +33,59 @@ class LimitedEditionProductRepository
     {
         $ttl = $this->configRepository->getCacheLifetime(now()->addDay());
 
+        $dailyOfferId = $this->getDailyOfferId();
+
         return Cache::tags([
             ConfigRepository::GLOBAL_CACHE_TAG,
             Product::PRODUCT_CACHE_TAGS
-        ])->remember('products_limited', $ttl, function () use ($amount) {
-            return Product::where('limited', 1)
-                ->where('id', '!=', $this->getDailyOffer()->id)
-                ->orderBy('rating_sort')
-                ->take($amount)
-                ->with('category')
-                ->with('image')
-                ->get();
-        });
+        ])->remember(
+            'products_limited_without_' . $dailyOfferId . '_amount_' . $amount, $ttl,
+            function () use ($amount, $dailyOfferId) {
+                return Product::where('limited', 1)
+                    ->where('id', '!=', $dailyOfferId)
+                    ->orderBy('rating_sort')
+                    ->take($amount)
+                    ->with('category')
+                    ->with('image')
+                    ->get();
+            });
     }
 
     /**
-     * Возвращает товар "Предложение дня" и записывает в кэш его id
+     * Возвращает товар "Предложение дня"
      * @return Product
      */
     public function getDailyOffer()
     {
-        $ttl = Carbon::tomorrow()->diffInSeconds();
+        $ttl = $this->configRepository->getCacheLifetime(now()->addDay());
 
-        $dailyOfferId = Cache::remember('product_daily_offer_id', $ttl, function () {
-            return Product::where('limited', 1)
-                ->inRandomOrder()
-                ->first()
-                ->id;
-        });
+        $dailyOfferId = $this->getDailyOfferId();
 
         return Cache::tags([
             ConfigRepository::GLOBAL_CACHE_TAG,
             Product::PRODUCT_CACHE_TAGS,
-        ])->remember('product_daily_offer', $ttl, function () use ($dailyOfferId) {
-                return Product::where('id', $dailyOfferId)
-                    ->with('category')
-                    ->with('image')
-                    ->first();
+        ])->remember('product_daily_offer_' . $dailyOfferId, $ttl, function () use ($dailyOfferId) {
+            return Product::where('id', $dailyOfferId)
+                ->with('category')
+                ->with('image')
+                ->first();
+        });
+    }
+
+    /**
+     * Возвращает id товара "Предложение дня"
+     */
+    public function getDailyOfferId()
+    {
+        $ttl = $this->configRepository->getCacheLifetime(now()->addDay());
+
+        $day = Carbon::now()->day;
+
+        return Cache::remember('product_daily_offer_id_day_' . $day, $ttl, function () {
+            return Product::where('limited', 1)
+                ->inRandomOrder()
+                ->first()
+                ->id;
         });
     }
 }
