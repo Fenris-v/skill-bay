@@ -191,6 +191,7 @@ return [
         App\Providers\Repositories\CartServiceProvider::class,
         App\Providers\Repositories\SellerServiceProvider::class,
         App\Providers\Repositories\OrderServiceProvider::class,
+        App\Providers\Repositories\DiscountServiceProvider::class,
     ],
 
     /*

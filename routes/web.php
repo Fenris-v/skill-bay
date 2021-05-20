@@ -7,6 +7,7 @@ use App\Http\Controllers\OrdersHistoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\DiscountController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use Tabuna\Breadcrumbs\Trail;
@@ -194,3 +195,12 @@ Route::post('/forgot-password', [UserController::class, 'forgotPasswordSend'])->
 Route::get('/reset-password/{token}/', [UserController::class, 'resetPassword'])->middleware('guest')->name('password.reset');
 Route::post('/reset-password', [UserController::class, 'resetPasswordSend'])->middleware('guest')->name('reset-password-send');
 
+Route::get('/discounts', [DiscountController::class, 'index'])
+    ->name('discounts')
+    ->breadcrumbs(
+        function (Trail $trail) {
+            $trail->parent('index')
+                ->push(__('navigation.discounts'), route('discounts'));
+        }
+    )
+;
