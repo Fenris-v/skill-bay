@@ -7,8 +7,8 @@ use Orchid\Screen\Field;
 use Orchid\Screen\Fields\Cropper;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
-use Orchid\Screen\Fields\Quill;
 use Orchid\Screen\Fields\Select;
+use Orchid\Screen\Fields\SimpleMDE;
 use Orchid\Screen\Fields\Upload;
 use Orchid\Screen\Layouts\Rows;
 
@@ -41,7 +41,7 @@ class ProductGeneralLayout extends Rows
                 ]
             ),
 
-            Quill::make('product.description')
+            SimpleMDE::make('product.description')
                 ->title(__('admin.product.edit.description')),
 
             Group::make(
