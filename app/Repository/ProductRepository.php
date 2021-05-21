@@ -2,13 +2,7 @@
 
 namespace App\Repository;
 
-use App\Models\Image;
 use App\Models\Product;
-use App\Models\ProductReview;
-use App\Models\Seller;
-use App\Models\Cart;
-use App\Models\Specification;
-use App\Traits\TimeToLiveCacheTrait;
 use Cache;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -19,11 +13,6 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class ProductRepository
 {
-    use TimeToLiveCacheTrait;
-
-    public function __construct(private ConfigRepository $configRepository)
-    {}
-
     /**
      * Возвращает топ товаров на главной странице.
      *
@@ -32,42 +21,18 @@ class ProductRepository
      */
     public function getTopProducts($amount = 8)
     {
+        $configRepository = app(ConfigRepository::class);
+        $ttl = $configRepository->getCacheLifetime(now()->addDay());
+
         return Cache::tags([
             ConfigRepository::GLOBAL_CACHE_TAG,
             Product::PRODUCT_CACHE_TAGS
-        ])->remember('products_top', $this->ttl(), function () use ($amount) {
-            return Product::limit($amount)->get();
+        ])->remember('products_top', $ttl, function () use ($amount) {
+            return Product::limit($amount)
+                ->with('image')
+                ->with('category')
+                ->with('sellers')
+                ->get();
         });
-    }
-
-    /**
-     * Возвращает товар по его slug.
-     *
-     * @param Cart $cart
-     * @param  string  $slug
-     * @return Product
-     */
-    public function getProductBySlug(string $slug): Product
-    {
-        return Cache::tags([
-            ConfigRepository::GLOBAL_CACHE_TAG,
-            Product::class,
-            Seller::class,
-            Image::class,
-            Specification::class,
-            ProductReview::class,
-        ])->remember(
-            'cart_product|' . $slug,
-            $this->ttl(),
-            fn() => Product
-                ::where('slug', $slug)
-                ->with([
-                    'sellers',
-                    'images',
-                    'specifications',
-                    'reviews',
-                ])
-                ->firstOrFail()
-        );
     }
 }
