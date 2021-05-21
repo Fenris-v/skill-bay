@@ -46,6 +46,7 @@ class LimitedEditionProductRepository
                     ->take($amount)
                     ->with('category')
                     ->with('image')
+                    ->with('sellers')
                     ->get();
             });
     }
@@ -67,6 +68,7 @@ class LimitedEditionProductRepository
             return Product::where('id', $dailyOfferId)
                 ->with('category')
                 ->with('image')
+                ->with('sellers')
                 ->first();
         });
     }
