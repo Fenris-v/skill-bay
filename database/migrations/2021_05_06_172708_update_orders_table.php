@@ -21,6 +21,9 @@ class UpdateOrdersTable extends Migration
             $table->foreignId('payment_type_id')->nullable()->change();
             $table->string('city')->nullable()->change();
             $table->string('address')->nullable()->change();
+            $table->string('phone')->nullable();
+            $table->string('name')->nullable();
+            $table->string('email')->nullable();
         });
     }
 
@@ -32,7 +35,7 @@ class UpdateOrdersTable extends Migration
     public function down()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn(['price', 'discount']);
+            $table->dropColumn(['price', 'discount', 'phone', 'name', 'email']);
             $table->foreignId('cart_id')->nullable(false)->change();
             $table->foreignId('delivery_type_id')->nullable(false)->change();
             $table->foreignId('payment_type_id')->nullable(false)->change();

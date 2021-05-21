@@ -19,7 +19,7 @@ class Order extends Model
      */
     protected $fillable = [
         'cart_id', 'user_id', 'delivery_type_id',
-        'city', 'address', 'payment_type_id',
+        'city', 'address', 'payment_type_id', 'phone', 'email', 'name',
     ];
 
     /**

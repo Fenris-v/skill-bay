@@ -146,6 +146,21 @@ class OrdersRepository
      * @param array $input
      * @return Order
      */
+    public function savePersonalStep(array $input): Order
+    {
+        $this->getCurrentOrder()->update($input);
+
+        Cache::tags([Order::class])->flush();
+
+        return $order;
+    }
+
+    /**
+     * Сохраняет данные доставки.
+     *
+     * @param array $input
+     * @return Order
+     */
     public function saveDeliveryStep(array $input): Order
     {
         $order = $this->getCurrentOrder();

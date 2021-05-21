@@ -9,6 +9,16 @@ class OrderPersonalRequest extends FormRequest
 {
     public function rules()
     {
-        return array_merge((new RegisterUserRequest())->rules(), ['name' => 'required|min:3|max:255']);
+        if (auth()->check()) {
+            return [
+                'name' => 'required|min:3|max:255',
+                'phone' => 'required',
+                'email' =>'required|email',
+            ];
+        }
+
+        return array_merge((new RegisterUserRequest())->rules(), [
+            'name' => 'required|min:3|max:255',
+        ]);
     }
 }

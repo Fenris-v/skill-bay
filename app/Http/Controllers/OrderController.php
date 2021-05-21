@@ -59,9 +59,23 @@ class OrderController extends Controller
                 'name'
             ]);
             $user = $userService->registerUser($data);
+            $this->ordersRepository->getCurrentOrder(
+                $request->only([
+                    'email',
+                    'phone',
+                    'name'
+                ])
+            );
             Auth::login($user);
         } else {
             $user = auth()->user();
+            $this->ordersRepository->getCurrentOrder(
+                $request->only([
+                    'email',
+                    'phone',
+                    'name'
+                ])
+            );
         }
 
         $order->user()->associate($user);

@@ -164,7 +164,8 @@ Route::prefix('/account')
         }
     );
 
-Route::get('/order/personal', [OrderController::class, 'stepPersonal'])
+Route::middleware('cartIsNotEmpty')
+    ->get('/order/personal', [OrderController::class, 'stepPersonal'])
     ->name('order.personal.get')
     ->breadcrumbs(fn (Trail $trail) =>
     $trail
@@ -177,7 +178,7 @@ Route::post('/order/personal', [OrderController::class, 'stepPersonalStore'])
 ;
 
 Route::prefix('/order')
-    ->middleware('auth')
+    ->middleware(['auth', 'cartIsNotEmpty'])
     ->group(
         function () {
             Route::get('/delivery', [OrderController::class, 'stepDelivery'])
