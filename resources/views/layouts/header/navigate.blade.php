@@ -10,7 +10,7 @@
         </li>
         <li class="menu-item">
             <span class="menu-label menu-label_success">New</span>
-            <a class="menu-link" href="sale.html">{{ __('navigation.discounts') }}</a>
+            <a class="menu-link" href="{{ route('discounts') }}">{{ __('navigation.discounts') }}</a>
         </li>
         <li class="menu-item">
             <a class="menu-link" href="{{ route('contacts') }}">{{ __('navigation.contacts') }}</a>

@@ -17,6 +17,8 @@ class Discount extends Model
     const UNIT_PERCENT = 1;
     const UNIT_CURRENCY = 2;
 
+    protected $dates = ['begin_at', 'end_at'];
+
     /**
      * Связь с наборами
      * @return HasMany
@@ -24,5 +26,13 @@ class Discount extends Model
     public function discountUnit(): HasMany
     {
         return $this->hasMany(DiscountUnit::class);
+    }
+
+    /**
+     * Связь с картинкой
+     */
+    public function image()
+    {
+        return $this->belongsTo(Attachment::class, 'image_id');
     }
 }

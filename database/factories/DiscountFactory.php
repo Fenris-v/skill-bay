@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Attachment;
 use App\Models\Discount;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -36,6 +37,7 @@ class DiscountFactory extends Factory
             'type' => $this->faker->randomElement($types),
             'unit_type' => $discount > 99 ? Discount::UNIT_CURRENCY : Discount::UNIT_PERCENT,
             'priority' => $this->faker->numberBetween(10, 999),
+            'image_id' => Attachment::factory(),
         ];
     }
 }
