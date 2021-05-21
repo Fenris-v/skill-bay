@@ -3,7 +3,6 @@
 
 namespace App\Repository;
 
-
 use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
