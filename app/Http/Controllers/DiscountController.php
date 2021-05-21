@@ -11,10 +11,10 @@ class DiscountController extends Controller
         protected DiscountRepository $discountRepository,
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
         return view('pages.main.discounts', [
-            'discounts' => $this->discountRepository->getPaginateDiscounts(),
+            'discounts' => $this->discountRepository->getPaginateDiscounts((int) $request->page),
         ]);
     }
 }

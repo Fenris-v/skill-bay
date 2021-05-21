@@ -1,4 +1,4 @@
-@props(['discount'])
+@props(['discount', 'dateFrom' => null, 'dateTo' => null])
 <div class="Card">
     <a class="Card-picture" href="#">
         <img
@@ -6,17 +6,22 @@
             alt="{{ $discount->image->alt }}"
         />
     </a>
-    @if($beginAt)
-        <div class="Card-date">
-            <strong class="Card-date-number">
-                {{ $beginAt['day'] }}
-            </strong><span class="Card-date-month">
-                {{ $beginAt['month'] }}
-            </span>
+    @if($dateFrom)
+        <x-discounts.discounts-date
+            :date="$dateFrom"
+        />
+    @endif
+    @if($dateTo)
+        <x-discounts.discounts-date
+            class="Card-date_to"
+            :date="$dateTo"
+        />
+    @endif
+    @if(false)
+        <div class="Card-pin">
+            <!--Для чего это?-->
         </div>
     @endif
-    <div class="Card-pin">
-    </div>
     <div class="Card-content">
         <strong class="Card-title">
             <a href="#">{{ $discount->title }}</a>
