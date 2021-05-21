@@ -25,7 +25,11 @@ class Banners extends Component
             'banners',
             config('banners.cache_duration'),
             function () {
-                return Banner::active()->inRandomOrder()->take(3)->get();
+                return Banner::active()
+                    ->inRandomOrder()
+                    ->take(3)
+                    ->with('image')
+                    ->get();
             }
         );
     }
