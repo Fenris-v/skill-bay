@@ -129,9 +129,13 @@ class ProductEditScreen extends Screen
 
         $product->images()->syncWithoutDetaching($request->input('product.attachment'));
 
-        $this->syncPrices($product, $request->get('product')['price']);
+        if (isset($request->get('product')['price'])) {
+            $this->syncPrices($product, $request->get('product')['price']);
+        }
 
-        $this->syncSpecifications($product, $request->get('product')['specification']);
+        if (isset($request->get('product')['specification'])) {
+            $this->syncSpecifications($product, $request->get('product')['specification']);
+        }
 
         Alert::info(
             __(
@@ -176,7 +180,7 @@ class ProductEditScreen extends Screen
     public function saveSpecifications(Product $product, Request $request): void
     {
         $specifications = collect($request->get('product')['specifications'])
-               ->keyBy(fn($item) => $item);
+            ->keyBy(fn($item) => $item);
 
         $syncIds = [];
 

@@ -1,14 +1,10 @@
-@foreach ($errors->all() as $error)
-    <div class="form-error">{{ $error }}</div>
-@endforeach
+@include('includes.validate')
 
 <form class="form" method="POST">
     @csrf
 
     <div class="form-group">
-        <textarea class="form-textarea @error('comment') form-textarea_error @enderror" name="comment" id="comment" placeholder="@lang('productPage.review_form.comment')">
-             {{ old('comment') }}
-        </textarea>
+        <textarea class="form-textarea @error('comment') form-textarea_error @enderror" name="comment" id="comment" placeholder="@lang('productPage.review_form.comment')">{{ old('comment') }}</textarea>
     </div>
     <div class="form-group">
         <div class="row">

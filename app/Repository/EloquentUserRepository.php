@@ -51,4 +51,9 @@ class EloquentUserRepository implements RepositoryInterface
     {
         return $this->model->findOrFail($id);
     }
+    
+    public function getById(int $id, array $columns = ['*']): User
+    {
+        return $this->model->where('id', $id)->first($columns);
+    }
 }

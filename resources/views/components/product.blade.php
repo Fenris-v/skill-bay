@@ -38,7 +38,7 @@
                 </div>
             </div>
             <div class="ProductCard-text">
-                {{ $product->description }}
+                {{ Markdown::parse($product->description) }}
             </div>
             <x-wrappers.form
                 action="{{ $addToCartUrl }}"
@@ -66,7 +66,7 @@
         :active="old('review') ? '#reviews' : '#description'"
     >
         <div class="Tabs-block" id="description">
-            {{ $product->description }}
+            {{ Markdown::parse($product->description) }}
         </div>
         <div class="Tabs-block" id="sellers">
             <div class="Categories Categories_product">
