@@ -17,6 +17,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Fields\CheckBox;
+use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
 use Orchid\Support\Facades\Toast;
@@ -100,6 +102,19 @@ class ProductEditScreen extends Screen
 
             Layout::modal('specificationModal', SpecificationsModalLayout::class)
                 ->title(__('admin.product.specifications_edit')),
+
+            Layout::rows([
+                Input::make('product.title')
+                    ->required()
+                    ->title(__('admin.product.edit.labels.title')),
+                Input::make('product.vendor')
+                    ->required()
+                    ->title(__('admin.product.edit.labels.vendor')),
+                CheckBox::make('product.limited')
+                    ->value(0)
+                    ->title(__('admin.product.edit.labels.limited'))
+                    ->sendTrueOrFalse(),
+            ]),
         ];
     }
 
