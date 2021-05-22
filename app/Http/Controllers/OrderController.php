@@ -6,12 +6,15 @@ use App\Http\Requests\OrderDeliveryRequest;
 use App\Http\Requests\OrderPaymentRequest;
 use App\Http\Requests\OrderPersonalRequest;
 use App\Http\Requests\RegisterUserRequest;
+use App\Models\Order;
 use App\Repository\CartRepository;
 use App\Repository\OrdersRepository;
 use App\Services\AlertFlashService;
+use App\Services\OrderService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Cache;
 
 class OrderController extends Controller
 {
@@ -47,40 +50,27 @@ class OrderController extends Controller
         ]);
     }
 
-    public function stepPersonalStore(OrderPersonalRequest $request, UserService $userService)
-    {
-        $order = $this->ordersRepository->getCurrentOrder();
+    public function stepPersonalStore(
+        OrderPersonalRequest $request,
+        UserService $userService
 
+    ) {
+        $data = $request->only([
+            'email',
+            'phone',
+            'name'
+        ]);
         if (!auth()->check()) {
-            $data = $request->only([
-                'email',
-                'phone',
-                'password',
-                'name'
-            ]);
-            $user = $userService->registerUser($data);
-            $this->ordersRepository->getCurrentOrder(
-                $request->only([
-                    'email',
-                    'phone',
-                    'name'
-                ])
-            );
+            $user = $userService->registerUser(array_merge(
+                $data,
+                $request->only(['password'])
+            ));
             Auth::login($user);
         } else {
             $user = auth()->user();
-            $this->ordersRepository->getCurrentOrder(
-                $request->only([
-                    'email',
-                    'phone',
-                    'name'
-                ])
-            );
         }
 
-        $order->user()->associate($user);
-
-        $order->save();
+        $this->ordersRepository->savePersonalStep($data, $user);
 
         return redirect(route('order.delivery.get'));
     }

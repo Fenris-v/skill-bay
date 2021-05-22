@@ -15,13 +15,8 @@ class Delivery extends Component
     public function __construct(OrdersRepository $ordersRepository)
     {
         $this->order = $ordersRepository->getCurrentOrder();
-        $this->deliveries = DeliveryType
-            ::all()
-            ->map(fn($item) => [
-                'title' => $item->name . ($item->price ? " ($item->price$)" : ''),
-                'value' => $item->id,
-                'checked' => $this->order->deliveryType?->id === $item->id,
-            ])
+        $this->deliveries = $ordersRepository
+            ->getDeliveryTypes()
             ->toArray()
         ;
     }

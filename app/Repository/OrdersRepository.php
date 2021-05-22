@@ -10,16 +10,16 @@ use App\Models\User;
 use App\Services\OrderPaymentService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Validator;
 use Cache;
 
 class OrdersRepository
 {
     const PER_PAGE = 5;
 
-    public function __construct(public OrderPaymentService $payment, public ConfigRepository $configs)
+    public function __construct(public OrderPaymentService $payments, public ConfigRepository $configs)
     {
     }
 
@@ -130,8 +130,7 @@ class OrdersRepository
         ])->remember(
             'current_order_of_user_' . $user->id,
             $this->configs->getCacheLifetime(now()->addDay()),
-            fn() => Order
-                ::whereHas(
+            fn() => Order::whereHas(
                     'user',
                     fn(Builder $query) => $query->where('id', $user->id)
                 )
@@ -141,14 +140,18 @@ class OrdersRepository
     }
 
     /**
-     * Сохраняет данные доставки.
+     * Сохраняет персональные данные пользователя.
      *
      * @param array $input
+     * @param User $user
      * @return Order
      */
-    public function savePersonalStep(array $input): Order
+    public function savePersonalStep(array $input, User $user): Order
     {
-        $this->getCurrentOrder()->update($input);
+        $order = $this->getCurrentOrder();
+        $order->fill($input);
+        $order->user()->associate($user);
+        $order->save();
 
         Cache::tags([Order::class])->flush();
 
@@ -202,6 +205,43 @@ class OrdersRepository
         $order->save();
         Cache::tags([Order::class, Cart::class])->flush();
 
-        return $this->payment->pay($order);
+        return $this->payments->pay($order);
+    }
+
+    /**
+     * Получение способов доставки
+     *
+     * @return Collection|DeliveryType[]
+     */
+    public function getDeliveryTypes(): Collection
+    {
+        $order = $this->getCurrentOrder();
+
+        return DeliveryType::all()
+            ->map(fn($item) => [
+                'title' => $item->name . ($item->price ? " ($item->price$)" : ''),
+                'value' => $item->id,
+                'checked' => $order->deliveryType?->id === $item->id,
+            ])
+        ;
+    }
+
+    /**
+     * Получение способов оплаты
+     *
+     * @return Collection|PaymentType[]
+     */
+    public function getPaymentTypes(): Collection
+    {
+        $order = $this->getCurrentOrder();
+
+        return PaymentType
+            ::all()
+            ->map(fn($item) => [
+                'title' => $item->name,
+                'value' => $item->id,
+                'checked' => $order->paymentType?->id === $item->id,
+            ])
+        ;
     }
 }

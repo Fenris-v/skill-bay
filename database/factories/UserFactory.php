@@ -26,7 +26,7 @@ class UserFactory extends Factory
         return [
             'name' => $this->faker->name,
             'email' => $this->faker->unique()->safeEmail,
-            'password' => '123456', // в мутаторе модели User происходит хэширование пароля
+            'password' => Hash::make('123456'),
             'phone' => $this->faker->phoneNumber,
         ];
     }

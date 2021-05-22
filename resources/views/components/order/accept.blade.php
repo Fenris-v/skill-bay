@@ -8,15 +8,15 @@
                 <div class="row-block">
                     <x-order.accept-info-block
                         :title="__('orderPage.formElements.personal.fullName.label')"
-                        :value="$order?->user?->name"
+                        :value="$order->name"
                     />
                     <x-order.accept-info-block
                         :title="__('orderPage.formElements.personal.phone.label')"
-                        :value="$phone"
+                        :value="$order->phone"
                     />
                     <x-order.accept-info-block
                         :title="__('orderPage.formElements.personal.email.label')"
-                        :value="$order?->user?->email"
+                        :value="$order->email"
                     />
                 </div>
                 <div class="row-block">

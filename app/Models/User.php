@@ -81,26 +81,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Мутатор пароля
-     *
-     * @param string $value
-     */
-    public function setPasswordAttribute(string $value): void
-    {
-        $this->attributes['password'] = password_hash($value, PASSWORD_DEFAULT);
-    }
-
-    /**
-     * Мутатор номера телефона
-     *
-     * @param string $value
-     */
-    public function setPhoneAttribute(string $value): void
-    {
-        $this->attributes['phone'] = str_replace([' ', '(', ')', '+7', '-'], '', $value);
-    }
-
-    /**
      * Связь с посетителями
      * @return HasOne
      */

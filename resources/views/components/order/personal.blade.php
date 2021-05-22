@@ -7,21 +7,21 @@
             <x-form-elements.element-input
                 label="{{ __('orderPage.formElements.personal.fullName.label') }}"
                 name="name"
-                value="{{ $user?->name }}"
+                value="{{ $name }}"
                 required
                 placeholder="{{ __('orderPage.formElements.personal.fullName.placeholder') }}"
             />
             <x-form-elements.element-input
                 label="{{ __('orderPage.formElements.personal.phone.label') }}"
                 name="phone"
-                value="{{ $user?->phone }}"
+                value="{{ $phone }}"
                 required
                 placeholder="{{ __('orderPage.formElements.personal.phone.placeholder') }}"
             />
             <x-form-elements.element-input
                 label="{{ __('orderPage.formElements.personal.email.label') }}"
                 name="email"
-                value="{{ $user?->email }}"
+                value="{{ $email }}"
                 required
                 placeholder="{{ __('orderPage.formElements.personal.email.placeholder') }}"
             />

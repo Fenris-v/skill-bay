@@ -4,5 +4,5 @@
     id="{{ $name }}"
     name="{{ $name }}"
     {{ $attributes->merge(['type' => 'text']) }}
-    value="{{ old($name) ?? $value ?? null }}"
+    value="{{ $attributes->get('type') !== 'radio' ? (old($name) ?? $value ?? null) : $value }}"
 />

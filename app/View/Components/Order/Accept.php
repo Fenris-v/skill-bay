@@ -11,7 +11,6 @@ use App\Models\Order;
 class Accept extends Component
 {
     public Order $order;
-    public string $phone;
     public Collection $products;
 
     public function __construct(
@@ -19,11 +18,6 @@ class Accept extends Component
         ProductCartService $productCartService
     ) {
         $this->order = $ordersRepository->getCurrentOrder();
-        $this->phone = preg_replace(
-            '/([0-9]{3})([0-9]{3})([0-9]{2})([0-9]{2})/',
-            '+7 ($1) $2 - $3 - $4',
-            $this->order?->user?->phone
-        );
         $this->products = $productCartService->get();
     }
 

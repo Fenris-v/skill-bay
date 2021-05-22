@@ -1,7 +1,7 @@
 @props(['name', 'items' => []])
 <x-form-elements.form-group name="{{ $name }}">
     @foreach($items as $item)
-        @if($item['checked'])
+        @if((int) old($name) === (int) $item['value'] || $item['checked'])
         <x-form-elements.toggle
             name="{{ $name }}"
             title="{{ $item['title'] }}"
