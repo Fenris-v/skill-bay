@@ -50,7 +50,8 @@ class Product extends Model
         'vendor',
         'rating_sort',
         'main_image_id',
-        'category_id'
+        'category_id',
+        'limited',
     ];
 
     /**

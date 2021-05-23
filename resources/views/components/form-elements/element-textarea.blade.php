@@ -4,7 +4,7 @@
     name="{{ $name }}"
 >
     <textarea
-        class="form-textarea"
+        {{ $attributes->class(['form-textarea', 'form-textarea_error' => $errors->get($name)]) }}
         name="{{ $name }}"
         id="{{ $name }}"
     >{{ old($name) ?? $value ?? null }}</textarea>

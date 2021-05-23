@@ -8,6 +8,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\DiscountController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use Tabuna\Breadcrumbs\Trail;
@@ -257,4 +258,14 @@ Route::get('/login-for-order', [UserController::class, 'loginForOrder'])
 Route::post('/auth-and-return-to-order', [UserController::class, 'authAndBackToOrder'])
     ->middleware('guest')
     ->name('authAndBackToOrder')
+;
+
+Route::get('/discounts', [DiscountController::class, 'index'])
+    ->name('discounts')
+    ->breadcrumbs(
+        function (Trail $trail) {
+            $trail->parent('index')
+                ->push(__('navigation.discounts'), route('discounts'));
+        }
+    )
 ;

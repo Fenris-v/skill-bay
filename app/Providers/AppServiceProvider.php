@@ -8,6 +8,7 @@ use App\Contracts\OrderPaymentService as OrderPaymentServiceContract;
 use App\Contracts\ProductReviewService as ProductReviewServiceContract;
 use App\Services\CompareProductsService;
 use App\Services\HotProductCategoriesService;
+use App\Services\LimitedEditionProductService;
 use App\Services\OrderPaymentService;
 use App\Services\ProductCartService;
 use App\Contracts\ProductCartService as ProductCartServiceContract;
@@ -75,6 +76,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(
             AlertFlashServiceContract::class,
             AlertFlashService::class
+        );
+
+        //Сервис для получения списка товаров с ограничееным тиражем
+        $this->app->singleton(
+            LimitedEditionProductService::class,
+            LimitedEditionProductService::class
         );
     }
 

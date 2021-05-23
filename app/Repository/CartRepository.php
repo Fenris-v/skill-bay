@@ -97,7 +97,7 @@ class CartRepository
 
         $prepareCollection = fn($item) => [
             $item->id => [
-                'seller_id' => $item->pivot->seller->id,
+                'seller_id' => $item->pivot->seller_id,
                 'amount' => $item->amount,
             ]
         ];
@@ -158,7 +158,6 @@ class CartRepository
             $this->ttl(),
             fn() => $cart->products()
                 ->using(ProductSeller::class)
-                ->withPivot('seller_id')
                 ->get()
         );
     }

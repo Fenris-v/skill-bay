@@ -89,6 +89,7 @@ return [
             'labels' => [
                 'title' => 'Название',
                 'vendor' => 'Производитель',
+                'limited' => 'Ограниченный тираж',
             ],
             'description' => 'Описание',
             'category' => 'Категория',
