@@ -142,14 +142,14 @@ class OrdersRepository
     /**
      * Сохраняет персональные данные пользователя.
      *
-     * @param array $input
+     * @param array $params
      * @param User $user
      * @return Order
      */
-    public function savePersonalStep(array $input, User $user): Order
+    public function savePersonal(array $params, User $user): Order
     {
         $order = $this->getCurrentOrder();
-        $order->fill($input);
+        $order->fill($params);
         $order->user()->associate($user);
         $order->save();
 
@@ -161,14 +161,15 @@ class OrdersRepository
     /**
      * Сохраняет данные доставки.
      *
-     * @param array $input
+     * @param array $params
+     * @param DeliveryType $deliveryType
      * @return Order
      */
-    public function saveDeliveryStep(array $input): Order
+    public function saveDelivery(array $params, DeliveryType $deliveryType): Order
     {
         $order = $this->getCurrentOrder();
-        $order->deliveryType()->associate(DeliveryType::where('id', $input['delivery'])->firstOrFail());
-        $order->update(collect($input)->only(['city', 'address'])->toArray());
+        $order->deliveryType()->associate($deliveryType);
+        $order->update($params);
 
         Cache::tags([Order::class])->flush();
 
@@ -178,13 +179,13 @@ class OrdersRepository
     /**
      * Сохраняет способ оплаты.
      *
-     * @param array $input
+     * @param PaymentType $paymentType
      * @return Order
      */
-    public function savePaymentStep(array $input): Order
+    public function savePayment(PaymentType $paymentType): Order
     {
         $order = $this->getCurrentOrder();
-        $order->paymentType()->associate(PaymentType::where('id', $input['payment'])->firstOrFail());
+        $order->paymentType()->associate($paymentType);
         $order->save();
 
         Cache::tags([Order::class])->flush();
@@ -198,7 +199,7 @@ class OrdersRepository
      * @param Cart $cart
      * @return bool
      */
-    public function saveAcceptStep(Cart $cart): bool
+    public function saveCart(Cart $cart): bool
     {
         $order = $this->getCurrentOrder();
         $order->cart()->associate($cart);
@@ -206,42 +207,5 @@ class OrdersRepository
         Cache::tags([Order::class, Cart::class])->flush();
 
         return $this->payments->pay($order);
-    }
-
-    /**
-     * Получение способов доставки
-     *
-     * @return Collection|DeliveryType[]
-     */
-    public function getDeliveryTypes(): Collection
-    {
-        $order = $this->getCurrentOrder();
-
-        return DeliveryType::all()
-            ->map(fn($item) => [
-                'title' => $item->name . ($item->price ? " ($item->price$)" : ''),
-                'value' => $item->id,
-                'checked' => $order->deliveryType?->id === $item->id,
-            ])
-        ;
-    }
-
-    /**
-     * Получение способов оплаты
-     *
-     * @return Collection|PaymentType[]
-     */
-    public function getPaymentTypes(): Collection
-    {
-        $order = $this->getCurrentOrder();
-
-        return PaymentType
-            ::all()
-            ->map(fn($item) => [
-                'title' => $item->name,
-                'value' => $item->id,
-                'checked' => $order->paymentType?->id === $item->id,
-            ])
-        ;
     }
 }

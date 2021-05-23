@@ -11,7 +11,7 @@ class OrderDeliveryRequest extends FormRequest
         return [
             'city' => 'required|min:3|max:255',
             'address' => 'required|min:3|max:255',
-            'delivery' => 'required|numeric',
+            'delivery' => 'required|numeric|exists:delivery_types,id',
         ];
     }
 }

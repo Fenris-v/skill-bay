@@ -9,7 +9,7 @@ class OrderPaymentRequest extends FormRequest
     public function rules()
     {
         return [
-            'payment' => 'required|numeric',
+            'payment' => 'required|numeric|exists:payment_types,id',
         ];
     }
 }

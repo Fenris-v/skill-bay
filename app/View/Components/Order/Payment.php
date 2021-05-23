@@ -13,7 +13,8 @@ class Payment extends Component
     public function __construct(OrdersRepository $ordersRepository)
     {
         $this->payments = $ordersRepository
-            ->getPaymentTypes()
+            ->getCurrentOrder()
+            ->paymentTypes
             ->toArray()
         ;
     }

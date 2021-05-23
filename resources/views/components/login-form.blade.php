@@ -1,4 +1,8 @@
-<form class="form Authorization" action="{{route('auth')}}" method="post">
+<form
+	class="form Authorization"
+	action="{{ url()->current() === route('login') ? route('auth') : route('authAndBackToOrder') }}"
+	method="post"
+>
 	@csrf
 	@include('includes.validate')
 	@include('includes.auth_fail')

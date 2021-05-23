@@ -15,10 +15,7 @@ class Delivery extends Component
     public function __construct(OrdersRepository $ordersRepository)
     {
         $this->order = $ordersRepository->getCurrentOrder();
-        $this->deliveries = $ordersRepository
-            ->getDeliveryTypes()
-            ->toArray()
-        ;
+        $this->deliveries = $this->order->deliveryTypes->toArray();
     }
 
     public function render()

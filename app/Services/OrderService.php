@@ -3,7 +3,13 @@
 namespace App\Services;
 
 use App\Contracts\OrderService as OrderServiceInterface;
+use App\Http\Requests\OrderDeliveryRequest;
+use App\Http\Requests\OrderPaymentRequest;
+use App\Http\Requests\OrderPersonalRequest;
 use App\Models\Order;
+use App\Models\DeliveryType;
+use App\Models\PaymentType;
+use App\Repository\CartRepository;
 use App\Repository\OrdersRepository;
 
 
@@ -14,16 +20,59 @@ class OrderService implements OrderServiceInterface
     ) {}
 
     /**
-     * Сохраняет в Order персональные данные пользователя (name, phone, email)
+     * Сохраняет в Order персональные данные пользователя (name, phone, email, user)
      *
-     * @param  array  $params
+     * @param  OrderPersonalRequest $request
      * @return Order
      */
-    public function addUserPersonalDataToOrder(array $params): Order
+    public function savePersonalDataToOrder(OrderPersonalRequest $request): Order
     {
-        $order = $this->ordersRepository->getCurrentOrder();
-        $order->fill(collect($params)->only(['phone', 'email', 'name'])->toArray());
+        return $this
+            ->ordersRepository
+            ->savePersonal(
+                $request->only(['name', 'phone', 'email']),
+                auth()->user()
+            )
+        ;
+    }
 
-        return $order;
+    /**
+     * Сохраняет в Order данные доставки
+     *
+     * @param  OrderDeliveryRequest $request
+     * @return Order
+     */
+    public function saveDeliveryTypeToOrder(OrderDeliveryRequest $request): Order
+    {
+        return $this->ordersRepository->saveDelivery(
+            $request->only(['city', 'address']),
+            DeliveryType::where('id', $request['delivery'])->firstOrFail()
+        );
+    }
+
+    /**
+     * Сохраняет в Order данные о способе оплаты
+     *
+     * @param  OrderPaymentRequest $request
+     * @return Order
+     */
+    public function savePaymentTypeToOrder(OrderPaymentRequest $request): Order
+    {
+        return $this->ordersRepository->savePayment(
+            PaymentType::where('id', $request->payment)->firstOrFail()
+        );
+    }
+
+    /**
+     * Сохраняет в Order данные о корзине
+     *
+     * @param  CartRepository $cartRepository
+     * @return bool
+     */
+    public function saveCartToOrder(CartRepository $cartRepository): bool
+    {
+        return $this->ordersRepository->saveCart(
+            $cartRepository->getCart()
+        );
     }
 }

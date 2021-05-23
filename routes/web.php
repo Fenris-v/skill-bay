@@ -250,4 +250,11 @@ Route::get('/forgot-password', [UserController::class, 'forgotPassword'])->middl
 Route::post('/forgot-password', [UserController::class, 'forgotPasswordSend'])->middleware('guest')->name('forgot-password-send');
 Route::get('/reset-password/{token}/', [UserController::class, 'resetPassword'])->middleware('guest')->name('password.reset');
 Route::post('/reset-password', [UserController::class, 'resetPasswordSend'])->middleware('guest')->name('reset-password-send');
-
+Route::get('/login-for-order', [UserController::class, 'loginForOrder'])
+    ->middleware('guest')
+    ->name('loginForOrder')
+;
+Route::post('/auth-and-return-to-order', [UserController::class, 'authAndBackToOrder'])
+    ->middleware('guest')
+    ->name('authAndBackToOrder')
+;

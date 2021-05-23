@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Models\Pivots\ProductSeller;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Cart;
@@ -89,6 +90,7 @@ class CartRepository
      */
     protected function mergeCarts(Cart $guestCart, Cart $userCart): Cart
     {
+        Cache::tags([Cart::class])->flush();
         if (!$guestCart->products->count()) {
             return $userCart;
         }
@@ -108,7 +110,6 @@ class CartRepository
         if ($guestCart->id) {
             $guestCart->forceDelete();
         }
-        Cache::tags([Cart::class])->flush();
 
         return $userCart;
     }
@@ -156,7 +157,8 @@ class CartRepository
             'cart|' . $cart->id . '|products',
             $this->ttl(),
             fn() => $cart->products()
-                ->with(['sellers'])
+                ->using(ProductSeller::class)
+                ->withPivot('seller_id')
                 ->get()
         );
     }

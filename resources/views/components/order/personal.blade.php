@@ -43,7 +43,7 @@
                     placeholder="{{ __('orderPage.formElements.personal.confirmPassword.placeholder') }}"
                 />
                 <div class="form-group">
-                    <a class="btn btn_muted Order-btnReg" href="/login">
+                    <a class="btn btn_muted Order-btnReg" href="{{ route('loginForOrder') }}">
                         {{ __('orderPage.buttons.login') }}
                     </a>
                 </div>

@@ -19,6 +19,15 @@ class UserController extends Controller
 	{
 		$this->userService = $userService;
 	}
+
+	protected function doAuth(AuthRequest $request): bool
+    {
+        $data = $request->only([
+            'phone',
+            'password'
+        ]);
+        return Auth::attempt($data);
+    }
 	
 	public function create()
     {
@@ -43,16 +52,12 @@ class UserController extends Controller
 	}
 	
 	public function auth(AuthRequest $request)
-	{    	
-		$data = $request->only([
-            'phone',
-            'password'
-        ]);
-        if(Auth::attempt($data)){
-			return redirect()->route('index');
-		} else {
-			return back()->with('auth_fail', __('user_messages.auth_fail'));
-		}
+	{
+        if ($this->doAuth($request)){
+            return redirect()->route('index');
+        } else {
+            return back()->with('auth_fail', __('user_messages.auth_fail'));
+        }
 	}
 	
 	public function forgotPassword()
@@ -101,4 +106,18 @@ class UserController extends Controller
 		Auth::logout();
 		return back();
 	}
+
+    public function loginForOrder()
+    {
+        return view('pages.login.index');
+    }
+
+    public function authAndBackToOrder(AuthRequest $request)
+    {
+        if ($this->doAuth($request)){
+            return redirect()->route('order.personal.get');
+        } else {
+            return back()->with('auth_fail', __('user_messages.auth_fail'));
+        }
+    }
 }

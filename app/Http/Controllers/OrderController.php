@@ -13,6 +13,7 @@ use App\Services\AlertFlashService;
 use App\Services\OrderService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Cache;
 
@@ -20,21 +21,27 @@ class OrderController extends Controller
 {
     public function __construct(
         protected AlertFlashService $alert,
-        protected OrdersRepository $ordersRepository
+        protected OrdersRepository $ordersRepository,
+        protected OrderService $orderService
     ) {}
+
+    protected function isEnoughProgress(array $needSteps): bool
+    {
+        return collect($needSteps)->intersect($this->getProgress())->toArray() === $needSteps;
+    }
 
     protected function getProgress()
     {
         $order = $this->ordersRepository->getCurrentOrder();
         $completedSteps = [];
 
-        if ($order->user) {
+        if ($order->user_id) {
             $completedSteps[] = 'personal';
         }
-        if ($order->deliveryType) {
+        if ($order->delivery_type_id) {
             $completedSteps[] = 'delivery';
         }
-        if ($order->paymentType) {
+        if ($order->payment_type_id) {
             $completedSteps[] = 'payment';
         }
 
@@ -53,24 +60,18 @@ class OrderController extends Controller
     public function stepPersonalStore(
         OrderPersonalRequest $request,
         UserService $userService
-
     ) {
-        $data = $request->only([
-            'email',
-            'phone',
-            'name'
-        ]);
         if (!auth()->check()) {
-            $user = $userService->registerUser(array_merge(
-                $data,
-                $request->only(['password'])
-            ));
+            $user = $userService->registerUser($request->only([
+                'email',
+                'phone',
+                'name',
+                'password',
+            ]));
             Auth::login($user);
-        } else {
-            $user = auth()->user();
         }
 
-        $this->ordersRepository->savePersonalStep($data, $user);
+        $this->orderService->savePersonalDataToOrder($request);
 
         return redirect(route('order.delivery.get'));
     }
@@ -85,11 +86,7 @@ class OrderController extends Controller
 
     public function stepDeliveryStore(OrderDeliveryRequest $request)
     {
-        $order = $this->ordersRepository->saveDeliveryStep($request->only([
-            'city',
-            'address',
-            'delivery'
-        ]));
+        $this->orderService->saveDeliveryTypeToOrder($request);
 
         return redirect(route('order.payment.get'));
     }
@@ -104,9 +101,7 @@ class OrderController extends Controller
 
 public function stepPaymentStore(OrderPaymentRequest $request)
 {
-    $this->ordersRepository->savePaymentStep($request->only([
-        'payment'
-    ]));
+    $this->orderService->savePaymentTypeToOrder($request);
 
     return redirect(route('order.accept.get'));
 }
@@ -120,7 +115,13 @@ public function stepPaymentStore(OrderPaymentRequest $request)
     }
 
     public function stepAcceptStore(CartRepository $cartRepository) {
-        if ($this->ordersRepository->saveAcceptStep($cartRepository->getCart())) {
+        if (!$this->isEnoughProgress(['personal', 'delivery', 'payment'])) {
+            $this->alert->danger();
+            $this->alert->lang('orderMessages.notEnoughProgress');
+            return back();
+        }
+
+        if ($this->orderService->saveCartToOrder($cartRepository)) {
             $result = 'success';
         } else {
             $result = 'error';
