@@ -10,6 +10,8 @@ class CompareProductRepository
 {
     private $visitorService;
 
+    const COMPARE_PRODUCT_CACHE_TAGS = 'compare_product';
+
     /**
      * @param VisitorService $visitorService
      */
@@ -38,8 +40,17 @@ class CompareProductRepository
         return $this->visitorService->get()->compareProducts->count();
     }
 
-    public function get(): Collection
+    public function get($count): Collection
     {
-        return $this->visitorService->get()->compareProducts;
+        return $this
+            ->visitorService
+            ->get()
+            ->compareProducts
+            ->take($count)
+            ->load('image')
+            ->load('specifications')
+            ->load('sellers');
+
+
     }
 }
