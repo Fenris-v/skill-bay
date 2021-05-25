@@ -1,4 +1,1 @@
-<form action="{{route('logout')}}" method="post">
-	@csrf
-	{{auth()->user()->name}}&nbsp;/&nbsp;<button style="border:none;" class="ControlPanel-title" type="submit" class="ControlPanel-title">{{__('user_messages.logout')}}</button>
-</form>
+<a class="ControlPanel-title" href="{{route('profile')}}">{{auth()->user()->name}}</a>&nbsp;/&nbsp;<a href="{{route('logout')}}" class="ControlPanel-title" type="submit" class="ControlPanel-title">{{__('user_messages.logout')}}</a>
