@@ -1,1 +1,1 @@
-<a class="ControlPanel-title" href="{{route('profile')}}">{{auth()->user()->name}}</a>&nbsp;/&nbsp;<a href="{{route('logout')}}" class="ControlPanel-title" type="submit" class="ControlPanel-title">{{__('user_messages.logout')}}</a>
+<a class="ControlPanel-title" href="{{route('profile')}}">{{auth()->user()->name}}</a>&nbsp;/&nbsp;<a href="{{route('logout')}}" class="ControlPanel-title" class="ControlPanel-title">{{__('user_messages.logout')}}</a>
