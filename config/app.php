@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Discount;
+
 return [
 
     /*
@@ -245,6 +247,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        'Discount' => Discount::class,
     ],
 
 ];

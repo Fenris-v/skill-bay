@@ -2,7 +2,7 @@
 
 namespace App\View\Components\Catalog;
 
-use Closure;
+use App\Models\DiscountUnit;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
@@ -17,18 +17,31 @@ class ProductList extends Component
      *
      * @return void
      */
-    public function __construct(public Paginator|Collection $products, string $class = '')
-    {
+    public function __construct(
+        public Paginator|Collection $products,
+        public Collection $discounts,
+        string $class = ''
+    ) {
         $this->class = $class;
     }
 
     /**
      * Get the view / contents that represent the component.
      *
-     * @return View|Closure|string
+     * @return View
      */
-    public function render(): View|Closure|string
+    public function render(): View
     {
         return view('components.catalog.product-list');
+    }
+
+    /**
+     * Возвращает скидку по модели продукта
+     * @param $product
+     * @return DiscountUnit|null
+     */
+    public function getDiscount($product): ?DiscountUnit
+    {
+        return $this->discounts->get($product->slug) ?? null;
     }
 }
