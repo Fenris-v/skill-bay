@@ -39,6 +39,14 @@ class AccountController extends Controller
      */
     public function show(): View
     {
-        return view('pages.account.profile');
+		$user = auth()->user();
+        return view('pages.account.profile',["user" => $user]);
     }
+    
+    public function editProfile()
+    {
+		/*$path = $request->file('avatar')->storeAs(
+			'avatars', $request->user()->id
+		);*/
+	}
 }

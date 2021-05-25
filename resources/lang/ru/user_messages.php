@@ -11,6 +11,7 @@ return [
     'password'=>'Пароль',
     'password_confirm' => 'Подтверждение пароля',
     'phone' => 'Телефон',
+    'name' => 'ФИО',
     'register' => 'Зарегистрироваться',
     'reset_password'=>'Сбросить пароль',
     'forgot_password' => 'Забыли пароль',
