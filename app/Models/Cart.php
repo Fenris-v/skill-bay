@@ -29,8 +29,7 @@ class Cart extends Model
                     ->on('cart_product_seller.seller_id', '=', 'product_seller.seller_id')
                 )
             ->select('products.*', 'product_seller.price', 'cart_product_seller.amount')
-            ->using(ProductSeller::class)
-            ->withPivot('seller_id')
+            ->withPivot(['seller_id'])
         ;
     }
 

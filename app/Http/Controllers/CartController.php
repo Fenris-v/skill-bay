@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Repository\CartRepository;
+use App\Repository\OrdersRepository;
 use App\Repository\SellerRepository;
 use Illuminate\Http\Request;
 use App\Services\ProductCartService;

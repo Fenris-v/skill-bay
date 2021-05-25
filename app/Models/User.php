@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Orchid\Platform\Models\User as Authenticatable;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -53,6 +54,7 @@ class User extends Authenticatable
         'name',
         'email',
         'permissions',
+        'phone',
     ];
 
     /**
@@ -66,6 +68,7 @@ class User extends Authenticatable
         'email',
         'updated_at',
         'created_at',
+        'phone',
     ];
 
     /**
