@@ -6,6 +6,9 @@ use App\Repository\OrdersRepository;
 use App\Repository\ProductViewHistoryRepository;
 use App\Repository\EloquentUserRepository;
 use Illuminate\Contracts\View\View;
+use App\Http\Requests\AccountRequest;
+use Illuminate\Support\Facades\Hash;
+use App\Services\UserService;
 
 class AccountController extends Controller
 {
@@ -43,10 +46,23 @@ class AccountController extends Controller
         return view('pages.account.profile',["user" => $user]);
     }
     
-    public function editProfile()
+    public function editProfile(AccountRequest $request, UserService $userService)
     {
 		/*$path = $request->file('avatar')->storeAs(
 			'avatars', $request->user()->id
-		);*/
+        );*/
+        $userId = auth()->user()->id;
+        $data = [];
+        $data["name"] = $request->name;
+        $data["phone"] = $request->phone;
+        if(!empty($request->password)){
+            if($request->password == $request->password_confirmation){
+                $data["password"] = Hash::make($request->password);
+            } else {
+                back()->withErrors("password",__('validation.confirmed'));
+            }
+        }
+        $userService->updateUser($data, $userId);
+        return back()->with('success', __('user_messages.profile_edit_success'));
 	}
 }

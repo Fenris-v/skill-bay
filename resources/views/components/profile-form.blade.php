@@ -31,7 +31,7 @@
 					<button class="btn btn_success" type="submit">Сохранить</button>
 				</div>
 				@if ($message = Session::get('success'))
-					<div class="Profile-success">Профиль успешно сохранен</div>
+					<div class="Profile-success">{{$message}}</div>
 				@endif
 			</div>
 		</div>

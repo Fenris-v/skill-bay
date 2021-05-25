@@ -7,6 +7,7 @@ return [
 	'registation' => 'Регистрация',
     'auth_fail' => 'Неверный телефон или пароль',
     'registration_success' => 'Вы успешно зарегистрированы!',
+    'profile_edit_success' => 'Профиль успешно сохранен',
     'email' => 'E-mail',
     'password'=>'Пароль',
     'password_confirm' => 'Подтверждение пароля',
