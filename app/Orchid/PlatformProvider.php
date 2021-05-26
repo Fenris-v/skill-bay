@@ -66,6 +66,10 @@ class PlatformProvider extends OrchidServiceProvider
             ItemMenu::label(__('admin.seller.title'))
                 ->icon('list')
                 ->route('platform.seller.list'),
+
+            ItemMenu::label(__('admin.discount.title'))
+                ->icon('list')
+                ->route('platform.discount.list'),
         ];
     }
 
