@@ -8,7 +8,6 @@ use Cookie;
 
 class VisitorService
 {
-
     public function get()
     {
         if (auth()->check()) {
@@ -24,6 +23,5 @@ class VisitorService
         }
 
         return $visitor;
-
     }
 }

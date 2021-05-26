@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Product;
 use App\Models\Cart;
-use App\Models\User;
+use App\Models\Visitor;
 use Illuminate\Database\Seeder;
 
 class CartSeeder extends Seeder
@@ -17,14 +17,11 @@ class CartSeeder extends Seeder
     public function run()
     {
         $products = Product::select('id')->get();
-        $users = User::select('id')->get();
         Cart::factory()
             ->count(5)
             ->create()
             ->each(
-                function ($cart) use ($users, $products) {
-                    $cart->user()->associate($users->random());
-                    $cart->save();
+                function ($cart) use ($products) {
                     $cart->products()->attach(
                         $products
                             ->random(rand(1, $products->count()))

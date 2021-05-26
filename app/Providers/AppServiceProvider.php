@@ -83,6 +83,12 @@ class AppServiceProvider extends ServiceProvider
             LimitedEditionProductService::class,
             LimitedEditionProductService::class
         );
+
+        //Сервис для получения Визитера
+        $this->app->singleton(
+            VisitorService::class,
+            VisitorService::class
+        );
     }
 
     /**

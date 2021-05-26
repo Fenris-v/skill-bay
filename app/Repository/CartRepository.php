@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Cart;
 use App\Models\Seller;
 use App\Repository\ConfigRepository;
+use App\Services\VisitorService;
 use Cache;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
@@ -17,8 +18,9 @@ class CartRepository
 {
     use TimeToLiveCacheTrait;
 
-    public function __construct(private ConfigRepository $configRepository)
-    {}
+    public function __construct(
+        private ConfigRepository $configRepository
+    ) {}
 
     /**
      * Возвращает корзину пользователя.
@@ -37,7 +39,7 @@ class CartRepository
             function() use ($user) {
                 $cart = Cart
                     ::whereHas(
-                        'user',
+                        'visitor',
                         fn(Builder $query) => $query->where('id', $user->id)
                     )
                     ->with('products')
@@ -120,21 +122,19 @@ class CartRepository
      */
     public function getCart(): Cart
     {
-        if (!session()->has('guest_id')) {
-            session(['guest_id' => Str::uuid()]);
-        }
+        $visitor = app(VisitorService::class)->get();
+        return Cache::tags([
+            ConfigRepository::GLOBAL_CACHE_TAG,
+            Cart::class,
+        ])->remember(
+            'cart|' . $visitor->id,
+            $this->ttl(),
+            fn() => Cart::whereHas('visitor', fn($query) => $query->where('id', $visitor->id))
+                ->with('products')
+                ->doesntHave('order')
+                ->firstOrNew()
+        );
 
-        $guestCart = $this->getGuestCart(session('guest_id'));
-
-        if (auth()->check()) {
-            return $this->mergeCarts(
-                $guestCart,
-                $this->getUserCart(auth()->user())
-            );
-        } else {
-            $guestCart->save();
-            return $guestCart;
-        }
     }
 
     /**
