@@ -58,7 +58,7 @@ class DiscountService implements Discountable
         foreach ($this->getAllDiscounts($products) as $key => $discount) {
             $priorityDiscounts = $priorityDiscounts->mergeRecursive(
                 [
-                    $key => $discount->sortByDesc('discount.priority')->first()->discount
+                    $key => $discount->sortByDesc('discount.priority')->first()->discount ?? null
                 ]
             );
         }
