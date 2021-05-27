@@ -3,7 +3,6 @@
 namespace App\View\Components\Catalog;
 
 use App\Models\Discount;
-use App\Models\DiscountUnit;
 use App\Models\Product;
 use App\Services\DiscountService;
 use Illuminate\Contracts\View\View;
@@ -19,9 +18,9 @@ class ProductListItem extends Component
      *
      * @return void
      */
-    public function __construct(DiscountService $service, public Product $product, ?DiscountUnit $discountUnit)
+    public function __construct(DiscountService $service, public Product $product, ?Discount $discount)
     {
-        $this->discount = $discountUnit->discount ?? null;
+        $this->discount = $discount ?? null;
 
         if ($this->discount) {
             $this->price = $service->calculateDiscountPrice(

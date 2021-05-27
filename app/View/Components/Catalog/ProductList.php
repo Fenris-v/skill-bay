@@ -2,7 +2,7 @@
 
 namespace App\View\Components\Catalog;
 
-use App\Models\DiscountUnit;
+use App\Models\Discount;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
@@ -38,9 +38,9 @@ class ProductList extends Component
     /**
      * Возвращает скидку по модели продукта
      * @param $product
-     * @return DiscountUnit|null
+     * @return Discount|null
      */
-    public function getDiscount($product): ?DiscountUnit
+    public function getDiscount($product): ?Discount
     {
         return $this->discounts->get($product->slug) ?? null;
     }
