@@ -2,7 +2,8 @@
 
 namespace App\Repository;
 
-use App\Models\Image;
+use App\Models\Attachment;
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductReview;
 use App\Models\Seller;
@@ -34,12 +35,17 @@ class ProductRepository
     {
         return Cache::tags([
             ConfigRepository::GLOBAL_CACHE_TAG,
-            Product::PRODUCT_CACHE_TAGS
+            Product::PRODUCT_CACHE_TAGS,
+            Category::CATEGORY_CACHE_TAGS,
+            Attachment::class,
+            Seller::class,
         ])->remember('products_top', $this->ttl(), function () use ($amount) {
             return Product::limit($amount)
-                ->with('sellers')
-                ->with('image')
-                ->with('category')
+                ->with([
+                    'sellers',
+                    'image',
+                    'category',
+                ])
                 ->get();
         });
     }
@@ -57,7 +63,7 @@ class ProductRepository
             ConfigRepository::GLOBAL_CACHE_TAG,
             Product::class,
             Seller::class,
-            Image::class,
+            Attachment::class,
             Specification::class,
             ProductReview::class,
         ])->remember(

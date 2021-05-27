@@ -13,20 +13,16 @@ use Cache;
 class CompareProductsService
 {
     private $compareProductRepository;
-    private $configRepository;
     private $visitorService;
 
     /**
+     * CompareProductsService constructor.
      * @param CompareProductRepository $compareProductRepository
+     * @param VisitorService $visitorService
      */
-    public function __construct(
-        CompareProductRepository $compareProductRepository,
-        ConfigRepository $configRepository,
-        VisitorService $visitorService
-    )
+    public function __construct(CompareProductRepository $compareProductRepository, VisitorService $visitorService)
     {
         $this->compareProductRepository = $compareProductRepository;
-        $this->configRepository = $configRepository;
         $this->visitorService = $visitorService;
     }
 
@@ -36,9 +32,10 @@ class CompareProductsService
      */
     public function add(Product $product) : bool
     {
-        if (!$this->compareProductRepository->contains($product->id)) {
-            $this->compareProductRepository->add($product);
-            Cache::tags(CompareProductRepository::COMPARE_PRODUCT_CACHE_TAGS)->flush();
+        $visitor = $this->visitorService->get();
+        if (!$this->compareProductRepository->contains($visitor, $product->id)) {
+            $this->compareProductRepository->add($visitor, $product);
+
             return true;
         }
 
@@ -51,9 +48,10 @@ class CompareProductsService
      */
     public function remove(Product $product) : bool
     {
-        if ($this->compareProductRepository->contains($product->id)) {
-            $this->compareProductRepository->remove($product);
-            Cache::tags(CompareProductRepository::COMPARE_PRODUCT_CACHE_TAGS)->flush();
+        $visitor = $this->visitorService->get();
+        if ($this->compareProductRepository->contains($visitor, $product->id)) {
+            $this->compareProductRepository->remove($visitor, $product);
+
             return true;
         }
 
@@ -62,22 +60,11 @@ class CompareProductsService
 
     /**
      * @param int $count
-     * @return Collection|Array
+     * @return Collection|Product[]
      */
     public function getProducts($count = 3) : Collection|Array
     {
-        $ttl = $this->configRepository->getCacheLifetime(now()->addDay());
-
-        return Cache::tags([
-            CompareProductRepository::COMPARE_PRODUCT_CACHE_TAGS,
-            Product::PRODUCT_CACHE_TAGS,
-            Visitor::VISITOR_CACHE_TAGS,
-        ])->remember('compare_products_visitor_' . $this->visitorService->get()->id, $ttl, function() use ($count) {
-            return $this
-                ->compareProductRepository
-                ->get($count);
-        });
-
+        return $this->compareProductRepository->get($this->visitorService->get(), $count);
     }
 
     /**
@@ -85,16 +72,7 @@ class CompareProductsService
      */
     public function count() : int
     {
-        $ttl = $this->configRepository->getCacheLifetime(now()->addDay());
-
-        return Cache::tags([
-            Visitor::VISITOR_CACHE_TAGS,
-            CompareProductRepository::COMPARE_PRODUCT_CACHE_TAGS,
-        ])->remember('compare_product_count_visitor_' . $this->visitorService->get()->id, $ttl, function() {
-            return $this
-                ->compareProductRepository
-                ->count();
-        });
+        return $this->compareProductRepository->count($this->visitorService->get());
     }
 
 }
