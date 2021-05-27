@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Models\Cart;
+use App\Models\Attachment;
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductReview;
 use App\Models\Seller;
@@ -34,14 +36,22 @@ class ProductRepository
     {
         return Cache::tags(
             [
-                ConfigRepository::GLOBAL_CACHE_TAG,
-                Product::PRODUCT_CACHE_TAGS
+            ConfigRepository::GLOBAL_CACHE_TAG,
+            Product::PRODUCT_CACHE_TAGS,
+            Category::CATEGORY_CACHE_TAGS,
+            Attachment::class,
+            Seller::class,
             ]
         )->remember(
             'products_top',
             $this->ttl(),
             function () use ($amount) {
                 return Product::limit($amount)
+                    ->with([
+                        'sellers',
+                        'image',
+                        'category',
+                    ])
                     ->selectRaw(
                         '*, (SELECT AVG(price) FROM product_seller WHERE products.id = product_id) as avg_price'
                     )->get();
@@ -65,6 +75,7 @@ class ProductRepository
                 Seller::class,
                 Specification::class,
                 ProductReview::class,
+                Attachment::class,
             ]
         )->remember(
             'cart_product|' . $slug,
