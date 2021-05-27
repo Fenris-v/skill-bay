@@ -27,6 +27,7 @@ class Discount extends Model
         'value',
         'description',
         'begin_at',
+        'end_at',
         'unit_type',
         'type',
         'priority',
