@@ -25,6 +25,7 @@ use App\Orchid\Screens\Category\CategoryListScreen;
 use App\Orchid\Screens\Seller\SellerEditScreen;
 use App\Orchid\Screens\Seller\SellerListScreen;
 use App\Orchid\Screens\Discount\DiscountListScreen;
+use App\Orchid\Screens\Discount\DiscountEditScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -196,10 +197,10 @@ Route::screen('sellers', SellerListScreen::class)
     ->name('platform.seller.list');
 
 //Скидки
-Route::screen('discounts/create', SellerEditScreen::class)
+Route::screen('discounts/create', DiscountEditScreen::class)
     ->name('platform.discount.create');
 
-Route::screen('discounts/{discount}', SellerEditScreen::class)
+Route::screen('discounts/{discount}', DiscountEditScreen::class)
     ->name('platform.discount.edit');
 
 Route::screen('discounts', DiscountListScreen::class)

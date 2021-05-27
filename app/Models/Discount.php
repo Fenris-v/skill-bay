@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Orchid\Screen\AsSource;
 use DateTimeInterface;
+use Illuminate\Support\Str;
 
 class Discount extends Model
 {
@@ -21,6 +22,16 @@ class Discount extends Model
     const UNIT_CURRENCY = 2;
 
     protected $dates = ['begin_at', 'end_at'];
+    protected $fillable = [
+        'title',
+        'value',
+        'description',
+        'begin_at',
+        'unit_type',
+        'type',
+        'priority',
+        'image_id',
+    ];
 
     /**
      * Подготовить дату для отображения.
@@ -30,7 +41,7 @@ class Discount extends Model
      */
     protected function serializeDate(DateTimeInterface $date): string
     {
-        return $date->format('d.m.Y H:i:s');
+        return $date->format('d.m.Y');
     }
 
     /**
@@ -48,5 +59,39 @@ class Discount extends Model
     public function image()
     {
         return $this->belongsTo(Attachment::class, 'image_id');
+    }
+
+    /**
+     * Получение списка константных типов скидок
+     */
+    public static function types()
+    {
+        return [
+            self::PRODUCT => __('admin.discount.types.' . self::PRODUCT),
+            self::GROUP => __('admin.discount.types.' . self::GROUP),
+            self::CART => __('admin.discount.types.' . self::CART),
+        ];
+    }
+
+    /**
+     * Получение списка константных способов расчета скидки
+     */
+    public static function unitTypes()
+    {
+        return [
+            self::UNIT_PERCENT => __('admin.discount.unit_types.' . self::UNIT_PERCENT),
+            self::UNIT_CURRENCY => __('admin.discount.unit_types.' . self::UNIT_CURRENCY),
+        ];
+    }
+
+    /**
+     * Автоматическое генерирование slug
+     *
+     * @param string $title
+     */
+    public function setTitleAttribute(string $title)
+    {
+        $this->attributes['slug'] = Str::slug($title, '-');
+        $this->attributes['title'] = $title;
     }
 }
