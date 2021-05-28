@@ -3,9 +3,7 @@
         <div class="ProductCard-look">
             <div class="ProductCard-photo">
                 @if($discount)
-                    <div class="ProductCard-sale">
-                        {{ $discount }}%
-                    </div>
+                    <x-labels.discount :discount="$discount"/>
                 @endif
                 <img src="{{ $product->image->url() }}" alt=""/>
             </div>

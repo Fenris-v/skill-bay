@@ -52,7 +52,7 @@ class CatalogRepository
                 function ($query) use ($categoryId) {
                     return $query->where('category_id', $categoryId);
                 }
-            )->selectRaw('*, (SELECT AVG(price) FROM product_seller WHERE products.id = product_id) as average_price');
+            )->selectRaw('*, (SELECT AVG(price) FROM product_seller WHERE products.id = product_id) as avg_price');
 
         $this->filterSearch($query, $params);
         $this->priceRange($query, $params);
@@ -230,7 +230,7 @@ class CatalogRepository
     {
         match ($sortBy) {
             'popularity' => $query, // TODO: сделать, когда появятся популярные товары
-            'price' => $query->orderBy('average_price', $sortType),
+            'price' => $query->orderBy('avg_price', $sortType),
             'reviews' => $query->withCount('reviews')->orderBy('reviews_count', $sortType),
             'newer' => $query->orderBy('created_at', $sortType),
             default => $query->orderBy('rating_sort', $sortType),

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\CacheFlushableAfterCRUDModelTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +11,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Visitor extends Model
 {
     use HasFactory;
+    use CacheFlushableAfterCRUDModelTrait;
+
+    const VISITOR_CACHE_TAGS = 'visitor';
 
     protected $fillable = [
       'user_id',

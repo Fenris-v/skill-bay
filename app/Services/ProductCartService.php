@@ -130,7 +130,6 @@ class ProductCartService implements ProductCartServiceContract
         );
     }
 
-
     /**
      * Возвращает коллекцию товаров в корзине.
      *

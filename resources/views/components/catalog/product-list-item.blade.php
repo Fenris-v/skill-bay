@@ -8,12 +8,18 @@
         </strong>
         <div class="Card-description">
             <div class="Card-cost">
-                <span class="Card-priceOld">
-                    @price($product->average_price ?? 0)
-                </span>
-                <span class="Card-price">
-                    @price($product->average_price ?? 0)
-                </span>
+                @if($price)
+                    <span class="Card-priceOld">
+                        @price($product->avg_price ?? 0)
+                    </span>
+                    <span class="Card-price">
+                        @price($price)
+                    </span>
+                @else
+                    <span class="Card-price">
+                        @price($product->avg_price ?? 0)
+                    </span>
+                @endif
             </div>
             <div class="Card-category">{{ $product->category->name }}</div>
 
@@ -21,5 +27,7 @@
         </div>
     </div>
 
-    <x-labels.discount>60</x-labels.discount>
+    @if($discount)
+        <x-labels.discount :discount="$discount"/>
+    @endif
 </div>

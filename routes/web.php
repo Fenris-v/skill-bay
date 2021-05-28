@@ -6,6 +6,7 @@ use App\Http\Controllers\InfoPageController;
 use App\Http\Controllers\OrdersHistoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellerController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\DiscountController;
 use Illuminate\Support\Facades\Route;
@@ -164,6 +165,62 @@ Route::prefix('/account')
         }
     );
 
+Route::middleware('cartIsNotEmpty')
+    ->get('/order/personal', [OrderController::class, 'stepPersonal'])
+    ->name('order.personal.get')
+    ->breadcrumbs(fn (Trail $trail) =>
+    $trail
+        ->parent('index')
+        ->push(__('orderPage.title'), route('order.personal.get'))
+    )
+;
+Route::post('/order/personal', [OrderController::class, 'stepPersonalStore'])
+    ->name('order.personal.store')
+;
+
+Route::prefix('/order')
+    ->middleware(['auth', 'cartIsNotEmpty'])
+    ->group(
+        function () {
+            Route::get('/delivery', [OrderController::class, 'stepDelivery'])
+                ->name('order.delivery.get')
+                ->breadcrumbs(fn (Trail $trail) =>
+                $trail
+                    ->parent('index')
+                    ->push(__('orderPage.title'), route('order.personal.get'))
+                )
+            ;
+            Route::post('/delivery', [OrderController::class, 'stepDeliveryStore'])
+                ->name('order.delivery.store')
+            ;
+
+            Route::get('/payment', [OrderController::class, 'stepPayment'])
+                ->name('order.payment.get')
+                ->breadcrumbs(fn (Trail $trail) =>
+                $trail
+                    ->parent('index')
+                    ->push(__('orderPage.title'), route('order.payment.get'))
+                )
+            ;
+            Route::post('/payment', [OrderController::class, 'stepPaymentStore'])
+                ->name('order.payment.store')
+            ;
+
+            Route::get('/accept', [OrderController::class, 'stepAccept'])
+                ->name('order.accept.get')
+                ->breadcrumbs(fn (Trail $trail) =>
+                $trail
+                    ->parent('index')
+                    ->push(__('orderPage.title'), route('order.personal.get'))
+                )
+            ;
+            Route::post('/accept', [OrderController::class, 'stepAcceptStore'])
+                ->name('order.accept.store')
+            ;
+        }
+    )
+;
+
 Route::get('/contacts', [InfoPageController::class, 'contacts'])
     ->name('contacts')
     ->breadcrumbs(
@@ -194,6 +251,14 @@ Route::get('/forgot-password', [UserController::class, 'forgotPassword'])->middl
 Route::post('/forgot-password', [UserController::class, 'forgotPasswordSend'])->middleware('guest')->name('forgot-password-send');
 Route::get('/reset-password/{token}/', [UserController::class, 'resetPassword'])->middleware('guest')->name('password.reset');
 Route::post('/reset-password', [UserController::class, 'resetPasswordSend'])->middleware('guest')->name('reset-password-send');
+Route::get('/login-for-order', [UserController::class, 'loginForOrder'])
+    ->middleware('guest')
+    ->name('loginForOrder')
+;
+Route::post('/auth-and-return-to-order', [UserController::class, 'authAndBackToOrder'])
+    ->middleware('guest')
+    ->name('authAndBackToOrder')
+;
 
 Route::get('/discounts', [DiscountController::class, 'index'])
     ->name('discounts')

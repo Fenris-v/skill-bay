@@ -28,14 +28,15 @@ class DiscountFactory extends Factory
         return [
             'title' => $title = ucfirst($this->faker->unique()->words(3, true)),
             'slug' => Str::slug($title),
-            'value' => $discount = $this->faker->numberBetween(1, 200),
+            'value' => $this->faker->numberBetween(1, 99),
             'description' => $this->faker->sentence,
             'begin_at' => $this->faker->numberBetween(0, 1)
                 ? $this->faker->dateTimeBetween('-30 days', '+29 days') : null,
             'end_at' => $this->faker->numberBetween(0, 1)
                 ? $this->faker->dateTimeBetween('+30 days', '+60 days') : null,
             'type' => $this->faker->randomElement($types),
-            'unit_type' => $discount > 99 ? Discount::UNIT_CURRENCY : Discount::UNIT_PERCENT,
+            'unit_type' => $this->faker->numberBetween(0, 1)
+                ? Discount::UNIT_CURRENCY : Discount::UNIT_PERCENT,
             'priority' => $this->faker->numberBetween(10, 999),
             'image_id' => Attachment::factory(),
         ];

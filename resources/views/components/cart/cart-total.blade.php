@@ -13,10 +13,6 @@
         @endif
     </div>
     <div class="Cart-block">
-        <x-wrappers.button
-            class="btn btn_success btn_lg"
-            type="submit"
-            title="{{ __('cartPage.toOrder') }}"
-        ></x-wrappers.button>
+        {{ $slot }}
     </div>
 </div>

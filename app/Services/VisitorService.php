@@ -3,23 +3,28 @@
 namespace App\Services;
 
 use App\Models\Visitor;
+use App\Repository\ConfigRepository;
+use App\Repository\VisitorRepository;
 use Illuminate\Http\Request;
 use Cookie;
+use Cache;
 
 class VisitorService
 {
+    private $visitorRepository;
+
+    public function __construct(VisitorRepository $visitorRepository) {
+        $this->visitorRepository = $visitorRepository;
+    }
+
     public function get()
     {
         if (auth()->check()) {
-            $visitor = auth()->user()->visitor ?? Visitor::create(['user_id' => auth()->id()]);
-
+            $visitor = $this->visitorRepository->getAuthVisitor(auth()->id());
         } else {
             $visitorId = Cookie::get('visitor_id');
-
-            if (!($visitor =  Visitor::find($visitorId))) {
-                $visitor = Visitor::create();
-                Cookie::queue('visitor_id', $visitor->id, 3600);
-            }
+            $visitor = $this->visitorRepository->getGuestVisitor($visitorId);
+            Cookie::queue('visitor_id', $visitor->id, 3600);
         }
 
         return $visitor;

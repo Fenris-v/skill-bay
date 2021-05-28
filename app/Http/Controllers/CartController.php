@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Services\ProductCartService;
 use App\Repository\ProductRepository;
 use App\Services\AlertFlashService;
+use App\Services\DiscountService;
+use Illuminate\Contracts\View\View;
 
 class CartController extends Controller
 {
@@ -27,10 +29,17 @@ class CartController extends Controller
         return $result ? 'success' : 'error';
     }
 
-    public function show() {
-        return view('pages.main.cart', [
-            'products' => $this->productCartService->get(),
-        ]);
+    /**
+     * @param DiscountService $discountService
+     * @return View
+     */
+    public function show(DiscountService $discountService): View
+    {
+        $products = $this->productCartService->get();
+
+        $discounts = $discountService->getCartDiscount($products);
+
+        return view('pages.main.cart', compact('products', 'discounts'));
     }
 
     public function removeProduct(
@@ -38,7 +47,7 @@ class CartController extends Controller
     ) {
         $result = $this->productCartService->remove($this->productRepository->getProductBySlug($slug));
 
-        $this->alert->lang('cartMessages.productRemove.' .  $this->getResultIndex($result));
+        $this->alert->lang('cartMessages.productRemove.' . $this->getResultIndex($result));
 
         if ($result) {
             $this->alert->warning();
@@ -51,9 +60,11 @@ class CartController extends Controller
         string $slug,
         Request $request
     ) {
-        $amount = (int) $request->validate([
-            'amount' => 'required|integer',
-        ])['amount'];
+        $amount = (int)$request->validate(
+            [
+                'amount' => 'required|integer',
+            ]
+        )['amount'];
 
         $result = $this->productCartService->changeAmount($this->productRepository->getProductBySlug($slug), $amount);
 
@@ -67,9 +78,11 @@ class CartController extends Controller
         string $productSlug,
         Request $request
     ) {
-        $sellerSlug = (string) $request->validate([
-            'seller' => 'required|string',
-        ])['seller'];
+        $sellerSlug = (string)$request->validate(
+            [
+                'seller' => 'required|string',
+            ]
+        )['seller'];
 
         $product = $this->productRepository->getProductBySlug($productSlug);
         $result = $this->productCartService->changeSeller(

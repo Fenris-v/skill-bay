@@ -4,19 +4,26 @@
 namespace App\Services;
 
 use App\Models\Product;
+use App\Models\Visitor;
+use App\Repository\ConfigRepository;
 use Illuminate\Database\Eloquent\Collection;
 use App\Repository\CompareProductRepository;
+use Cache;
 
 class CompareProductsService
 {
     private $compareProductRepository;
+    private $visitorService;
 
     /**
+     * CompareProductsService constructor.
      * @param CompareProductRepository $compareProductRepository
+     * @param VisitorService $visitorService
      */
-    public function __construct(CompareProductRepository $compareProductRepository)
+    public function __construct(CompareProductRepository $compareProductRepository, VisitorService $visitorService)
     {
         $this->compareProductRepository = $compareProductRepository;
+        $this->visitorService = $visitorService;
     }
 
     /**
@@ -25,8 +32,9 @@ class CompareProductsService
      */
     public function add(Product $product) : bool
     {
-        if (!$this->compareProductRepository->contains($product->id)) {
-            $this->compareProductRepository->add($product);
+        $visitor = $this->visitorService->get();
+        if (!$this->compareProductRepository->contains($visitor, $product->id)) {
+            $this->compareProductRepository->add($visitor, $product);
 
             return true;
         }
@@ -40,8 +48,9 @@ class CompareProductsService
      */
     public function remove(Product $product) : bool
     {
-        if ($this->compareProductRepository->contains($product->id)) {
-            $this->compareProductRepository->remove($product);
+        $visitor = $this->visitorService->get();
+        if ($this->compareProductRepository->contains($visitor, $product->id)) {
+            $this->compareProductRepository->remove($visitor, $product);
 
             return true;
         }
@@ -51,16 +60,11 @@ class CompareProductsService
 
     /**
      * @param int $count
-     * @return Collection|Array
+     * @return Collection|Product[]
      */
     public function getProducts($count = 3) : Collection|Array
     {
-        return $this
-            ->compareProductRepository
-            ->get()
-            ->load('images')
-            ->load('specifications')
-            ->take($count);
+        return $this->compareProductRepository->get($this->visitorService->get(), $count);
     }
 
     /**
@@ -68,9 +72,7 @@ class CompareProductsService
      */
     public function count() : int
     {
-        return $this
-            ->compareProductRepository
-            ->count();
+        return $this->compareProductRepository->count($this->visitorService->get());
     }
 
 }

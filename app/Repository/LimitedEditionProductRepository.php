@@ -44,8 +44,11 @@ class LimitedEditionProductRepository
                     ->where('id', '!=', $dailyOfferId)
                     ->orderBy('rating_sort')
                     ->take($amount)
-                    ->with('category')
-                    ->with('image')
+                    ->with([
+                        'category',
+                        'image',
+                        'sellers',
+                    ])
                     ->get();
             });
     }
@@ -65,8 +68,11 @@ class LimitedEditionProductRepository
             Product::PRODUCT_CACHE_TAGS,
         ])->remember('product_daily_offer_' . $dailyOfferId, $ttl, function () use ($dailyOfferId) {
             return Product::where('id', $dailyOfferId)
-                ->with('category')
-                ->with('image')
+                ->with([
+                    'category',
+                    'image',
+                    'sellers',
+                ])
                 ->first();
         });
     }
