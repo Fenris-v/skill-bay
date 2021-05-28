@@ -11,7 +11,7 @@ use Illuminate\View\Component;
 class Product extends Component
 {
     public ProductModel $product;
-    public Discount $discount;
+    public ?Discount $discount;
     public float $price;
     public float $priceOld;
     public string $compareUrl;
@@ -21,13 +21,19 @@ class Product extends Component
     public function __construct(ProductModel $product, DiscountService $discountService)
     {
         $this->product = $product;
-        $this->discount = $discountService->getPriorityDiscount($product)->first()->discount;
-        $this->price = $discountService
-            ->calculateDiscountPrice(
-                $product,
-                $this->discount,
-                $this->product->averagePrice
-            );
+        $this->discount = $discountService->getPriorityDiscount($product)->first();
+
+        if ($this->discount) {
+            $this->price = $discountService
+                ->calculateDiscountPrice(
+                    $product,
+                    $this->discount,
+                    $this->product->averagePrice
+                );
+        } else {
+            $this->price = $this->product->averagePrice;
+        }
+
         $this->priceOld = $product->averagePrice;
         $this->compareUrl = route('products.addToCompare', ['slug' => $product->slug]);
         $this->addToCartUrl = route('products.addToCart', ['slug' => $product->slug]);

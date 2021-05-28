@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Contracts\Discountable;
 use App\Contracts\DiscountCalculator;
-use App\Models\Cart;
 use App\Models\Discount;
 use App\Models\Product;
 use App\Repository\DiscountRepository;
@@ -59,7 +58,7 @@ class DiscountService implements Discountable
         foreach ($this->getAllDiscounts($products) as $key => $discount) {
             $priorityDiscounts = $priorityDiscounts->mergeRecursive(
                 [
-                    $key => $discount->sortByDesc('discount.priority')->first()
+                    $key => $discount->sortByDesc('discount.priority')->first()->discount ?? null
                 ]
             );
         }
@@ -68,13 +67,123 @@ class DiscountService implements Discountable
     }
 
     /**
+     * Возвращает итоговую сумму корзины
+     * @param $products
+     * @param $discounts
+     * @return float
+     */
+    public function getCartTotal($products, $discounts): float
+    {
+        return $products->reduce(
+            function ($accum, $product) use ($discounts) {
+                if ($discounts->get($product->slug)) {
+                    $price = $this->calculateDiscountPrice(
+                        $product,
+                        $discounts->get($product->slug),
+                        $product->price
+                    );
+                } else {
+                    $price = $product->price;
+                }
+
+                return $accum + $price * $product->amount;
+            },
+            0
+        );
+    }
+
+    /**
      * Получить скидку на корзину
-     * @param Cart $cart
+     * @param Collection $products
+     * @return Collection
+     */
+    public function getCartDiscount(Collection $products): Collection
+    {
+        $discountUnits = $this->repository->getProductDiscounts($products);
+
+        $groupDiscounts = $this->getGroupsDiscounts($discountUnits);
+
+        if (!$groupDiscounts->isEmpty()) {
+            return $this->getGroupDiscount($groupDiscounts, $discountUnits, $products);
+        }
+
+        return $this->getPriorityDiscount($products);
+    }
+
+    /**
+     * Возвращает приоритетную скидку на группу в корзине
+     * @param Collection $groupDiscounts
      * @return Discount
      */
-    public function getCartDiscount(Cart $cart): Discount
+    private function getPriorityCartDiscount(Collection $groupDiscounts): Discount
     {
-        return Discount::first();
+        $discounts = collect();
+        foreach ($groupDiscounts as $groupDiscount) {
+            $discounts = $discounts->mergeRecursive([$groupDiscount->first()->discount]);
+        }
+
+        return $discounts->sortByDesc('priority')->first();
+    }
+
+    /**
+     * Возвращает приоритетную скидку на группу в корзине в виде коллекции
+     * "слаг" => "объект скидки"
+     * @param Collection $groupDiscounts
+     * @param Collection $discountUnits
+     * @param Collection $products
+     * @return Collection
+     */
+    private function getGroupDiscount(
+        Collection $groupDiscounts,
+        Collection $discountUnits,
+        Collection $products
+    ): Collection {
+        $discount = $this->getPriorityCartDiscount($groupDiscounts);
+
+        $units = $discountUnits->where('discount_id', $discount->id);
+
+        $productsId = collect();
+        $categoriesId = collect();
+        foreach ($units as $unit) {
+            $productsId = $productsId->mergeRecursive($unit?->products?->pluck('id'));
+            $categoriesId = $categoriesId->mergeRecursive($unit?->categories?->pluck('id'));
+        }
+
+        $products = $products->filter(
+            function ($product) use ($productsId, $categoriesId) {
+                return in_array($product->category_id, $categoriesId->toArray()) ||
+                    in_array($product->id, $productsId->toArray());
+            }
+        );
+
+        $discountMap = collect();
+        foreach ($products as $product) {
+            $discountMap = $discountMap->mergeRecursive(
+                [
+                    $product->slug => $discount
+                ]
+            );
+        }
+
+        return $discountMap;
+    }
+
+    /**
+     * Возвращает скидки на группы
+     * @param $discounts
+     * @return mixed
+     */
+    private function getGroupsDiscounts($discounts): Collection
+    {
+        $groupDiscounts = $discounts
+            ->where('discount.type', Discount::GROUP)
+            ->groupBy('discount_id');
+
+        return $groupDiscounts->filter(
+            function ($group) {
+                return $group->count() > 1;
+            }
+        );
     }
 
     /**

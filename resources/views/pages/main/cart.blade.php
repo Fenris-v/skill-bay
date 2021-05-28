@@ -9,6 +9,6 @@
 
 @section('content')
     <div class="Section">
-        <x-cart :products="$products"/>
+        <x-cart :products="$products" :discounts="$discounts" />
     </div>
 @endsection

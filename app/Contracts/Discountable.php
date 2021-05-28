@@ -2,7 +2,6 @@
 
 namespace App\Contracts;
 
-use App\Models\Cart;
 use App\Models\Discount;
 use App\Models\Product;
 use Illuminate\Contracts\Pagination\Paginator;
@@ -26,10 +25,10 @@ interface Discountable
 
     /**
      * Получить скидку на корзину
-     * @param Cart $cart
-     * @return Discount
+     * @param Collection $products
+     * @return Collection
      */
-    public function getCartDiscount(Cart $cart): Discount;
+    public function getCartDiscount(Collection $products): Collection;
 
     /**
      * Рассчитывает цену со скидкой

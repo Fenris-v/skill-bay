@@ -2,9 +2,11 @@
 
 namespace App\View\Components\Cart;
 
-use Illuminate\View\Component;
+use App\Models\Discount;
 use App\Models\Product;
+use App\Services\DiscountService;
 use Illuminate\Support\Collection;
+use Illuminate\View\Component;
 
 class CartProduct extends Component
 {
@@ -17,18 +19,32 @@ class CartProduct extends Component
     public string $removeProductFromCartUrl;
     public string $changeProductSellerUrl;
     public string $changeProductAmountUrl;
+    public ?Discount $discount;
 
-    public function __construct(Product $product)
+    public function __construct(Product $product, ?Collection $discounts, DiscountService $service)
     {
+        $this->discount = $discounts->get($product->slug) ?? null;
         $this->product = $product;
-        $this->sellers = $product->sellers->map(fn($seller) => [
-            'value' => $seller->slug,
-            'title' => $seller->title,
-            'selected' => $product->pivot->seller_id === $seller->id,
-        ]);
+        $this->sellers = $product->sellers->map(
+            fn($seller) => [
+                'value' => $seller->slug,
+                'title' => $seller->title,
+                'selected' => $product->pivot->seller_id === $seller->id,
+            ]
+        );
         $this->productLink = route('products.show', $product->slug);
         $this->priceOld = $product->price;
-        $this->price = $product->price;
+
+        if ($this->discount) {
+            $this->price = $service->calculateDiscountPrice(
+                $product,
+                $this->discount,
+                $product->price
+            );
+        } else {
+            $this->price = $product->price;
+        }
+
         $this->amount = $product->amount;
         $this->removeProductFromCartUrl = route('cart.removeProduct', $product->slug);
         $this->changeProductSellerUrl = route('cart.changeProductSeller', $product->slug);
