@@ -14,11 +14,6 @@
 					<input class="Profile-file form-input" id="avatar" name="avatar" type="file" data-validate="onlyImgAvatar"/>
 				</div>
 			</div>
-			<div class="form-group">
-				<label class="form-label" for="name">ФИО
-				</label>
-				<input class="form-input" id="name" name="name" type="text" value="" data-validate="require"/>
-			</div>
 			<x-user-field type="text"  name="name" title="{{__('user_messages.name')}}" id="name" placeholder="{{__('user_messages.name')}}" value="{{$name}}">{{__('user_messages.name')}}</x-user-field>
 		</div>
 		<div class="row-block">
