@@ -1,4 +1,4 @@
-<form class="form Profile-form" action="#" method="post">
+<form class="form Profile-form" action="{{route('profile.edit')}}" method="post">
 	@csrf
 	@method("PUT")
 	<div class="row">
