@@ -55,6 +55,8 @@ class AccountController extends Controller
         $data = [];
         $data["name"] = $request->name;
         $data["phone"] = $request->phone;
+        $data["email"] = $request->email;
+
         if(!empty($request->password)){
             if($request->password == $request->password_confirmation){
                 $data["password"] = Hash::make($request->password);

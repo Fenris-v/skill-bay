@@ -24,7 +24,8 @@ class AccountRequest extends FormRequest
     public function rules()
     {
         return [
-            'phone' => 'required'
+            'phone' => 'required',
+            'name' => 'required'
         ];
     }
 }
