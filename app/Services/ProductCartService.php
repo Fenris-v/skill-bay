@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Product;
 use App\Models\Seller;
+use App\Models\Visitor;
 use Illuminate\Database\Eloquent\Collection;
 use App\Contracts\ProductCartService as ProductCartServiceContract;
 use App\Repository\ProductRepository;
@@ -161,5 +162,17 @@ class ProductCartService implements ProductCartServiceContract
             'current' => $this->cartRepository->getCart()->currentPrice,
             'old' => $this->cartRepository->getCart()->oldPrice,
         ];
+    }
+
+    /**
+     * Сливает корзины неавторизованного пользователя после его авторизации.
+     *
+     * @param Visitor $guest
+     * @param Visitor $user
+     * @return void
+     */
+    public function mergeGuestAndUserCarts(Visitor $guest, Visitor $user)
+    {
+        $this->cartRepository->mergeGuestAndUserCarts($guest, $user);
     }
 }

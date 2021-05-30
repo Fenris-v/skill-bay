@@ -7,11 +7,10 @@ use App\Models\Product;
 use App\Models\User;
 use App\Models\Cart;
 use App\Models\Seller;
+use App\Models\Visitor;
 use App\Repository\ConfigRepository;
 use App\Services\VisitorService;
 use Cache;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Collection;
 use App\Traits\TimeToLiveCacheTrait;
 
@@ -20,64 +19,27 @@ class CartRepository
     use TimeToLiveCacheTrait;
 
     public function __construct(
-        private ConfigRepository $configRepository
+        private ConfigRepository $configRepository,
+        private VisitorService $visitorService,
     ) {}
 
     /**
-     * Возвращает корзину пользователя.
+     * Возвращает корзину Визитера.
      *
-     * @param  User  $user
+     * @param Visitor $visitor
      * @return Cart
      */
-    public function getUserCart(User $user): Cart
+    protected function getVisitorCart(Visitor $visitor): Cart
     {
-        return Cache::tags([
-            ConfigRepository::GLOBAL_CACHE_TAG,
-            Cart::class,
-        ])->remember(
-            'cart_user|' . $user->id,
-            $this->ttl(),
-            function() use ($user) {
-                $cart = Cart
-                    ::whereHas(
-                        'visitor',
-                        fn(Builder $query) => $query->where('id', $user->id)
-                    )
-                    ->with('products')
-                    ->doesntHave('order')
-                    ->firstOrNew()
-                    ->user()->associate($user)
-                ;
-                if (!$cart->id) $cart->save();
+        $cart = Cart::where('visitor_id', $visitor->id)
+            ->with('products')
+            ->doesntHave('order')
+            ->firstOrNew()
+        ;
 
-                return $cart;
-            }
-        );
-    }
-
-    /**
-     * Возвращает корзину неавторизованного пользователя.
-     *
-     * @param string $guest_id
-     * @return Cart
-     */
-    public function getGuestCart(string $guest_id): Cart
-    {
-        $cart = Cache::tags([
-            ConfigRepository::GLOBAL_CACHE_TAG,
-            Cart::class,
-        ])->remember(
-            'cart_guest|' . $guest_id,
-            $this->ttl(),
-            fn() => Cart::where('guest_id', $guest_id)
-                ->with('products')
-                ->doesntHave('order')
-                ->firstOrNew()
-        );
-
-        if (!$cart->guest_id) {
-            session(['guest_id' => Str::uuid()]);
-            $cart->guest_id = session('guest_id');
+        if (!$cart->visitor_id) {
+            $cart->visitor()->associate($visitor);
+            $cart->save();
         }
 
         return $cart;
@@ -86,12 +48,15 @@ class CartRepository
     /**
      * Сливает корзину неавторизованного пользователя в корзину авторизованного
      *
-     * @param Cart $guestCart
-     * @param Cart $userCart
+     * @param Visitor $guest
+     * @param Visitor $user
      * @return Cart
      */
-    protected function mergeCarts(Cart $guestCart, Cart $userCart): Cart
+    public function mergeGuestAndUserCarts(Visitor $guest, Visitor $user): Cart
     {
+        $guestCart = $this->getVisitorCart($guest);
+        $userCart = $this->getVisitorCart($user);
+
         Cache::tags([Cart::class])->flush();
         if (!$guestCart->products->count()) {
             return $userCart;
@@ -123,17 +88,16 @@ class CartRepository
      */
     public function getCart(): Cart
     {
-        $visitor = app(VisitorService::class)->get();
+        $visitor = $this->visitorService->get();
+
         return Cache::tags([
             ConfigRepository::GLOBAL_CACHE_TAG,
             Cart::class,
+            Visitor::class,
         ])->remember(
             'cart|' . $visitor->id,
             $this->ttl(),
-            fn() => Cart::whereHas('visitor', fn($query) => $query->where('id', $visitor->id))
-                ->with('products')
-                ->doesntHave('order')
-                ->firstOrNew()
+            fn() => $this->getVisitorCart($visitor)
         );
 
     }

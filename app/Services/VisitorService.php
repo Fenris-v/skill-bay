@@ -19,13 +19,19 @@ class VisitorService
 
     public function get()
     {
-        if (auth()->check()) {
-            $visitor = $this->visitorRepository->getAuthVisitor(auth()->id());
-        } else {
-            $visitorId = Cookie::get('visitor_id');
-            $visitor = $this->visitorRepository->getGuestVisitor($visitorId);
-            Cookie::queue('visitor_id', $visitor->id, 3600);
-        }
+        return auth()->check()
+            ? $this->visitorRepository->getAuthVisitor(auth()->id())
+            : $this->getGuest()
+        ;
+
+        return $visitor;
+    }
+
+    public function getGuest()
+    {
+        $visitorId = Cookie::get('visitor_id');
+        $visitor = $this->visitorRepository->getGuestVisitor($visitorId);
+        Cookie::queue('visitor_id', $visitor->id, 3600);
 
         return $visitor;
     }
