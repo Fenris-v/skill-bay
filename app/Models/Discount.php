@@ -68,9 +68,9 @@ class Discount extends Model
     public static function types()
     {
         return [
-            self::PRODUCT => __('admin.discount.types.' . self::PRODUCT),
-            self::GROUP => __('admin.discount.types.' . self::GROUP),
-            self::CART => __('admin.discount.types.' . self::CART),
+            self::PRODUCT,
+            self::GROUP,
+            self::CART,
         ];
     }
 
@@ -80,8 +80,8 @@ class Discount extends Model
     public static function unitTypes()
     {
         return [
-            self::UNIT_PERCENT => __('admin.discount.unit_types.' . self::UNIT_PERCENT),
-            self::UNIT_CURRENCY => __('admin.discount.unit_types.' . self::UNIT_CURRENCY),
+            self::UNIT_PERCENT,
+            self::UNIT_CURRENCY,
         ];
     }
 

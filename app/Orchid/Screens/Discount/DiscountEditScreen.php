@@ -80,6 +80,16 @@ class DiscountEditScreen extends Screen
      */
     public function layout(): array
     {
+        $prepare = fn(array $array, string $langKey)
+            => array_reduce(
+                $array,
+                function($accum, $item) use ($langKey) {
+                    $accum[$item] = __($langKey . $item);
+                    return $accum;
+                },
+                []
+        );
+
         return [
             Layout::rows([
                 Input::make('discount.title')
@@ -101,11 +111,11 @@ class DiscountEditScreen extends Screen
                     ->required()
                     ->title(__('admin.discount.edit.labels.value')),
                 Select::make('discount.unit_type')
-                    ->options(Discount::unitTypes())
+                    ->options($prepare(Discount::unitTypes(), 'admin.discount.unit_types.'))
                     ->required()
                     ->title(__('admin.discount.edit.labels.unit_type')),
                 Select::make('discount.type')
-                    ->options(Discount::types())
+                    ->options($prepare(Discount::types(), 'admin.discount.types.'))
                     ->required()
                     ->title(__('admin.discount.edit.labels.type')),
                 Input::make('discount.priority')

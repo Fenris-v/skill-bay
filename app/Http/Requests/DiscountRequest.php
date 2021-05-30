@@ -22,10 +22,10 @@ class DiscountRequest extends FormRequest
             'discount.end_at' => 'nullable|date_format:Y-m-d|after:discount.begin_at',
             'discount.value' => 'required|numeric|min:0',
             'discount.unit_type' => [
-                Rule::in(array_keys(Discount::unitTypes())),
+                Rule::in(Discount::unitTypes()),
             ],
             'discount.type' => [
-                Rule::in(array_keys(Discount::types())),
+                Rule::in(Discount::types()),
             ],
             'discount.priority' => 'required|numeric|min:1|max:999',
             'discount.image_id' => 'required|numeric|exists:attachments,id'
