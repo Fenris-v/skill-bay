@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Models\Category;
 use App\Models\Discount;
 use App\Models\DiscountUnit;
 use App\Traits\TimeToLiveCacheTrait;
@@ -27,7 +28,7 @@ class DiscountRepository
     public function getProductDiscounts(Collection|Paginator $products): Collection
     {
         $productsId = $products->pluck(['id']);
-        $categoriesId = $products->pluck(['category_id']);
+        $categoriesId = $this->getCategoriesWithChildren($products);
 
         return DiscountUnit::with(
             [
@@ -90,5 +91,27 @@ class DiscountRepository
                 )
                 ->paginate($this->configRepository->getPerPage())
         );
+    }
+
+    /**
+     * Возвращает массив с id категорий
+     * @param Collection|Paginator $products
+     * @return array
+     */
+    private function getCategoriesWithChildren(Collection|Paginator $products): array
+    {
+        $categoriesId = $products->pluck(['category_id'])->unique();
+        $categories = Category::with('descendants')->whereIn('id', $categoriesId)->get();
+        $categoriesId = $categories->pluck('id')->toArray();
+
+        $children = $categories->map(function ($category) {
+            return $category->descendants->pluck('id')->toArray();
+        });
+
+        foreach ($children as $child) {
+            $categoriesId = array_merge_recursive($categoriesId, $child);
+        }
+
+        return array_unique($categoriesId);
     }
 }
