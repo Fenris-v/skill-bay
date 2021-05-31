@@ -31,6 +31,7 @@ class EloquentUserRepository implements RepositoryInterface
         $record->update($data);
         return $record;
     }
+
     //update several records
     public function updateSeveral(array $data, array $id){
         $records = $this->model->find($id);
@@ -51,7 +52,7 @@ class EloquentUserRepository implements RepositoryInterface
     {
         return $this->model->findOrFail($id);
     }
-    
+
     public function getById(int $id, array $columns = ['*']): User
     {
         return $this->model->where('id', $id)->first($columns);
