@@ -28,7 +28,7 @@ class SellerSeeder extends Seeder
                 'image_id' => $imageId,
             ])
                 ->hasAttached($products, fn() => [
-                    'price' => rand(10, 1000) / 100,
+                    'price' => rand(3000, 20000) / 100,
                 ])
                 ->create();
         };

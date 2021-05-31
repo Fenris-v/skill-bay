@@ -2,15 +2,16 @@
 
 namespace App\View\Components;
 
-use Illuminate\View\Component;
+use App\Models\Discount;
 use App\Models\Product as ProductModel;
-use Illuminate\Support\Collection;
 use App\Services\DiscountService;
+use Illuminate\Support\Collection;
+use Illuminate\View\Component;
 
 class Product extends Component
 {
     public ProductModel $product;
-    public int $discount;
+    public ?Discount $discount;
     public float $price;
     public float $priceOld;
     public string $compareUrl;
@@ -20,22 +21,35 @@ class Product extends Component
     public function __construct(ProductModel $product, DiscountService $discountService)
     {
         $this->product = $product;
-        $this->discount = $discountService->getDiscountPrice($product) ?? 0;
+        $this->discount = $discountService->getPriorityDiscount($product)->first();
+
+        if ($this->discount) {
+            $this->price = $discountService
+                ->calculateDiscountPrice(
+                    $product,
+                    $this->discount,
+                    $this->product->averagePrice
+                );
+        } else {
+            $this->price = $this->product->averagePrice;
+        }
+
         $this->priceOld = $product->averagePrice;
-        $this->price = $product->currentPrice;
-        $this->compareUrl = route('products.addToCompare', ['product' => $product->slug]);
-        $this->addToCartUrl = route('products.addToCart', ['product' => $product->slug]);
-        $this->sellers = $product->sellers->map(function ($seller) use ($product) {
-            $seller->addToCartUrl = route(
-                'products.addToCartWithSeller',
-                ['product' => $product->slug, 'seller' => $seller->slug]
-            );
-            $seller->sellerUrl = route(
-                'sellers',
-                ['seller' => $seller->slug]
-            );
-            return $seller;
-        });
+        $this->compareUrl = route('products.addToCompare', ['slug' => $product->slug]);
+        $this->addToCartUrl = route('products.addToCart', ['slug' => $product->slug]);
+        $this->sellers = $product->sellers->map(
+            function ($seller) use ($product) {
+                $seller->addToCartUrl = route(
+                    'products.addToCartWithSeller',
+                    ['productSlug' => $product->slug, 'sellerSlug' => $seller->slug]
+                );
+                $seller->sellerUrl = route(
+                    'sellers',
+                    ['seller' => $seller->slug]
+                );
+                return $seller;
+            }
+        );
     }
 
     /**

@@ -15,7 +15,7 @@
                 <div class="Section-content">
                     <x-catalog.sort sort-props="popularity,price,reviews,newer"/>
 
-                    <x-catalog.product-list :products="$products"/>
+                    <x-catalog.product-list :products="$products" :discounts="$discounts" />
 
                     {{ $products->links() }}
                 </div>

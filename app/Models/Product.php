@@ -12,7 +12,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Orchid\Attachment\Attachable;
+use Orchid\Filters\Filterable;
 use Orchid\Screen\AsSource;
 
 class Product extends Model
@@ -22,14 +25,33 @@ class Product extends Model
     use CacheFlushableAfterCRUDModelTrait;
     use AsSource;
     use Sluggable;
+    use Filterable;
+    use Attachable;
 
     const PRODUCT_CACHE_TAGS = 'catalog';
+
+    protected $allowedFilters = [
+        'id',
+        'title',
+        'updated_at',
+    ];
+
+    protected $allowedSorts = [
+        'id',
+        'title',
+        'rating_sort',
+        'updated_at',
+    ];
 
     protected $fillable = [
         'title',
         'slug',
         'description',
         'vendor',
+        'rating_sort',
+        'main_image_id',
+        'category_id',
+        'limited',
     ];
 
     /**
@@ -79,7 +101,7 @@ class Product extends Model
      */
     public function sellers()
     {
-        return $this->belongsToMany(Seller::class)->withPivot('price');
+        return $this->belongsToMany(Seller::class)->using(\App\Models\Pivots\ProductSeller::class)->withPivot('price');
     }
 
     /**
@@ -107,15 +129,14 @@ class Product extends Model
     }
 
     /**
-     * @return BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
     public function images()
     {
-        return $this->belongsToMany(
+        return $this->morphToMany(
             Attachment::class,
-            'image_product',
-            null,
-            'image_id'
+            'attachmentable',
+            'attachmentable'
         );
     }
 

@@ -2,16 +2,20 @@
 
 namespace App\Models;
 
+use App\Traits\Models\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\CacheFlushableAfterCRUDModelTrait;
+use Orchid\Screen\AsSource;
 
 class Seller extends Model
 {
     use HasFactory;
     use SoftDeletes;
     use CacheFlushableAfterCRUDModelTrait;
+    use AsSource;
+    use Sluggable;
 
     protected $fillable = [
         'title',
@@ -19,6 +23,7 @@ class Seller extends Model
         'phone',
         'email',
         'address',
+        'image_id',
     ];
 
     public function getRouteKeyName()
@@ -28,7 +33,7 @@ class Seller extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class)->withPivot('price');
+        return $this->belongsToMany(Product::class)->using(\App\Models\Pivots\ProductSeller::class)->withPivot('price');
     }
 
     public function image()

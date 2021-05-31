@@ -3,15 +3,18 @@
 namespace App\Repository;
 
 use App\Models\Category;
-use App\Models\ProductSeller;
-use App\Models\ProductSpecification;
+use App\Models\Pivots\ProductSeller;
+use App\Models\Pivots\ProductSpecification;
 use App\Models\Seller;
 use App\Models\Specification;
+use App\Traits\WithChildrenCategoriesFilter;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
 class FilterRepository
 {
+    use WithChildrenCategoriesFilter;
+
     public function __construct(public ConfigRepository $configs)
     {
     }
@@ -34,7 +37,7 @@ class FilterRepository
                             return $query->whereHas(
                                 'products',
                                 function ($query) use ($category) {
-                                    return $query->where('category_id', $category->id);
+                                    $this->withChildrenCategoriesFilter($query, $category);
                                 }
                             );
                         }

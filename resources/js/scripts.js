@@ -489,7 +489,7 @@
                 endtime = endtime.split(' ');
                 var date = endtime[0].split('.');
                 var time = endtime[1].split(':');
-                var t = new Date(date[2], date[1] - 1, date[0] - 1, time[0], time[1]) - new Date();
+                var t = new Date(date[2], date[1]-1, date[0], time[0], time[1]) - new Date();
                 var seconds = Math.floor((t / 1000) % 60);
                 var minutes = Math.floor((t / 1000 / 60) % 60);
                 var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
@@ -672,6 +672,8 @@
             var $add = $('.Amount-add');
             var $input = $('.Amount-input');
             var $remove = $('.Amount-remove');
+            var $removeInCart = $('.Amount-remove-cart');
+            var $addInCart = $('.Amount-add-cart');
             return {
                 init: function () {
                     $add.on('click', function (e) {
@@ -686,6 +688,12 @@
                         var value = parseFloat($inputThis.val());
                         $inputThis.val(value > 1 ? value - 1 : 1);
                     });
+                    $removeInCart.on('click', function (e) {
+                        $(this).closest('.form').submit();
+                    });
+                    $addInCart.on('click', function (e) {
+                        $(this).closest('.form').submit();
+                    });
                 }
             };
         };
@@ -697,7 +705,7 @@
             return {
                 init: function () {
                     $next.add($navigate.find('.menu-link')).on('click', function (e) {
-                        e.preventDefault();
+                        //e.preventDefault();
                         var $this = $(this),
                             href = $this.attr('href'),
                             error = false,

@@ -20,8 +20,15 @@ use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
+use App\Orchid\Screens\Category\CategoryEditScreen;
+use App\Orchid\Screens\Category\CategoryListScreen;
+use App\Orchid\Screens\Seller\SellerEditScreen;
+use App\Orchid\Screens\Seller\SellerListScreen;
+use App\Orchid\Screens\Discount\DiscountListScreen;
+use App\Orchid\Screens\Discount\DiscountEditScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -126,7 +133,7 @@ Route::screen('contacts/edit', InfoEditScreen::class)
 Route::screen('products/create', ProductEditScreen::class)
     ->name('platform.product.create');
 
-Route::screen('products/{product}', ProductEditScreen::class)
+Route::screen('product/{product}', ProductEditScreen::class)
     ->name('platform.product.edit');
 
 Route::screen('products', ProductListScreen::class)
@@ -162,9 +169,39 @@ Route::screen('orders/{order}', OrderEditScreen::class)
 Route::screen('orders', OrderListScreen::class)
     ->name('platform.order.list');
 
+// Категории товаров.
+Route::screen('categories/create', CategoryEditScreen::class)
+    ->name('platform.category.create');
+
+Route::screen('categories/{category}', CategoryEditScreen::class)
+    ->name('platform.category.edit');
+
+Route::screen('categories', CategoryListScreen::class)
+    ->name('platform.category.list');
+
 // Обратная связь
 Route::screen('callbacks', CallbackListScreen::class)
     ->name('platform.callback.list');
 
 Route::screen('callback/{callback}', CallbackShowScreen::class)
     ->name('platform.callback.show');
+
+//Продавцы
+Route::screen('sellers/create', SellerEditScreen::class)
+    ->name('platform.seller.create');
+
+Route::screen('sellers/{seller}', SellerEditScreen::class)
+    ->name('platform.seller.edit');
+
+Route::screen('sellers', SellerListScreen::class)
+    ->name('platform.seller.list');
+
+//Скидки
+Route::screen('discounts/create', DiscountEditScreen::class)
+    ->name('platform.discount.create');
+
+Route::screen('discounts/{discount}', DiscountEditScreen::class)
+    ->name('platform.discount.edit');
+
+Route::screen('discounts', DiscountListScreen::class)
+    ->name('platform.discount.list');

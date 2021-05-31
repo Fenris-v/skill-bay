@@ -3,9 +3,7 @@
         <div class="ProductCard-look">
             <div class="ProductCard-photo">
                 @if($discount)
-                    <div class="ProductCard-sale">
-                        {{ $discount }}%
-                    </div>
+                    <x-labels.discount :discount="$discount"/>
                 @endif
                 <img src="{{ $product->image->url() }}" alt=""/>
             </div>
@@ -38,7 +36,7 @@
                 </div>
             </div>
             <div class="ProductCard-text">
-                {{ $product->description }}
+                {{ Markdown::parse($product->description) }}
             </div>
             <x-wrappers.form
                 action="{{ $addToCartUrl }}"
@@ -46,7 +44,7 @@
             >
                 <div class="ProductCard-cart">
                     <div class="ProductCard-cartElement ProductCard-cartElement_amount">
-                        <x-amount />
+                        <x-amount class="Amount_product"/>
                     </div>
                     <div class="ProductCard-cartElement">
                         <x-buttons.cart />
@@ -66,7 +64,7 @@
         :active="old('review') ? '#reviews' : '#description'"
     >
         <div class="Tabs-block" id="description">
-            {{ $product->description }}
+            {{ Markdown::parse($product->description) }}
         </div>
         <div class="Tabs-block" id="sellers">
             <div class="Categories Categories_product">

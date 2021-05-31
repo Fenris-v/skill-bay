@@ -3,6 +3,7 @@
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 
 class CreateOrchidUsersTable extends Migration
@@ -23,7 +24,7 @@ class CreateOrchidUsersTable extends Migration
             [
                 'name' => 'admin',
                 'email' => 'admin@admin.com',
-                'password' => password_hash('secret', PASSWORD_DEFAULT),
+                'password' => Hash::make('secret'),
                 'permissions' => [
                     'platform.index' => true,
                     'platform.systems.index' => true,

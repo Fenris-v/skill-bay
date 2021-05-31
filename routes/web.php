@@ -1,12 +1,15 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\HistoryProductController;
 use App\Http\Controllers\InfoPageController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrdersHistoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellerController;
-use App\Http\Controllers\CompareProductController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -65,21 +68,47 @@ Route::get('/sellers/{seller}', [SellerController::class, 'show'])
 
 Route::get('/compare', [ProductController::class, 'compare'])
     ->name('compare')
-    ->breadcrumbs(fn (Trail $trail) =>
-    $trail
-        ->parent('index')
-        ->push(__('navigation.compare'), route('compare'))
-    )
-;
+    ->breadcrumbs(
+        fn(Trail $trail) => $trail
+            ->parent('index')
+            ->push(__('navigation.compare'), route('compare'))
+    );
 
-Route::post('/product/{product}/add-to-cart', [ProductController::class, 'addToCart'])
-    ->name('products.addToCart');
-Route::post('/product/{product}/seller/{seller}/add-to-cart', [ProductController::class, 'addToCartWithSeller'])
-    ->name('products.addToCartWithSeller');
-Route::post('/product/{product}/add-to-compare', [ProductController::class, 'addToCompare'])
-    ->name('products.addToCompare');
-Route::post('/product/{product}/remove-from-compare', [ProductController::class, 'removeFromCompare'])
-    ->name('products.removeFromCompare');
+Route::prefix('/products')
+    ->group(
+        function () {
+            Route::post('/{slug}/add-to-cart', [ProductController::class, 'addToCart'])
+                ->name('products.addToCart');
+            Route::post(
+                '/{productSlug}/seller/{sellerSlug}/add-to-cart',
+                [ProductController::class, 'addToCartWithSeller']
+            )
+                ->name('products.addToCartWithSeller');
+            Route::post('/{slug}/add-to-compare', [ProductController::class, 'addToCompare'])
+                ->name('products.addToCompare');
+            Route::post('/{product}/remove-from-compare', [ProductController::class, 'removeFromCompare'])
+                ->name('products.removeFromCompare');
+        }
+    );
+
+Route::prefix('/cart')
+    ->group(
+        function () {
+            Route::get('/', [CartController::class, 'show'])
+                ->name('cart.show')
+                ->breadcrumbs(
+                    fn(Trail $trail) => $trail
+                        ->parent('index')
+                        ->push(__('navigation.cart'), route('cart.show'))
+                );
+            Route::patch('/{slug}/remove', [CartController::class, 'removeProduct'])
+                ->name('cart.removeProduct');
+            Route::patch('/{slug}/change-amount', [CartController::class, 'changeProductAmount'])
+                ->name('cart.changeProductAmount');
+            Route::patch('/{productSlug}/change-seller', [CartController::class, 'changeProductSeller'])
+                ->name('cart.changeProductSeller');
+        }
+    );
 
 Route::prefix('/account')
     ->middleware('auth')
@@ -135,6 +164,53 @@ Route::prefix('/account')
         }
     );
 
+Route::middleware('cartIsNotEmpty')
+    ->get('/order/personal', [OrderController::class, 'stepPersonal'])
+    ->name('order.personal.get')
+    ->breadcrumbs(
+        fn(Trail $trail) => $trail
+            ->parent('index')
+            ->push(__('orderPage.title'), route('order.personal.get'))
+    );
+Route::post('/order/personal', [OrderController::class, 'stepPersonalStore'])
+    ->name('order.personal.store');
+
+Route::prefix('/order')
+    ->middleware(['auth', 'cartIsNotEmpty'])
+    ->group(
+        function () {
+            Route::get('/delivery', [OrderController::class, 'stepDelivery'])
+                ->name('order.delivery.get')
+                ->breadcrumbs(
+                    fn(Trail $trail) => $trail
+                        ->parent('index')
+                        ->push(__('orderPage.title'), route('order.personal.get'))
+                );
+            Route::post('/delivery', [OrderController::class, 'stepDeliveryStore'])
+                ->name('order.delivery.store');
+
+            Route::get('/payment', [OrderController::class, 'stepPayment'])
+                ->name('order.payment.get')
+                ->breadcrumbs(
+                    fn(Trail $trail) => $trail
+                        ->parent('index')
+                        ->push(__('orderPage.title'), route('order.payment.get'))
+                );
+            Route::post('/payment', [OrderController::class, 'stepPaymentStore'])
+                ->name('order.payment.store');
+
+            Route::get('/accept', [OrderController::class, 'stepAccept'])
+                ->name('order.accept.get')
+                ->breadcrumbs(
+                    fn(Trail $trail) => $trail
+                        ->parent('index')
+                        ->push(__('orderPage.title'), route('order.personal.get'))
+                );
+            Route::post('/accept', [OrderController::class, 'stepAcceptStore'])
+                ->name('order.accept.store');
+        }
+    );
+
 Route::get('/contacts', [InfoPageController::class, 'contacts'])
     ->name('contacts')
     ->breadcrumbs(
@@ -155,10 +231,77 @@ Route::get('/about', [InfoPageController::class, 'about'])
         }
     );
 
-// TODO: заменить этот маршрут реальным
-Route::get(
-    '/login',
-    function () {
-        dd('login');
-    }
-)->name('login');
+Route::get('/registration', [UserController::class, 'create'])
+    ->middleware('guest')
+    ->name('registration')
+    ->breadcrumbs(
+        function (Trail $trail) {
+            $trail->parent('index')
+                ->push(__('login.reg'), route('registration'));
+        }
+    );
+
+Route::post('/registration', [UserController::class, 'store'])
+    ->name('user.store');
+
+Route::get('/login', [UserController::class, 'login'])
+    ->middleware('guest')
+    ->name('login')
+    ->breadcrumbs(
+        function (Trail $trail) {
+            $trail->parent('index')
+                ->push(__('login.auth'), route('login'));
+        }
+    );
+
+Route::post('/auth', [UserController::class, 'auth'])
+    ->name('auth');
+
+Route::get('/logout', [UserController::class, 'logout'])
+    ->name('logout');
+
+Route::get('/forgot-password', [UserController::class, 'forgotPassword'])
+    ->middleware('guest')
+    ->name('forgot-password')
+    ->breadcrumbs(
+        function (Trail $trail) {
+            $trail->parent('index')
+                ->push(__('login.forgot'), route('forgot-password'));
+        }
+    );
+
+Route::post('/forgot-password', [UserController::class, 'forgotPasswordSend'])
+    ->middleware('guest')
+    ->name('forgot-password-send');
+
+Route::get('/reset-password/{token}/', [UserController::class, 'resetPassword'])
+    ->middleware('guest')
+    ->name('password.reset')
+    ->breadcrumbs(
+        function (Trail $trail) {
+            $trail->parent('index')
+                ->push(__('login.forgot'), route('password.reset'));
+        }
+    );
+
+Route::post('/reset-password', [UserController::class, 'resetPasswordSend'])
+    ->middleware('guest')
+    ->name('reset-password-send');
+
+Route::get('/login-for-order', [UserController::class, 'loginForOrder'])
+    ->middleware('guest')
+    ->name('loginForOrder');
+
+Route::post('/auth-and-return-to-order', [UserController::class, 'authAndBackToOrder'])
+    ->middleware('guest')
+    ->name('authAndBackToOrder');
+
+
+Route::get('/discounts', [DiscountController::class, 'index'])
+    ->name('discounts')
+    ->breadcrumbs(
+        function (Trail $trail) {
+            $trail->parent('index')
+                ->push(__('navigation.discounts'), route('discounts'));
+        }
+    );

@@ -33,10 +33,19 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('notebook')
                 ->route('platform.edit.contacts'),
 
+            ItemMenu::label(__('admin.users'))
+                ->route('platform.systems.users')
+                ->icon('people')
+                ->title(__('admin.users')),
+
             ItemMenu::label(__('admin.product.products'))
                 ->title(__('admin.lists'))
-                ->icon('list')
+                ->icon('trophy')
                 ->route('platform.product.list'),
+
+            ItemMenu::label(__('admin.category.categories'))
+                ->icon('list')
+                ->route('platform.category.list'),
 
             ItemMenu::label(__('admin.product-review.product-reviews'))
                 ->icon('list')
@@ -53,6 +62,14 @@ class PlatformProvider extends OrchidServiceProvider
             ItemMenu::label(__('admin.callback.title'))
                 ->icon('list')
                 ->route('platform.callback.list'),
+
+            ItemMenu::label(__('admin.seller.title'))
+                ->icon('list')
+                ->route('platform.seller.list'),
+
+            ItemMenu::label(__('admin.discount.title'))
+                ->icon('list')
+                ->route('platform.discount.list'),
         ];
     }
 

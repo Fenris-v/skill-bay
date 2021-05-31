@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Repository\DeliveryRepository;
+use App\Repository\PaymentRepository;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 use Orchid\Screen\AsSource;
 
 class Order extends Model
@@ -19,7 +22,7 @@ class Order extends Model
      */
     protected $fillable = [
         'cart_id', 'user_id', 'delivery_type_id',
-        'city', 'address', 'payment_type_id',
+        'city', 'address', 'payment_type_id', 'phone', 'email', 'name',
     ];
 
     /**
@@ -61,5 +64,37 @@ class Order extends Model
     public function paymentType()
     {
         return $this->belongsTo(PaymentType::class);
+    }
+
+    /**
+     * Получение способов доставки
+     *
+     * @return Collection|DeliveryType[]
+     */
+    public function getDeliveryTypesAttribute(): Collection
+    {
+        return app(DeliveryRepository::class)->getDeliveryTypes()
+                ->map(fn($item) => [
+                    'title' => $item->name . ($item->price ? " ($item->price$)" : ''),
+                    'value' => $item->id,
+                    'checked' => $this->delivery_type_id === $item->id,
+            ])
+        ;
+    }
+
+    /**
+     * Получение способов оплаты
+     *
+     * @return Collection|PaymentType[]
+     */
+    public function getPaymentTypesAttribute(): Collection
+    {
+        return app(PaymentRepository::class)->getPaymentTypes()
+                ->map(fn($item) => [
+                    'title' => $item->name . ($item->price ? " ($item->price$)" : ''),
+                    'value' => $item->id,
+                    'checked' => $this->payment_type_id === $item->id,
+            ])
+        ;
     }
 }
