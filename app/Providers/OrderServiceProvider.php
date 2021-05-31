@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Repository\OrdersRepository;
 use App\Services\OrderService;
 use Illuminate\Support\ServiceProvider;
 
@@ -12,10 +13,11 @@ class OrderServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(OrdersRepository $ordersRepository)
     {
-        $this->app->bind(OrderService::class, function () {
-            return new OrderService();
-        });
+        $this->app->singleton(
+            OrderService::class,
+            fn() => new OrderService($ordersRepository)
+        );
     }
 }
