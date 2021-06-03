@@ -3,16 +3,18 @@
 namespace App\Orchid\Screens\Discount;
 
 use App\Models\Discount;
+use App\Models\DiscountUnit;
+use App\Orchid\Layouts\Discount\TypeDiscountListener;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Cropper;
-use Orchid\Screen\Fields\Input;
-use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Fields\DateTimer;
+use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Select;
+use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Screen;
-use Orchid\Support\Facades\Layout;
 use Alert;
 use App\Http\Requests\DiscountRequest;
+use Orchid\Support\Facades\Layout;
 
 class DiscountEditScreen extends Screen
 {
@@ -88,10 +90,14 @@ class DiscountEditScreen extends Screen
                     return $accum;
                 },
                 []
-        );
+            )
+        ;
 
         return [
             Layout::rows([
+                Input::make('discount.id')
+                    ->required()
+                    ->type('hidden'),
                 Input::make('discount.title')
                     ->required()
                     ->title(__('admin.discount.edit.labels.title')),
@@ -128,12 +134,37 @@ class DiscountEditScreen extends Screen
                     ->height(300)
                     ->title('admin.discount.edit.labels.image'),
             ]),
+            TypeDiscountListener::class,
         ];
+    }
+
+    protected function saveGroup(Discount $discount, array $units): void
+    {
+        $sync = function(string $relation, array $units, DiscountUnit $discountUnit) {
+            if (array_key_exists($relation, $units)) {
+                $discountUnit->$relation()->sync($units[$relation]);
+            } else {
+                $discountUnit->$relation()->detach();
+            }
+        };
+
+        foreach($discount->discountUnit as $key => $discountUnit) {
+            if (array_key_exists($key, $units)) {
+                $sync('products', $units[$key], $discountUnit);
+                $sync('categories', $units[$key], $discountUnit);
+            } else {
+                $discountUnit->delete();
+            }
+        }
     }
 
     public function createOrUpdate(Discount $discount, DiscountRequest $request)
     {
         $discount->fill($request->get('discount'))->save();
+        if ($discount->type < Discount::CART) {
+            $this->saveGroup($discount, $request->discount['discountUnit']);
+        }
+
         Alert::info(
             __(
                 $discount->wasRecentlyCreated
@@ -155,5 +186,25 @@ class DiscountEditScreen extends Screen
         );
 
         return redirect()->route('platform.discount.list');
+    }
+
+    public function asyncChooseUnit(int $type, int $id, int|null $amount): array
+    {
+        $discount = Discount::find($id);
+        if ($amount === null && $type === Discount::GROUP) {
+            $amount = $discount->discountUnit()->count();
+        } else {
+            $amount = match($type) {
+                Discount::PRODUCT => 1,
+                Discount::GROUP => $amount < 2 ? 2 : $amount,
+                Discount::CART => null,
+            };
+        }
+
+        return [
+            'type' => $type,
+            'amount' => $amount,
+            'discount' => $discount,
+        ];
     }
 }

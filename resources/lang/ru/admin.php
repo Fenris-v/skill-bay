@@ -289,6 +289,10 @@ return [
     'users' => 'Пользователи',
     'discount' => [
         'title' => 'Скидки',
+        'group' => 'Набор №:number',
+        'chooseProducts' => 'Выберите товары',
+        'chooseCategories' => 'Выберите категории',
+        'changeAmountGroup' => 'Изменить количество наборов',
         'types' => [
             '1' => 'На товары',
             '2' => 'На наборы',
