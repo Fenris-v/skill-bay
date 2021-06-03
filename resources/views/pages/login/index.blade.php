@@ -1,27 +1,16 @@
 {{--Основной шаблон страницы авторизации--}}
 @extends('layouts.layout')
 
-@section('title', 'Авторизация')
+@section('title', __('login.auth'))
 
-@section('meta_description', 'Описание страницы')
+@section('meta_description', __('login.desc'))
+
+@section('middle-header-h1', __('login.auth'))
 
 @section('content')
-<div class="Middle Middle_top">
-    <div class="Middle-top">
-      <div class="wrap">
-        <div class="Middle-header">
-          <h1 class="Middle-title">Авторизация</h1>
-          <ul class="breadcrumbs Middle-breadcrumbs">
-            <li class="breadcrumbs-item"><a href="/">Главная</a></li>
-            <li class="breadcrumbs-item breadcrumbs-item_current"><span>Авторизация</span></li>
-          </ul>
-        </div>
-      </div>
-    </div>
     <div class="Section">
-      <div class="wrap">
-        <x-login-form/>
-      </div>
+        <div class="wrap">
+            <x-login-form/>
+        </div>
     </div>
-  </div>
 @endsection
