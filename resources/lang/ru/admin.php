@@ -293,6 +293,9 @@ return [
         'chooseProducts' => 'Выберите товары',
         'chooseCategories' => 'Выберите категории',
         'changeAmountGroup' => 'Изменить количество наборов',
+        'requiredTab' => 'Обязательные параметры',
+        'relationTab' => 'Связи',
+        'optionalTab' => 'Необязательные параметры',
         'types' => [
             '1' => 'На товары',
             '2' => 'На наборы',

@@ -94,51 +94,64 @@ class DiscountEditScreen extends Screen
         ;
 
         return [
-            Layout::rows([
-                Input::make('discount.id')
-                    ->required()
-                    ->type('hidden'),
-                Input::make('discount.title')
-                    ->required()
-                    ->title(__('admin.discount.edit.labels.title')),
-                TextArea::make('discount.description')
-                    ->rows(5)
-                    ->required()
-                    ->title(__('admin.discount.edit.labels.description')),
-                DateTimer::make('discount.begin_at')
-                    ->title(__('admin.discount.edit.labels.begin_at'))
-                    ->format('Y-m-d')
-                    ->allowInput(),
-                DateTimer::make('discount.end_at')
-                    ->title(__('admin.discount.edit.labels.end_at'))
-                    ->format('Y-m-d')
-                    ->allowInput(),
-                Input::make('discount.value')
-                    ->required()
-                    ->title(__('admin.discount.edit.labels.value')),
-                Select::make('discount.unit_type')
-                    ->options($prepare(Discount::unitTypes(), 'admin.discount.unit_types.'))
-                    ->required()
-                    ->title(__('admin.discount.edit.labels.unit_type')),
-                Select::make('discount.type')
-                    ->options($prepare(Discount::types(), 'admin.discount.types.'))
-                    ->required()
-                    ->title(__('admin.discount.edit.labels.type')),
-                Input::make('discount.priority')
-                    ->required()
-                    ->title(__('admin.discount.edit.labels.priority')),
-                Cropper::make('discount.image_id')
-                    ->required()
-                    ->targetId()
-                    ->width(500)
-                    ->height(300)
-                    ->title('admin.discount.edit.labels.image'),
+            Layout::tabs([
+                __('admin.discount.requiredTab') => [
+                    Layout::rows([
+                        Input::make('discount.id')
+                            ->required()
+                            ->type('hidden'),
+                        Input::make('discount.title')
+                            ->required()
+                            ->title(__('admin.discount.edit.labels.title')),
+                        TextArea::make('discount.description')
+                            ->rows(5)
+                            ->required()
+                            ->title(__('admin.discount.edit.labels.description')),
+                        Input::make('discount.value')
+                            ->required()
+                            ->title(__('admin.discount.edit.labels.value')),
+                        Select::make('discount.unit_type')
+                            ->options($prepare(Discount::unitTypes(), 'admin.discount.unit_types.'))
+                            ->required()
+                            ->title(__('admin.discount.edit.labels.unit_type')),
+                        Input::make('discount.priority')
+                            ->required()
+                            ->title(__('admin.discount.edit.labels.priority')),
+                        Cropper::make('discount.image_id')
+                            ->required()
+                            ->targetId()
+                            ->width(500)
+                            ->height(300)
+                            ->title('admin.discount.edit.labels.image'),
+                    ]),
+                ],
+                __('admin.discount.relationTab') => [
+                    Layout::rows([
+                        Select::make('discount.type')
+                            ->options($prepare(Discount::types(), 'admin.discount.types.'))
+                            ->required()
+                            ->title(__('admin.discount.edit.labels.type')),
+                    ]),
+                    TypeDiscountListener::class,
+                ],
+                __('admin.discount.optionalTab') => [
+                    Layout::rows([
+                        DateTimer::make('discount.begin_at')
+                            ->title(__('admin.discount.edit.labels.begin_at'))
+                            ->format('Y-m-d')
+                            ->allowInput(),
+                        DateTimer::make('discount.end_at')
+                            ->title(__('admin.discount.edit.labels.end_at'))
+                            ->format('Y-m-d')
+                            ->allowInput(),
+                    ]),
+                ],
             ]),
-            TypeDiscountListener::class,
+
         ];
     }
 
-    protected function saveGroup(Discount $discount, array $units): void
+    protected function syncGroups(Discount $discount, array $units): void
     {
         $sync = function(string $relation, array $units, DiscountUnit $discountUnit) {
             if (array_key_exists($relation, $units)) {
@@ -156,13 +169,40 @@ class DiscountEditScreen extends Screen
                 $discountUnit->delete();
             }
         }
+        if ($discount->discountUnit->count() < 2 && $discount->type === Discount::GROUP) {
+            $discount->type = Discount::PRODUCT;
+            $discount->save();
+        }
+    }
+
+    protected function createNewGroups(Discount $discount, array $units): void
+    {
+        foreach($units as $unit) {
+            $discountUnit = DiscountUnit::factory(['discount_id' => $discount->id])
+                ->create()
+            ;
+            $discountUnit->products()->attach($unit['products'] ?? []);
+            $discountUnit->categories()->attach($unit['categories'] ?? []);
+            $discount->discountUnit()->save($discountUnit);
+        }
+
+        $discount->save();
+    }
+
+    protected function saveGroups(Discount $discount, array $units): void
+    {
+        if ($discount->discountUnit->isNotEmpty()) {
+            $this->syncGroups($discount, $units);
+        } else {
+            $this->createNewGroups($discount, $units);
+        }
     }
 
     public function createOrUpdate(Discount $discount, DiscountRequest $request)
     {
         $discount->fill($request->get('discount'))->save();
-        if ($discount->type < Discount::CART) {
-            $this->saveGroup($discount, $request->discount['discountUnit']);
+        if ($discount->type !== Discount::CART) {
+            $this->saveGroups($discount, $request->discount['discountUnit']);
         }
 
         Alert::info(
@@ -188,11 +228,11 @@ class DiscountEditScreen extends Screen
         return redirect()->route('platform.discount.list');
     }
 
-    public function asyncChooseUnit(int $type, int $id, int|null $amount): array
+    public function asyncChooseUnit(int $type, int|null $id = null, int|null $amount): array
     {
-        $discount = Discount::find($id);
+        $discount = $id ? Discount::find($id) : new Discount();
         if ($amount === null && $type === Discount::GROUP) {
-            $amount = $discount->discountUnit()->count();
+            $amount = 2;
         } else {
             $amount = match($type) {
                 Discount::PRODUCT => 1,

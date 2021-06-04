@@ -38,14 +38,14 @@ class TypeDiscountListener extends Listener
             ;
         }
 
-        match($type) {
+        match($type ?? Discount::PRODUCT) {
             Discount::PRODUCT => array_push($layouts, $this->getProductsAndCategoriesSelect(0)),
             Discount::GROUP => array_push(
                 $layouts,
                 $this->getAmountButtons($amount),
                 $this->getAccordion($amount)
             ),
-        Discount::CART => $this->getCartDiscountFields(),
+            Discount::CART => array_push($layouts, $this->getCartDiscountFields()),
         };
 
         return $layouts;
@@ -86,7 +86,6 @@ class TypeDiscountListener extends Listener
             Input::make('amount')
                 ->type('number')
                 ->value($amount)
-                ->id('changerAmount')
                 ->title(__('admin.discount.changeAmountGroup')),
         ]);
     }
