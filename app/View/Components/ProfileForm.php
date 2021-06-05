@@ -3,23 +3,20 @@
 namespace App\View\Components;
 
 use Illuminate\View\Component;
+use App\Models\User;
 
 class ProfileForm extends Component
 {
-	public $name;
-	public $phone;
-	public $email;
+	public $user;
 	
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($name, $phone, $email)
+    public function __construct(User $user)
     {
-		$this->name = $name;
-        $this->phone = $phone;
-        $this->email = $email;
+        $this->user = $user;
     }
 
     /**

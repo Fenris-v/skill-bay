@@ -13,7 +13,7 @@
 
             <div class="Section-content">
                 <div class="Profile">
-                    <x-profile-form :name="$user->name" :phone="$user->phone" :email="$user->email"/>
+                    <x-profile-form :user="$user"/>
                 </div>
             </div>
         </div>

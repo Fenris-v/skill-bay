@@ -25,7 +25,9 @@ class AccountRequest extends FormRequest
     {
         return [
             'phone' => 'required',
-            'name' => 'required'
+            'name' => 'required',
+            'email' => '',
+            'password' => "required_with:password_confirmation"
         ];
     }
 }

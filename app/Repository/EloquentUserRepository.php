@@ -25,11 +25,10 @@ class EloquentUserRepository implements RepositoryInterface
     }
 
     // update record in the database
-    public function update(array $data, int $id)
+    public function update(array $data, User $user)
     {
-        $record = $this->model->find($id);
-        $record->update($data);
-        return $record;
+        $user->update($data);
+        return $user;
     }
     //update several records
     public function updateSeveral(array $data, array $id){
