@@ -5,6 +5,9 @@ namespace App\Orchid\Screens\Discount;
 use App\Models\Discount;
 use App\Models\DiscountUnit;
 use App\Orchid\Layouts\Discount\TypeDiscountListener;
+use App\Orchid\Layouts\Discount\ProductTypeDiscountListener;
+use App\Orchid\Layouts\Discount\GroupTypeDiscountListener;
+use App\Orchid\Layouts\Discount\CartTypeDiscountListener;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Cropper;
 use Orchid\Screen\Fields\DateTimer;
@@ -14,7 +17,9 @@ use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Screen;
 use Alert;
 use App\Http\Requests\DiscountRequest;
+use Illuminate\Http\Request;
 use Orchid\Support\Facades\Layout;
+use Illuminate\Support\Facades\Validator;
 
 class DiscountEditScreen extends Screen
 {
@@ -128,7 +133,11 @@ class DiscountEditScreen extends Screen
                 __('admin.discount.relationTab') => [
                     Layout::rows([
                         Select::make('discount.type')
-                            ->options($prepare(Discount::types(), 'admin.discount.types.'))
+                            ->options($prepare([
+                                ProductTypeDiscountListener::class,
+                                GroupTypeDiscountListener::class,
+                                CartTypeDiscountListener::class,
+                            ], 'admin.discount.classTypes.'))
                             ->required()
                             ->title(__('admin.discount.edit.labels.type')),
                     ]),
@@ -198,9 +207,13 @@ class DiscountEditScreen extends Screen
         }
     }
 
-    public function createOrUpdate(Discount $discount, DiscountRequest $request)
+    public function createOrUpdate(Discount $discount, Request $request)
     {
-        $discount->fill($request->get('discount'))->save();
+        $data = $request->all();
+        $data['discount']['type'] = $data['discount']['type']::VALUE;
+        Validator::make($data, (new DiscountRequest())->rules())->validate();
+
+        $discount->fill($data)->save();
         if ($discount->type !== Discount::CART) {
             $this->saveGroups($discount, $request->discount['discountUnit']);
         }
@@ -228,23 +241,12 @@ class DiscountEditScreen extends Screen
         return redirect()->route('platform.discount.list');
     }
 
-    public function asyncChooseUnit(int $type, int|null $id = null, int|null $amount): array
+    public function asyncChooseUnit(string $type, int|null $id = null, int|null $amount): array
     {
-        $discount = $id ? Discount::find($id) : new Discount();
-        if ($amount === null && $type === Discount::GROUP) {
-            $amount = 2;
-        } else {
-            $amount = match($type) {
-                Discount::PRODUCT => 1,
-                Discount::GROUP => $amount < 2 ? 2 : $amount,
-                Discount::CART => null,
-            };
-        }
-
         return [
             'type' => $type,
-            'amount' => $amount,
-            'discount' => $discount,
+            'amount' => $amount !== null && $amount < $type::MIN_GROUP_AMOUNT ? $type::MIN_GROUP_AMOUNT : $amount,
+            'discount' => $id ? Discount::find($id) : new Discount(),
         ];
     }
 }
