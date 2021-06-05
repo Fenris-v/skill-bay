@@ -6,8 +6,13 @@
 			<div class="form-group">
 				<label class="form-label" for="avatar">Аватар
 				</label>
+				<form action="{{route('profile.avatar.delete')}}" method="post">
+					@method("DELETE")
+					@csrf
+					<button class="btn btn_success" type="submit">Удалить аватар</button>
+				</form>
 				<div class="Profile-avatar Profile-avatar_noimg">
-					<div class="Profile-img"><img src="{{$user->attachment->path}}" alt="avatar"/>
+					<div class="Profile-img">@if($user->attachment->path) <img src="{{$user->attachment->path}}" alt="avatar"/> @endif
 					</div>
 					<label class="Profile-fileLabel" for="avatar">Выберите аватар
 					</label>

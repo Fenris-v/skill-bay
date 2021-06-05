@@ -50,7 +50,7 @@ class AccountController extends Controller
     public function editProfile(AccountRequest $request, UserService $userService, PreparePasswordService $passwordService)
     {
         $user = auth()->user();
-        if($request->has('avatar')){
+        if($request->filled('avatar')){
             $path = $request->file('avatar')->storeAs(
                 'avatars', $user->id . '.'. $request->file('avatar')->extension()
             );
@@ -64,8 +64,10 @@ class AccountController extends Controller
                 'size' => filesize($path),
                 'hash' => sha1_file($path),
             ];
-            Attachment::where("user_id", $user->id)->where("original_name", "avatar")->delete();
-            $avatar = Attachment::create($imageArr);
+            $avatar = Attachment::where("user_id", $user->id)->where("original_name", "avatar");
+            unlink(storage_path($avatar->path));
+            $avatar->delete();
+            Attachment::create($imageArr);
         }
 
         $data = $request->validated();
@@ -74,5 +76,14 @@ class AccountController extends Controller
 
         $userService->updateUser($data, $user);
         return back()->with('success', __('user_messages.profile_edit_success'));
-	}
+    }
+    
+    public function deleteAvatar()
+    {
+        $user = auth()->user();
+        $avatar = Attachment::where("user_id", $user->id)->where("original_name", "avatar");
+        unlink(storage_path($avatar->path));
+        $avatar->delete();
+        return back();
+    }
 }

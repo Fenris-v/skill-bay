@@ -27,7 +27,7 @@ class AccountRequest extends FormRequest
             'phone' => 'required',
             'name' => 'required',
             'email' => '',
-            'password' => "required_with:password_confirmation"
+            'password' => "required_with:password_confirmation|confirmed"
         ];
     }
 }
