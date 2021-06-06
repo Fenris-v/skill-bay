@@ -1,16 +1,29 @@
 <?php
 
-
 namespace App\Services;
 
-use \App\Contracts\PaymentMethodInterface;
+use App\Contracts\PayByCardService as PayByCardServiceContract;
+use App\Jobs\PayOrder;
+use App\Models\Order;
 
-
-class PayByCardService implements PaymentMethodInterface
+class PayByCardService implements PayByCardServiceContract
 {
-
-    public function pay()
+    /**
+     * Производит оплату заказа.
+     *
+     * @param  Order  $order
+     * @param  string  $cardNumber
+     */
+    public function pay(Order $order, string $cardNumber)
     {
-        // TODO: Implement Pay() method.
+        if ($order->payment_status === Order::PAYMENT_STATUS_PAYED) {
+            throw new \InvalidArgumentException(__('payment.already_payed'));
+        }
+
+        $paymentSum = $order->cart->currentPrice ?? null;
+
+        dispatch(new PayOrder($order, $cardNumber, $paymentSum));
+
+        true;
     }
 }

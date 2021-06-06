@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Services\FakePaymentService;
 use Illuminate\Support\ServiceProvider;
-use App\Contracts\PaymentMethodInterface;
 use App\Services\PayByCardService;
 use App\Services\PayByRandomAccountService;
+use App\Contracts\PayByRandomAccountService as PayByRandomAccountServiceContract;
+use App\Contracts\PayByCardService as PayByCardServiceContract;
+use App\Contracts\PaymentService as PaymentServiceContract;
 
 class PaymentServiceProvider extends ServiceProvider
 {
@@ -16,12 +19,19 @@ class PaymentServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->bind(PaymentMethodInterface::class, function($paymentMethod) {
-            if ($paymentMethod) {
-                return new PayByCardService();
-            } else {
-                return new PayByRandomAccountService();
-            }
-        });
+        $this->app->bind(
+            PayByCardServiceContract::class,
+            PayByCardService::class
+        );
+
+        $this->app->bind(
+            PayByRandomAccountServiceContract::class,
+            PayByRandomAccountService::class
+        );
+
+        $this->app->bind(
+            PaymentServiceContract::class,
+            FakePaymentService::class
+        );
     }
 }

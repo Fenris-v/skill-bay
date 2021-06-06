@@ -18,11 +18,19 @@ class Order extends Model
         AsSource;
 
     /**
+     * Статусы оплаты заказа.
+     */
+    public const PAYMENT_STATUS_NOT_PAYED = 0; // Не оплачен.
+    public const PAYMENT_STATUS_PAYED = 1; // Оплачен.
+    public const PAYMENT_STATUS_ERROR = -1; // Ошибка оплаты.
+
+    /**
      * @var string[]
      */
     protected $fillable = [
         'cart_id', 'user_id', 'delivery_type_id',
-        'city', 'address', 'payment_type_id', 'phone', 'email', 'name',
+        'city', 'address', 'payment_type_id',
+        'phone', 'email', 'name', 'payment_status',
     ];
 
     /**
