@@ -59,6 +59,7 @@ class PayOrder implements ShouldQueue
 
         if ($response['success'] ?? false) {
             $this->order->payment_status = Order::PAYMENT_STATUS_PAYED;
+            $this->order->payment_error_message = null;
         } else {
             $this->order->payment_status = Order::PAYMENT_STATUS_ERROR;
             $this->order->payment_error_message = $response['message'] ?? null;
