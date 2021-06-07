@@ -17,6 +17,10 @@ class AddPaymentStatusToOrdersTable extends Migration
             $table->tinyInteger('payment_status')
                 ->default(\App\Models\Order::PAYMENT_STATUS_NOT_PAYED)
                 ->comment('Оплачен ли заказ.');
+
+            $table->string('payment_error_message')
+                ->nullable()
+                ->comment('Ошибка оплаты.');
         });
     }
 
@@ -29,6 +33,7 @@ class AddPaymentStatusToOrdersTable extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             $table->dropColumn('payment_status');
+            $table->dropColumn('payment_error_message');
         });
     }
 }

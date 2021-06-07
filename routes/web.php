@@ -1,6 +1,5 @@
 <?php
 
-use App\Contracts\PayByCardService;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\DiscountController;

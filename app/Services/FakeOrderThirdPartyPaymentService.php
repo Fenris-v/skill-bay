@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
-use App\Contracts\PaymentService as PaymentServiceContract;
+use App\Contracts\OrderThirdPartyPaymentService as OrderThirdPartyPaymentServiceContract;
+use App\Exceptions\OrderPaymentException;
 
-class FakePaymentService implements PaymentServiceContract
+class FakeOrderThirdPartyPaymentService implements OrderThirdPartyPaymentServiceContract
 {
     /**
      * Производит оплату заказа.
@@ -12,6 +13,7 @@ class FakePaymentService implements PaymentServiceContract
      * @param  int  $orderId
      * @param  string  $cardNumber
      * @param  float  $paymentSum
+     * @throws \Exception
      * @return bool
      */
     public function pay(int $orderId, string $cardNumber, float $paymentSum): bool
@@ -22,7 +24,18 @@ class FakePaymentService implements PaymentServiceContract
             return true;
         }
 
-        throw new \LogicException(__('payment.error'));
+        switch (random_int(0, 3)) {
+            case 0:
+                throw new OrderPaymentException(__('payment.error_blocked'));
+            case 1:
+                throw new OrderPaymentException(__('payment.error_not_enough_money'));
+            case 2:
+                throw new OrderPaymentException(__('payment.error_bad_card'));
+            case 3:
+                throw new OrderPaymentException(__('payment.error_card_is_expire'));
+        }
+
+        return false;
     }
 
     /**

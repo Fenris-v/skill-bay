@@ -2,7 +2,7 @@
 
 namespace App\Contracts;
 
-interface PaymentService
+interface OrderThirdPartyPaymentService
 {
     /**
      * Производит оплату заказа.

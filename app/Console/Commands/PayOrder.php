@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Contracts\OrderPaymentService;
+use App\Models\Order;
 use Illuminate\Console\Command;
 
 class PayOrder extends Command
@@ -11,23 +13,30 @@ class PayOrder extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'order:pay {orderId}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Производит оплату заказа';
+
+    /**
+     * @var OrderPaymentService
+     */
+    protected OrderPaymentService $orderPaymentService;
 
     /**
      * Create a new command instance.
      *
-     * @return void
+     * @param  OrderPaymentService  $orderPaymentService
      */
-    public function __construct()
+    public function __construct(OrderPaymentService $orderPaymentService)
     {
         parent::__construct();
+
+        $this->orderPaymentService = $orderPaymentService;
     }
 
     /**
@@ -37,6 +46,25 @@ class PayOrder extends Command
      */
     public function handle()
     {
-        return 0;
+        $order = Order::find($this->argument('orderId'));
+
+        if (is_null($order)) {
+            $this->error('Заказ не найден.');
+            return Command::FAILURE;
+        }
+
+        $this->line('Пытаемся оплатить заказ...');
+
+        try {
+            $this->orderPaymentService->pay($order);
+
+            $this->info('Успешный запрос в сервис оплаты.');
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+
+            return Command::FAILURE;
+        }
+
+        return Command::SUCCESS;
     }
 }

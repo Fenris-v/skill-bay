@@ -30,7 +30,8 @@ class Order extends Model
     protected $fillable = [
         'cart_id', 'user_id', 'delivery_type_id',
         'city', 'address', 'payment_type_id',
-        'phone', 'email', 'name', 'payment_status',
+        'phone', 'email', 'name',
+        'payment_status',  'payment_error_message',
     ];
 
     /**

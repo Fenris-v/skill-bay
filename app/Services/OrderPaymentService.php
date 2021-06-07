@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Contracts\OrderPaymentService as OrderPaymentServiceContract;
+use App\Exceptions\OrderPaymentException;
+use App\Jobs\PayOrder;
 use App\Models\Order;
 
 /**
@@ -15,12 +17,21 @@ class OrderPaymentService implements OrderPaymentServiceContract
     /**
      * Оплатить заказ.
      *
-     * @param Order $order
+     * @param  Order  $order
+     * @throws OrderPaymentException
      * @return bool
      */
     public function pay(Order $order)
     {
-        // @todo Реализовать метод
+        if ($this->isPaid($order)) {
+            throw new OrderPaymentException(__('payment.already_payed'));
+        }
+
+        // @todo После того, как мы начнем хранить номер карты заказа, убрать заглушку.
+        $cardNumber = $order->card_number ?? '000001';
+        $paymentSum = $order->cart->currentPrice ?? null;
+
+        dispatch(new PayOrder($order, $cardNumber, $paymentSum));
 
         return true;
     }
@@ -33,19 +44,17 @@ class OrderPaymentService implements OrderPaymentServiceContract
      */
     public function isPaid(Order $order): bool
     {
-        // @todo Реализовать метод
-
-        return $order->id % 2;
+        return $order->payment_status === Order::PAYMENT_STATUS_PAYED;
     }
 
     /**
-     * Текст ошибки, если заказ не оплачен
+     * Текст ошибки, если заказ не оплачен.
+     *
      * @param Order $order
      * @return string
      */
-    public function getErrorMessage(Order $order): string
+    public function getErrorMessage(Order $order)
     {
-        // TODO: Реализовать метод
-        return 'Оплата не выполнена, т.к. вы подозреваетесь в нетолерантности';
+        return $order->payment_error_message ?? __('payment.error');
     }
 }
