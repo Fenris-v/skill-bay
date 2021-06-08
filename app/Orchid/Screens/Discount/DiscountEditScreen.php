@@ -177,7 +177,7 @@ class DiscountEditScreen extends Screen
             }
         }
 
-        if ($discount->discountUnit->count() < 2 && $discount->type === Discount::GROUP) {
+        if ($discount->discountUnit->count() === 1 && $discount->type === Discount::GROUP) {
             $discount->type = Discount::PRODUCT;
             $discount->save();
         }
