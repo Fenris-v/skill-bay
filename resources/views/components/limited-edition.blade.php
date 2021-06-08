@@ -11,7 +11,7 @@
         @foreach($products as $product)
         <div class="Slider-item">
             <div class="Slider-content">
-                <x-catalog.product-list-item :product="$product" />
+                <x-catalog.product-list-item :product="$product" :discount="$getDiscount($product)" />
             </div>
         </div>
         @endforeach

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Traits\WithChildrenCategoriesFilter;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,6 +12,8 @@ use Illuminate\Support\Facades\Cache;
 
 class CatalogRepository
 {
+    use WithChildrenCategoriesFilter;
+
     public ?string $sortBy;
     public ?string $sortType;
 
@@ -32,7 +35,7 @@ class CatalogRepository
             $this->getCacheKey($params, $category->slug ?? ''),
             $this->configs->getCacheLifetime(),
             function () use ($params, $category) {
-                return $this->getProducts($params, $category->id ?? null);
+                return $this->getProducts($params, $category ?? null);
             }
         );
     }
@@ -40,17 +43,17 @@ class CatalogRepository
     /**
      * Делает запрос к БД и возвращает данные
      * @param array $params
-     * @param int|null $categoryId
+     * @param Category|null $category
      * @return LengthAwarePaginator
      */
-    private function getProducts(array $params, ?int $categoryId): LengthAwarePaginator
+    private function getProducts(array $params, ?Category $category): LengthAwarePaginator
     {
         $query = Product::with('image')
             ->with('category')
             ->when(
-                $categoryId,
-                function ($query) use ($categoryId) {
-                    return $query->where('category_id', $categoryId);
+                $category,
+                function ($query) use ($category) {
+                    $this->withChildrenCategoriesFilter($query, $category);
                 }
             )->selectRaw('*, (SELECT AVG(price) FROM product_seller WHERE products.id = product_id) as avg_price');
 

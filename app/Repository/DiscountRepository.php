@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Models\Category;
 use App\Models\Discount;
 use App\Models\DiscountUnit;
 use App\Traits\TimeToLiveCacheTrait;
@@ -22,12 +23,15 @@ class DiscountRepository
     /**
      * Возвращает все скидки
      * @param Collection|Paginator $products
+     * @param array $discountsTypes
      * @return Collection $discounts
      */
-    public function getProductDiscounts(Collection|Paginator $products): Collection
-    {
+    public function getProductDiscounts(
+        Collection|Paginator $products,
+        array $discountsTypes = [Discount::PRODUCT]
+    ): Collection {
         $productsId = $products->pluck(['id']);
-        $categoriesId = $products->pluck(['category_id']);
+        $categoriesId = $this->getCategoriesWithChildren($products);
 
         return DiscountUnit::with(
             [
@@ -37,9 +41,8 @@ class DiscountRepository
                 'categories' => function ($query) use ($categoriesId) {
                     $query->whereIn('id', $categoriesId);
                 },
-                'discount' => function ($query) {
-                    $query->where('end_at', null)
-                        ->orWhere('end_at', '>', now());
+                'discount' => function ($query) use ($discountsTypes) {
+                    $this->filterDiscounts($query, $discountsTypes);
                 }
             ]
         )->whereHas(
@@ -90,5 +93,45 @@ class DiscountRepository
                 )
                 ->paginate($this->configRepository->getPerPage())
         );
+    }
+
+    /**
+     * Возвращает массив с id категорий
+     * @param Collection|Paginator $products
+     * @return array
+     */
+    private function getCategoriesWithChildren(Collection|Paginator $products): array
+    {
+        $categoriesId = $products->pluck(['category_id'])->unique();
+        $categories = Category::with('descendants')->whereIn('id', $categoriesId)->get();
+        $categoriesId = $categories->pluck('id')->toArray();
+
+        $children = $categories->map(
+            function ($category) {
+                return $category->descendants->pluck('id')->toArray();
+            }
+        );
+
+        foreach ($children as $child) {
+            $categoriesId = array_merge_recursive($categoriesId, $child);
+        }
+
+        return array_unique($categoriesId);
+    }
+
+    /**
+     * Фильтрует скидки
+     * @param $query
+     * @param array $discountsTypes
+     */
+    private function filterDiscounts($query, array $discountsTypes): void
+    {
+        $query->whereIn('type', $discountsTypes)
+            ->where(
+                function ($query) {
+                    $query->where('end_at', null)
+                        ->orWhere('end_at', '>', now());
+                }
+            );
     }
 }
