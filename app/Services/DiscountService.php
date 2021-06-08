@@ -68,12 +68,24 @@ class DiscountService implements Discountable
 
     /**
      * Возвращает итоговую сумму корзины
-     * @param $products
-     * @param $discounts
+     * @param Product|Collection|Paginator $products
+     * @param Collection $discounts
      * @return float
      */
-    public function getCartTotal($products, $discounts): float
-    {
+    public function getCartTotal(
+        Product|Collection|Paginator $products,
+        Collection $discounts
+    ): float {
+        if ($discounts->first()?->type === Discount::GROUP) {
+            $total = $products->reduce(
+                function ($accum, $product) use ($discounts) {
+                    return $accum + $product->price * $product->amount;
+                },
+                0
+            );
+            return $total - $this->calculateGroupDiscount($discounts->first(), $total);
+        }
+
         return $products->reduce(
             function ($accum, $product) use ($discounts) {
                 if ($discounts->get($product->slug)) {
@@ -99,7 +111,8 @@ class DiscountService implements Discountable
      */
     public function getCartDiscount(Collection $products): Collection
     {
-        $discountUnits = $this->repository->getProductDiscounts($products);
+        $discountUnits = $this->repository
+            ->getProductDiscounts($products, [Discount::PRODUCT, Discount::GROUP]);
 
         $groupDiscounts = $this->getGroupsDiscounts($discountUnits);
 
@@ -170,10 +183,10 @@ class DiscountService implements Discountable
 
     /**
      * Возвращает скидки на группы
-     * @param $discounts
+     * @param Collection $discounts
      * @return mixed
      */
-    private function getGroupsDiscounts($discounts): Collection
+    private function getGroupsDiscounts(Collection $discounts): Collection
     {
         $groupDiscounts = $discounts
             ->where('discount.type', Discount::GROUP)
@@ -181,9 +194,22 @@ class DiscountService implements Discountable
 
         return $groupDiscounts->filter(
             function ($group) {
-                return $group->count() > 1;
+                return $group->count() > 1 || $group[0]->categories->count() > 1;
             }
         );
+    }
+
+    /**
+     * Рассчитывает скидку на группу в корзине
+     * @param Discount $discount
+     * @param float $price
+     * @return float
+     */
+    private function calculateGroupDiscount(Discount $discount, float $price): float
+    {
+        $calculator = $this->createCalculator($discount->unit_type);
+
+        return $calculator->getGroupDiscount($discount, $price);
     }
 
     /**
