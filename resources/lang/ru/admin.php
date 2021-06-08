@@ -1,8 +1,8 @@
 <?php
 
-use App\Orchid\Layouts\Discount\ProductTypeDiscountListener;
-use App\Orchid\Layouts\Discount\GroupTypeDiscountListener;
-use App\Orchid\Layouts\Discount\CartTypeDiscountListener;
+use App\Orchid\Layouts\Discount\ProductTypeDiscountLayout;
+use App\Orchid\Layouts\Discount\GroupTypeDiscountLayout;
+use App\Orchid\Layouts\Discount\CartTypeDiscountLayout;
 
 /**
  * Языковые константы админ панели
@@ -304,11 +304,6 @@ return [
             '1' => 'На товары',
             '2' => 'На наборы',
             '3' => 'На корзину',
-        ],
-        'classTypes' => [
-            ProductTypeDiscountListener::class => 'На товары',
-            GroupTypeDiscountListener::class => 'На наборы',
-            CartTypeDiscountListener::class => 'На корзину',
         ],
         'unit_types' => [
             '1' => '%',

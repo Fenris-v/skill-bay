@@ -2,6 +2,7 @@
 
 namespace App\Orchid\Layouts\Discount;
 
+use App\Models\Discount;
 use Orchid\Screen\Layouts\Listener;
 
 class TypeDiscountListener extends Listener
@@ -14,9 +15,18 @@ class TypeDiscountListener extends Listener
 
     protected $asyncMethod = 'asyncChooseUnit';
 
+    public static function getTypeClass(int $type): string
+    {
+        return match($type) {
+            Discount::PRODUCT => ProductTypeDiscountLayout::class,
+            Discount::GROUP => GroupTypeDiscountLayout::class,
+            Discount::CART => CartTypeDiscountLayout::class,
+        };
+    }
+
     protected function layouts(): array
     {
-        $type = $this->query->get('type', ProductTypeDiscountListener::class);
+        $type = self::getTypeClass($this->query->get('discount.type', Discount::PRODUCT));
         $unit = new $type(
             $this->query->get('discount'),
             $this->query->get('amount')

@@ -3,21 +3,14 @@
 namespace App\Orchid\Layouts\Discount;
 
 use App\Models\Category;
-use App\Models\Discount;
 use App\Models\Product;
 use Orchid\Screen\Fields\Relation;
 use Orchid\Screen\Layouts\Rows;
 use Orchid\Support\Facades\Layout;
 
-class ProductTypeDiscountListener
+abstract class TypeDiscountLayout
 {
-    const VALUE = Discount::PRODUCT;
-    const MIN_GROUP_AMOUNT = 1;
-
-    public function layouts(): array
-    {
-        return [$this->getProductsAndCategoriesSelect(0)];
-    }
+    abstract function layouts();
 
     protected function getProductsAndCategoriesSelect($id): Rows
     {

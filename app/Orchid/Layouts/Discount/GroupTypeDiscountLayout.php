@@ -8,14 +8,14 @@ use Orchid\Support\Facades\Layout;
 use Orchid\Screen\Layouts\Rows;
 use Orchid\Screen\Layouts\Accordion;
 
-class GroupTypeDiscountListener extends ProductTypeDiscountListener
+class GroupTypeDiscountLayout extends TypeDiscountLayout
 {
     const VALUE = Discount::GROUP;
     const MIN_GROUP_AMOUNT = 2;
 
     public function __construct(
         protected Discount $discount,
-        protected int|null $amount,
+        protected int|null $amount
     ) {}
 
     public function layouts(): array
@@ -41,7 +41,7 @@ class GroupTypeDiscountListener extends ProductTypeDiscountListener
         return Layout::accordion($elements);
     }
 
-    protected static function getAmountButtons(int $amount): Rows
+    protected function getAmountButtons(int $amount): Rows
     {
         return Layout::rows([
             Input::make('amount')
