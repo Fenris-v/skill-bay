@@ -27,7 +27,11 @@ class ProductSpecificationsLayout extends Rows
      */
     protected function fields(): array
     {
-        $productId = $this->query->get('product')->id;
+        $productId = $this->query?->get('product')?->id;
+
+        if (!$productId) {
+            return [];
+        }
 
         $fields[] = ModalToggle::make(__('admin.product.specifications_edit'))
             ->modal('specificationModal')
@@ -66,7 +70,7 @@ class ProductSpecificationsLayout extends Rows
         $currentValue = ProductSpecification::where('specification_id', $model->id)
             ->where('product_id', $productId)
             ->first()
-            ->value;
+            ->value ?? '';
 
         return Select::make("product.specification.$model->id")
             ->title($model->title)

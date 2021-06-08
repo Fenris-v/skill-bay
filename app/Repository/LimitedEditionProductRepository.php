@@ -49,6 +49,7 @@ class LimitedEditionProductRepository
                         'image',
                         'sellers',
                     ])
+                    ->selectRaw('*, (SELECT AVG(price) FROM product_seller WHERE products.id = product_id) as avg_price')
                     ->get();
             });
     }
