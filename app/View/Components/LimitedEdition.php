@@ -2,12 +2,16 @@
 
 namespace App\View\Components;
 
-use App\Services\LimitedEditionProductService;
-use Illuminate\View\Component;
 use App\Models\Product;
+use App\Services\DiscountService;
+use App\Services\LimitedEditionProductService;
+use App\Traits\DiscountForProduct;
+use Illuminate\View\Component;
 
 class LimitedEdition extends Component
 {
+    use DiscountForProduct;
+
     /**
      * @var LimitedEditionProductService
      */
@@ -23,9 +27,13 @@ class LimitedEdition extends Component
      *
      * @return void
      */
-    public function __construct(LimitedEditionProductService $limitedEditionProductService)
-    {
+    public function __construct(
+        LimitedEditionProductService $limitedEditionProductService,
+        DiscountService $discountService
+    ) {
         $this->limitedEditionProductService = $limitedEditionProductService;
+        $this->products = $this->limitedEditionProductService->get();
+        $this->discounts = $discountService->getPriorityDiscount($this->products);
     }
 
     /**
@@ -35,7 +43,6 @@ class LimitedEdition extends Component
      */
     public function render()
     {
-        $this->products = $this->limitedEditionProductService->get();
         return view('components.limited-edition');
     }
 }

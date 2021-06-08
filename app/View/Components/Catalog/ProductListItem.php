@@ -28,6 +28,8 @@ class ProductListItem extends Component
                 $this->discount,
                 $product->avg_price
             );
+        } else {
+            $this->price = $product->avg_price;
         }
     }
 

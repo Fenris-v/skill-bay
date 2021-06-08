@@ -21,4 +21,19 @@ class CurencyDiscount implements DiscountCalculator
 
         return $price - $discount->value;
     }
+
+    /**
+     * Рассчитывает скидку на группу товаров в корзине
+     * @param Discount $discount
+     * @param float $price
+     * @return float
+     */
+    public function getGroupDiscount(Discount $discount, float $price): float
+    {
+        if ($price - $discount->value < 1) {
+            return $price - 1;
+        }
+
+        return $discount->value;
+    }
 }
