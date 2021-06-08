@@ -12,4 +12,11 @@ interface VisitorService
      * @return Visitor
      */
     public function get(): Visitor;
+
+    /**
+     * Получение Визитера неавторизованного пользователя.
+     *
+     * @return Visitor
+     */
+    public function getGuest(): Visitor;
 }

@@ -24,7 +24,7 @@ class VisitorFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => User::orderBy(DB::raw('RAND()'))->take(1)->first()?->id,
+            'user_id' => rand(0, 1) ? User::factory() : null,
         ];
     }
 }

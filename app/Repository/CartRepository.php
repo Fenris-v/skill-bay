@@ -4,12 +4,11 @@ namespace App\Repository;
 
 use App\Models\Pivots\ProductSeller;
 use App\Models\Product;
-use App\Models\User;
 use App\Models\Cart;
 use App\Models\Seller;
 use App\Models\Visitor;
 use App\Repository\ConfigRepository;
-use App\Services\VisitorService;
+use App\Contracts\VisitorService;
 use Cache;
 use Illuminate\Database\Eloquent\Collection;
 use App\Traits\TimeToLiveCacheTrait;

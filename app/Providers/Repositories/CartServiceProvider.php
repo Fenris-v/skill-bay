@@ -6,6 +6,7 @@ use App\Repository\CartRepository;
 use App\Services\VisitorService;
 use App\Repository\ConfigRepository;
 use Illuminate\Support\ServiceProvider;
+use App\Contracts\VisitorService as VisitorServiceInterface;
 
 class CartServiceProvider extends ServiceProvider
 {
@@ -14,7 +15,7 @@ class CartServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(ConfigRepository $configs, VisitorService $visitorService)
+    public function boot(ConfigRepository $configs, VisitorServiceInterface $visitorService)
     {
         $this->app->bind(
             CartRepository::class,

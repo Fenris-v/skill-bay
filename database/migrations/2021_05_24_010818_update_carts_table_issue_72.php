@@ -17,12 +17,9 @@ class UpdateCartsTableIssue72 extends Migration
             $table->dropForeign(['user_id']);
             $table->dropColumn(['user_id']);
             $table->dropColumn(['guest_id']);
-            $table->unsignedBigInteger('visitor_id');
-            $table->foreign('visitor_id')
-                ->references('id')
-                ->on('visitors')
-                ->onDelete('cascade')
-                ->onUpdate('cascade')
+            $table->foreignId('visitor_id')
+                ->constrained()
+                ->cascadeOnDelete()
             ;
         });
     }
