@@ -177,11 +177,6 @@ class DiscountEditScreen extends Screen
             }
         }
 
-        if ($discount->discountUnit->count() === 1 && $discount->type === Discount::GROUP) {
-            $discount->type = Discount::PRODUCT;
-            $discount->save();
-        }
-
         if (count($units)) {
             $this->createNewGroups($discount, $units);
         }
@@ -215,6 +210,11 @@ class DiscountEditScreen extends Screen
         $discount->fill($request->discount)->save();
         if ($discount->type !== Discount::CART) {
             $this->saveGroups($discount, $request->discount['discountUnit']);
+
+            if ($discount->discountUnit->count() === 1 && (int) $discount->type === Discount::GROUP) {
+                $discount->type = Discount::PRODUCT;
+                $discount->save();
+            }
         }
 
         Alert::info(
