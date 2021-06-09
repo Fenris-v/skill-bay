@@ -208,6 +208,16 @@ Route::prefix('/order')
                 );
             Route::post('/accept', [OrderController::class, 'stepAcceptStore'])
                 ->name('order.accept.store');
+
+            Route::get('/pay-by-card', [OrderController::class, 'stepPayByCard'])
+                ->name('order.pay.by-card')
+                ->breadcrumbs(
+                    fn(Trail $trail) => $trail
+                        ->parent('index')
+                        ->push(__('orderPage.title'), route('order.pay.by-card'))
+                );
+            Route::post('/pay-by-card', [OrderController::class, 'stepPayByCardStore'])
+                ->name('order.pay.by-card-store');
         }
     );
 

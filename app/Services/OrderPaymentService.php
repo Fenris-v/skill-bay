@@ -23,12 +23,13 @@ class OrderPaymentService implements OrderPaymentServiceContract
      */
     public function pay(Order $order)
     {
+        $order->refresh();
+
         if ($this->isPaid($order)) {
             throw new OrderPaymentException(__('payment.already_payed'));
         }
 
-        // @todo После того, как мы начнем хранить номер карты заказа, убрать заглушку.
-        $cardNumber = $order->card_number ?? '000001';
+        $cardNumber = $order->payment_card;
         $paymentSum = $order->cart->currentPrice ?? null;
 
         dispatch(new PayOrder($order, $cardNumber, $paymentSum));
