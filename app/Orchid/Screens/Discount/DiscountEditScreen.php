@@ -5,6 +5,9 @@ namespace App\Orchid\Screens\Discount;
 use App\Models\Discount;
 use App\Models\DiscountUnit;
 use App\Orchid\Layouts\Discount\TypeDiscountListener;
+use App\Orchid\Layouts\Discount\ProductTypeDiscountLayout;
+use App\Orchid\Layouts\Discount\GroupTypeDiscountLayout;
+use App\Orchid\Layouts\Discount\CartTypeDiscountLayout;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Cropper;
 use Orchid\Screen\Fields\DateTimer;
@@ -14,7 +17,10 @@ use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Screen;
 use Alert;
 use App\Http\Requests\DiscountRequest;
+use Illuminate\Http\Request;
 use Orchid\Support\Facades\Layout;
+use Illuminate\Support\Facades\Validator;
+use PHPUnit\Util\Type;
 
 class DiscountEditScreen extends Screen
 {
@@ -162,16 +168,17 @@ class DiscountEditScreen extends Screen
         };
 
         foreach($discount->discountUnit as $key => $discountUnit) {
-            if (array_key_exists($key, $units)) {
-                $sync('products', $units[$key], $discountUnit);
-                $sync('categories', $units[$key], $discountUnit);
+            if (count($units)) {
+                $unit = array_shift($units);
+                $sync('products', $unit, $discountUnit);
+                $sync('categories', $unit, $discountUnit);
             } else {
                 $discountUnit->delete();
             }
         }
-        if ($discount->discountUnit->count() < 2 && $discount->type === Discount::GROUP) {
-            $discount->type = Discount::PRODUCT;
-            $discount->save();
+
+        if (count($units)) {
+            $this->createNewGroups($discount, $units);
         }
     }
 
@@ -200,9 +207,14 @@ class DiscountEditScreen extends Screen
 
     public function createOrUpdate(Discount $discount, DiscountRequest $request)
     {
-        $discount->fill($request->get('discount'))->save();
+        $discount->fill($request->discount)->save();
         if ($discount->type !== Discount::CART) {
             $this->saveGroups($discount, $request->discount['discountUnit']);
+
+            if ($discount->discountUnit->count() === 1 && (int) $discount->type === Discount::GROUP) {
+                $discount->type = Discount::PRODUCT;
+                $discount->save();
+            }
         }
 
         Alert::info(
@@ -230,21 +242,15 @@ class DiscountEditScreen extends Screen
 
     public function asyncChooseUnit(int $type, int|null $id = null, int|null $amount): array
     {
-        $discount = $id ? Discount::find($id) : new Discount();
-        if ($amount === null && $type === Discount::GROUP) {
-            $amount = 2;
-        } else {
-            $amount = match($type) {
-                Discount::PRODUCT => 1,
-                Discount::GROUP => $amount < 2 ? 2 : $amount,
-                Discount::CART => null,
-            };
-        }
+        $typeClass = TypeDiscountListener::getTypeClass($type);
 
         return [
-            'type' => $type,
-            'amount' => $amount,
-            'discount' => $discount,
+            'discount.type' => $type,
+            'amount' => $amount !== null && $amount < $typeClass::MIN_GROUP_AMOUNT
+                ? $typeClass::MIN_GROUP_AMOUNT
+                : $amount
+            ,
+            'discount' => $id ? Discount::find($id) : new Discount(),
         ];
     }
 }

@@ -5,6 +5,9 @@ namespace App\Http\Requests;
 use App\Models\Discount;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use App\Orchid\Layouts\Discount\ProductTypeDiscountLayout;
+use App\Orchid\Layouts\Discount\GroupTypeDiscountLayout;
+use App\Orchid\Layouts\Discount\CartTypeDiscountLayout;
 
 class DiscountRequest extends FormRequest
 {

@@ -1,5 +1,9 @@
 <?php
 
+use App\Orchid\Layouts\Discount\ProductTypeDiscountLayout;
+use App\Orchid\Layouts\Discount\GroupTypeDiscountLayout;
+use App\Orchid\Layouts\Discount\CartTypeDiscountLayout;
+
 /**
  * Языковые константы админ панели
  */
