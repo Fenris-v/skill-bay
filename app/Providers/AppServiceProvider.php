@@ -15,6 +15,7 @@ use App\Contracts\ProductCartService as ProductCartServiceContract;
 use App\Services\ProductReviewService;
 use App\Services\ProductViewHistoryService;
 use App\Services\VisitorService;
+use App\Contracts\VisitorService as VisitorServiceInterface;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -68,7 +69,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Сервис для получения объекта Visitor
         $this->app->singleton(
-            VisitorService::class,
+            VisitorServiceInterface::class,
             VisitorService::class
         );
 

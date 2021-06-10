@@ -3,8 +3,10 @@
 
 namespace App\Repository;
 
+use App\Models\User;
 use App\Models\Visitor;
 use Cache;
+use Cookie;
 
 class VisitorRepository
 {
