@@ -38,21 +38,27 @@ class VisitorRepository
     {
         $ttl = $this->configRepository->getCacheLifetime(now()->addDay());
 
-        if (!$visitorId) {
+        $visitor = null;
+
+        if ($visitorId) {
+            $visitor = Cache::tags([
+                Visitor::VISITOR_CACHE_TAGS,
+                ConfigRepository::GLOBAL_CACHE_TAG,
+            ])->remember('visitor_guest_' . $visitorId, $ttl, function() use ($visitorId) {
+                return Visitor::find($visitorId);
+            });
+        }
+
+        if (!$visitor) {
             $visitor = Visitor::create();
             Cache::tags([
                 Visitor::class,
                 ConfigRepository::GLOBAL_CACHE_TAG,
-                ])->set('visitor_guest_' . $visitor->id, $visitor, $ttl);
-        } else {
-            $visitor = Cache::tags([
-                Visitor::VISITOR_CACHE_TAGS,
-                ConfigRepository::GLOBAL_CACHE_TAG,
-                ])->remember('visitor_guest_' . $visitorId, $ttl, function() use ($visitorId) {
-                    return Visitor::find($visitorId);
-                });
+            ])->set('visitor_guest_' . $visitor->id, $visitor, $ttl);
         }
 
         return $visitor;
     }
+
+
 }
