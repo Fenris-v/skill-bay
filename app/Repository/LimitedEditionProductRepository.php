@@ -91,7 +91,7 @@ class LimitedEditionProductRepository
             return Product::where('limited', 1)
                 ->inRandomOrder()
                 ->first()
-                ->id;
+                ->id ?? null;
         });
     }
 }

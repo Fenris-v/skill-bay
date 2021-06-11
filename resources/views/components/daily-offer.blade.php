@@ -1,4 +1,5 @@
 {{-- Блок предложение дня --}}
+@if ($product)
 <div class="Section-column">
     <div class="Section-columnSection Section-columnSection_mark">
         <header class="Section-columnHeader">
@@ -41,3 +42,4 @@
         </div>
     </div>
 </div>
+@endif
