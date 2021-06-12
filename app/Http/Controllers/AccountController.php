@@ -10,6 +10,7 @@ use App\Http\Requests\AccountRequest;
 use Illuminate\Support\Facades\Hash;
 use App\Services\{UserService, PreparePasswordService};
 use App\Models\Attachment;
+use Illuminate\Support\Facades\Storage;
 
 class AccountController extends Controller
 {
@@ -50,23 +51,29 @@ class AccountController extends Controller
     public function editProfile(AccountRequest $request, UserService $userService, PreparePasswordService $passwordService)
     {
         $user = auth()->user();
-        if($request->filled('avatar')){
+        if($request->hasFile('avatar')){
             $path = $request->file('avatar')->storeAs(
-                'avatars', $user->id . '.'. $request->file('avatar')->extension()
+                'public/avatars', $user->id . '.'. $request->file('avatar')->extension()
             );
+            $full_path = Storage::path("public/avatars/".$user->id . '.'. $request->file('avatar')->extension());
+            $name = Storage::url('avatars/'. $user->id . '.'. $request->file('avatar')->extension());
             $imageArr = [
-                'name' => pathinfo($path)['filename'],
+                'name' => $name,
                 'original_name' => "avatar",
-                'mime' => mime_content_type ($path),
+                'mime' => mime_content_type ($full_path),
                 'extension' => $request->file('avatar')->extension(),
-                'path' => $path,
+                'path' => $full_path,
                 'user_id' => $user->id,
-                'size' => filesize($path),
-                'hash' => sha1_file($path),
+                'size' => filesize($full_path),
+                'hash' => sha1_file($full_path),
             ];
-            $avatar = Attachment::where("user_id", $user->id)->where("original_name", "avatar");
-            unlink(storage_path($avatar->path));
-            $avatar->delete();
+            $avatar = Attachment::where("user_id", $user->id)->where("original_name", "avatar")->first();
+            if($avatar != null){
+                if($avatar->path != $full_path){
+                    unlink($avatar->path);
+                }
+                Attachment::where("user_id", $user->id)->where("original_name", "avatar")->delete();
+            }
             Attachment::create($imageArr);
         }
 
@@ -81,9 +88,11 @@ class AccountController extends Controller
     public function deleteAvatar()
     {
         $user = auth()->user();
-        $avatar = Attachment::where("user_id", $user->id)->where("original_name", "avatar");
-        unlink(storage_path($avatar->path));
-        $avatar->delete();
+        $avatar = Attachment::where("user_id", $user->id)->where("original_name", "avatar")->first();
+        if($avatar != null){
+            unlink($avatar->path);
+            Attachment::where("user_id", $user->id)->where("original_name", "avatar")->delete();
+        }
         return back();
     }
 }

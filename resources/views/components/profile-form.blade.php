@@ -1,4 +1,9 @@
-<form class="form Profile-form" action="{{route('profile.edit')}}" method="post">
+<form action="{{route('profile.avatar.delete')}}" method="post">
+	@method("DELETE")
+	@csrf
+	<button class="btn" type="submit">Удалить аватар</button>
+</form>
+<form class="form Profile-form" action="{{route('profile.edit')}}" method="post" enctype="multipart/form-data">
 	@csrf
 	@method("PUT")
 	<div class="row">
@@ -6,13 +11,8 @@
 			<div class="form-group">
 				<label class="form-label" for="avatar">Аватар
 				</label>
-				<form action="{{route('profile.avatar.delete')}}" method="post">
-					@method("DELETE")
-					@csrf
-					<button class="btn" type="submit">Удалить аватар</button>
-				</form>
 				<div class="Profile-avatar Profile-avatar_noimg">
-					<div class="Profile-img">@if($user->attachments->first() != null) <img src="{{$user->attachments->first()->path}}" alt="avatar"/> @endif
+					<div @if($user->attachments->where("original_name", "avatar")->first() == null) class="Profile-img" @endif >@if($user->attachments->where("original_name", "avatar")->first() != null) <img width="200" style="z-index:2;position: relative;" src="{{$user->attachments->first()->name}}" alt="avatar"/>@else <img src="" alt="avatar"/> @endif
 					</div>
 					<label class="Profile-fileLabel" for="avatar">Выберите аватар
 					</label>
