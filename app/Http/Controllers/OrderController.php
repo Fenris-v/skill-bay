@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\OrderPaymentService;
+use App\Exceptions\OrderPaymentException;
 use App\Http\Requests\OrderDeliveryRequest;
 use App\Http\Requests\OrderPaymentRequest;
 use App\Http\Requests\OrderPersonalRequest;
+use App\Models\Order;
 use App\Models\PaymentType;
 use App\Repository\CartRepository;
 use App\Repository\OrdersRepository;
 use App\Services\AlertFlashService;
+use App\Services\FakeBankCardNumberGenerator;
 use App\Services\OrderService;
 use App\Services\ProductCartService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Cache;
 
 class OrderController extends Controller
 {
@@ -114,7 +117,7 @@ public function stepPaymentStore(OrderPaymentRequest $request)
         ]);
     }
 
-    public function stepAcceptStore(CartRepository $cartRepository)
+    public function stepAcceptStore()
     {
         if (!$this->isEnoughProgress(['personal', 'delivery', 'payment'])) {
             $this->alert->danger();
@@ -122,36 +125,26 @@ public function stepPaymentStore(OrderPaymentRequest $request)
             return back();
         }
 
-        $order = $this->ordersRepository->getCurrentOrder();
-
-        if ($order->payment_type_id === PaymentType::BY_CARD) {
-            return redirect()->route('order.pay.by-card');
-        }
-
-        if ($this->orderService->saveCartToOrder($cartRepository)) {
-            $result = 'success';
-        } else {
-            $result = 'error';
-            $this->alert->warning();
-        }
-
-        $this->alert->lang('orderMessages.payment.' . $result);
-
-        return redirect()->route('index');
+        return redirect()->route('order.pay');
     }
 
-    public function stepPayByCard(CartRepository $cartRepository)
+    public function stepPay(CartRepository $cartRepository, OrderPaymentService $orderPaymentService)
     {
-        if (!$this->isEnoughProgress(['personal', 'delivery', 'payment'])) {
-            $this->alert->danger();
-            $this->alert->lang('orderMessages.notEnoughProgress');
-            return back();
-        }
-
         $order = $this->ordersRepository->getCurrentOrder();
+
+        if ($orderPaymentService->isPaid($order)) {
+            throw new OrderPaymentException(__('payment.already_payed'));
+        }
 
         $cart = $cartRepository->getCart();
         $price = $cart->currentPrice;
+
+        // Оплата рандомной картой.
+        if ($order->payment_type_id === PaymentType::BY_RANDOM_ACCOUNT) {
+            $fakeBankCardNumberGenerator = app(FakeBankCardNumberGenerator::class);
+
+            return $this->payByCardAction($order, $fakeBankCardNumberGenerator->generate());
+        }
 
         return view(
             'pages.account.pay-by-card',
@@ -159,15 +152,30 @@ public function stepPaymentStore(OrderPaymentRequest $request)
         );
     }
 
-    public function stepPayByCardStore(Request $request, CartRepository $cartRepository)
-    {
+    public function stepPayStore(
+        Request $request,
+        OrderPaymentService $orderPaymentService
+    ) {
+        $order = $this->ordersRepository->getCurrentOrder();
+
+        if ($orderPaymentService->isPaid($order)) {
+            throw new OrderPaymentException(__('payment.already_payed'));
+        }
+
         $request->validate([
             'cardNumber' => 'required',
         ]);
 
-        $order = $this->ordersRepository->getCurrentOrder();
+        return $this->payByCardAction(
+            $order, $request->get('cardNumber')
+        );
+    }
 
-        $order->payment_card = $request->get('cardNumber');
+    private function payByCardAction(Order $order, string $cardNumber)
+    {
+        $cartRepository = app(CartRepository::class);
+
+        $order->payment_card = $cardNumber;
         $order->save();
 
         if ($this->orderService->saveCartToOrder($cartRepository)) {

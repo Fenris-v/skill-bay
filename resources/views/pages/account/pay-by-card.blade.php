@@ -15,7 +15,7 @@
                 <div class="Payment-card">
                     <div class="form-group">
                         <label class="form-label">{{ __('orderPage.formElements.pay.cardNumber.label') }}</label>
-                        <input class="form-input Payment-bill @error('cardNumber') form-input_error @enderror" name="cardNumber" type="text" placeholder="9999 9999" data-mask="9999 9999" data-validate="require pay" required>
+                        <input class="form-input Payment-bill @error('cardNumber') form-input_error @enderror" name="cardNumber" type="text" placeholder="9999 9999" data-mask="9999 9999" data-validate="require" required>
                         @error('cardNumber')
                         <div class="form-error">{{ $errors->get('cardNumber') }}</div>
                         @enderror

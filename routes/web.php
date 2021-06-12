@@ -208,16 +208,22 @@ Route::prefix('/order')
                 );
             Route::post('/accept', [OrderController::class, 'stepAcceptStore'])
                 ->name('order.accept.store');
+        }
+    );
 
-            Route::get('/pay-by-card', [OrderController::class, 'stepPayByCard'])
-                ->name('order.pay.by-card')
+Route::prefix('/order')
+    ->middleware(['auth'])
+    ->group(
+        function () {
+            Route::get('/pay', [OrderController::class, 'stepPay'])
+                ->name( 'order.pay')
                 ->breadcrumbs(
                     fn(Trail $trail) => $trail
                         ->parent('index')
-                        ->push(__('orderPage.title'), route('order.pay.by-card'))
+                        ->push(__('orderPage.title'), route('order.pay'))
                 );
-            Route::post('/pay-by-card', [OrderController::class, 'stepPayByCardStore'])
-                ->name('order.pay.by-card-store');
+            Route::post('/pay', [OrderController::class, 'stepPayStore'])
+                ->name('order.pay-store');
         }
     );
 
