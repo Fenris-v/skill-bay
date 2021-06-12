@@ -96,8 +96,8 @@ class User extends Authenticatable
         return $this->HasMany(HistoryView::class);
     }
     
-    public function attachment() :HasOne
+    public function attachments():HasMany
     {
-        return $this->HasOne(Attachment::class);
+        return $this->HasMany(Attachment::class);
     }
 }

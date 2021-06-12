@@ -3,7 +3,7 @@ namespace App\Repository;
 
 use App\Models\User;
 
-class EloquentUserRepository implements RepositoryInterface
+class EloquentUserRepository implements RepositoryContract
 {
     // model property on class instances
     protected $model;
