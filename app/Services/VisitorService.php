@@ -3,13 +3,11 @@
 namespace App\Services;
 
 use App\Models\Visitor;
-use App\Repository\ConfigRepository;
 use App\Repository\VisitorRepository;
-use Illuminate\Http\Request;
 use Cookie;
-use Cache;
+use App\Contracts\VisitorService as VisitorServiceInterface;
 
-class VisitorService
+class VisitorService implements VisitorServiceInterface
 {
     private $visitorRepository;
 
@@ -17,15 +15,21 @@ class VisitorService
         $this->visitorRepository = $visitorRepository;
     }
 
-    public function get()
+    public function get(): Visitor
     {
-        if (auth()->check()) {
-            $visitor = $this->visitorRepository->getAuthVisitor(auth()->id());
-        } else {
-            $visitorId = Cookie::get('visitor_id');
-            $visitor = $this->visitorRepository->getGuestVisitor($visitorId);
-            Cookie::queue('visitor_id', $visitor->id, 3600);
-        }
+        return auth()->check()
+            ? $this->visitorRepository->getAuthVisitor(auth()->id())
+            : $this->getGuest()
+        ;
+
+        return $visitor;
+    }
+
+    public function getGuest(): Visitor
+    {
+        $visitorId = Cookie::get('visitor_id');
+        $visitor = $this->visitorRepository->getGuestVisitor($visitorId);
+        Cookie::queue('visitor_id', $visitor->id, 3600);
 
         return $visitor;
     }

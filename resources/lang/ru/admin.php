@@ -1,5 +1,9 @@
 <?php
 
+use App\Orchid\Layouts\Discount\ProductTypeDiscountLayout;
+use App\Orchid\Layouts\Discount\GroupTypeDiscountLayout;
+use App\Orchid\Layouts\Discount\CartTypeDiscountLayout;
+
 /**
  * Языковые константы админ панели
  */
@@ -289,6 +293,13 @@ return [
     'users' => 'Пользователи',
     'discount' => [
         'title' => 'Скидки',
+        'group' => 'Набор №:number',
+        'chooseProducts' => 'Выберите товары',
+        'chooseCategories' => 'Выберите категории',
+        'changeAmountGroup' => 'Изменить количество наборов',
+        'requiredTab' => 'Обязательные параметры',
+        'relationTab' => 'Связи',
+        'optionalTab' => 'Необязательные параметры',
         'types' => [
             '1' => 'На товары',
             '2' => 'На наборы',

@@ -74,17 +74,16 @@ class FenrisVSeeder extends Seeder
 
         $this->makeAccessories($sellers, $userId);
 
-        $this->makeDiscounts();
+        $this->makeDiscounts($userId);
     }
 
     private function makeUser()
     {
-        $user = User::create(
+        $user = User::factory()->create(
             [
                 'name' => 'fenris',
                 'email' => 'fenris@admin.com',
                 'password' => Hash::make('password'),
-                'phone' => '+79999999999',
                 'permissions' => [
                     'platform.index' => true,
                     'platform.systems.index' => true,
@@ -223,7 +222,6 @@ class FenrisVSeeder extends Seeder
                 'email' => 'drive@store.com',
                 'description' => 'Лучший магазин велосипедов',
                 'address' => 'Москва',
-                'image_id' => 1
             ],
             [
                 'title' => 'Super bike',
@@ -232,7 +230,6 @@ class FenrisVSeeder extends Seeder
                 'email' => 'super@store.com',
                 'description' => 'Лучший магазин велосипедов',
                 'address' => 'Санкт-Петербург',
-                'image_id' => 1
             ],
             [
                 'title' => 'Bike store',
@@ -241,12 +238,11 @@ class FenrisVSeeder extends Seeder
                 'email' => 'bike@store.com',
                 'description' => 'Лучший магазин велосипедов',
                 'address' => 'Москва',
-                'image_id' => 1
             ],
         ];
 
         foreach ($sellers as $seller) {
-            Seller::create($seller);
+            Seller::factory()->create($seller);
         }
     }
 
@@ -676,7 +672,7 @@ class FenrisVSeeder extends Seeder
             $images = $this->makeImages($images, $imgDir, $userId);
 
             $product['main_image_id'] = $mainImage->id;
-            $product = Product::create($product);
+            $product = Product::factory()->create($product);
 
             for ($i = 0; $i < 2; $i++) {
                 $product->sellers()->attach(
@@ -730,14 +726,16 @@ class FenrisVSeeder extends Seeder
         }
     }
 
-    private function makeDiscounts()
+    private function makeDiscounts($userId)
     {
-        $this->stelsDiscount();
-        $this->fatbikeDiscount();
+        $this->stelsDiscount($userId);
+        $this->fatbikeDiscount($userId);
     }
 
-    private function fatbikeDiscount()
+    private function fatbikeDiscount($userId)
     {
+        $image = $this->makeImage('sale.png', 'resources/fenris/', $userId);
+
         $discount = Discount::create(
             [
                 'slug' => 'fatbike-accessories',
@@ -747,8 +745,8 @@ class FenrisVSeeder extends Seeder
                 'end_at' => now()->addDays(+150),
                 'unit_type' => Discount::UNIT_CURRENCY,
                 'priority' => 1200,
-                'image_id' => 1,
-                'type' => Discount::GROUP
+                'type' => Discount::GROUP,
+                'image_id' => $image->id
             ],
         );
 
@@ -761,9 +759,13 @@ class FenrisVSeeder extends Seeder
         $unit->categories()->saveMany($categories);
     }
 
-    private function stelsDiscount()
+    private function stelsDiscount($userId)
     {
         $stels = Product::where('slug', 'like', '%stels%')->get();
+
+        $image = $this->makeImage('15.png', 'resources/fenris/', $userId);
+
+        $discount['image_id'] = $image->id;
 
         $discount = Discount::create(
             [
@@ -774,8 +776,8 @@ class FenrisVSeeder extends Seeder
                 'end_at' => now()->addDays(120),
                 'unit_type' => Discount::UNIT_PERCENT,
                 'priority' => 1100,
-                'image_id' => 1,
-                'type' => Discount::PRODUCT
+                'type' => Discount::PRODUCT,
+                'image_id' => $image->id
             ]
         );
 
