@@ -15,7 +15,7 @@
                     <h2 class="Section-title">{{ __('sellerPage.popularProducts') }}</h2>
                 </header>
                 <div class="Cards">
-                    {{--Для дальнейшего редактирования--}}
+                    <x-catalog.product-list :products="$seller->topProducts" :hideDetails="true" />
                 </div>
             </x-seller>
         </div>

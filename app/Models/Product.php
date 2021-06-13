@@ -150,6 +150,29 @@ class Product extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function orders()
+    {
+        return $this->hasManyThrough(
+            Order::class,
+            CartProductSeller::class,
+            'product_id',
+            'cart_id',
+            'id',
+            'cart_id'
+        );
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function payedOrders()
+    {
+        return $this->orders()->payed();
+    }
+
+    /**
      * @return \Illuminate\Support\Collection
      */
     public function getAllImagesAttribute()

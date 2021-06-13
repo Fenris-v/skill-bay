@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Repository\DeliveryRepository;
 use App\Repository\PaymentRepository;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -73,6 +74,17 @@ class Order extends Model
     public function paymentType()
     {
         return $this->belongsTo(PaymentType::class);
+    }
+
+    /**
+     * Оплаченные заказы.
+     *
+     * @param  Builder  $query
+     * @return Builder
+     */
+    public function scopePayed(Builder $query)
+    {
+        return $query->where('payment_status', self::PAYMENT_STATUS_PAYED);
     }
 
     /**
