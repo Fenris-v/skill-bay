@@ -64,7 +64,7 @@ class AccountController extends Controller
         return back()->with('success', __('user_messages.profile_edit_success'));
     }
     
-    public function deleteAvatar()
+    public function deleteAvatar(AvatarService $avatarService)
     {
         $user = auth()->user();
         $avatarService->deleteAvatar($user);

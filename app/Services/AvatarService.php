@@ -3,8 +3,16 @@ namespace App\Services;
 use App\Models\{Attachment, User};
 use App\Http\Requests\AccountRequest;
 use Illuminate\Support\Facades\Storage;
+use App\Repository\AvatarRepository;
 
 class AvatarService{
+    public $avatarRepository;
+
+    public function __construct(AvatarRepository $avatarRepository)
+    {
+        $this->avatarRepository = $avatarRepository;
+    }
+
     public function createAvatar(AccountRequest $request, User $user)
     {
         $path = $request->file('avatar')->storeAs(
@@ -22,22 +30,22 @@ class AvatarService{
             'size' => filesize($full_path),
             'hash' => sha1_file($full_path),
         ];
-        $avatar = Attachment::where("user_id", $user->id)->where("original_name", "avatar")->first();
+        $avatar = $this->avatarRepository->getUserAvatar($user);
         if($avatar != null){
             if($avatar->path != $full_path){
                 unlink($avatar->path);
             }
-            Attachment::where("user_id", $user->id)->where("original_name", "avatar")->delete();
+            $this->avatarRepository->deleteUserAvatar($user);
         }
-        Attachment::create($imageArr);
+        $this->avatarRepository->createAvatar($imageArr);
     }
 
     public function deleteAvatar(User $user)
     {
-        $avatar = Attachment::where("user_id", $user->id)->where("original_name", "avatar")->first();
+        $avatar = $this->avatarRepository->getUserAvatar($user);
         if($avatar != null){
             unlink($avatar->path);
-            Attachment::where("user_id", $user->id)->where("original_name", "avatar")->delete();
+            $this->avatarRepository->deleteUserAvatar($user);
         }
     }
 }
