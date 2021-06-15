@@ -3,6 +3,7 @@
 namespace Database\Seeders\DemoDataSeeders;
 
 use App\Models\Attachment;
+use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Discount;
 use App\Models\DiscountUnit;
@@ -10,6 +11,8 @@ use App\Models\Product;
 use App\Models\Seller;
 use App\Models\Specification;
 use App\Models\User;
+use App\Models\Visitor;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Hash;
@@ -43,7 +46,7 @@ class MikhailPeretyatkoSeeder extends Seeder
 
     public function run()
     {
-        $userId = $this->makeUser();
+        $user = $this->makeUser();
 
         $this->makeSellers();
 
@@ -68,17 +71,26 @@ class MikhailPeretyatkoSeeder extends Seeder
             ]
         )->get(['id', 'slug']);
 
-        $this->makeConsoles($sellers, $categories, $userId);
+        $this->makeConsoles($sellers, $categories, $user->id);
 
-        $this->makeDiscounts($userId);
+        $this->makeDiscounts($user->id);
+
+        $this->fillCart(
+            $user,
+            collect([
+                Product::whereHas('category', fn($query) => $query->where('slug', 'portable'))->first(),
+                Product::whereHas('category', fn($query) => $query->where('slug', 'stationary'))->first(),
+            ])
+        );
     }
 
     private function makeUser()
     {
-        $user = User::factory()->create(
+        return User::factory()->create(
             [
                 'name' => 'mihanya',
                 'email' => 'mihanya@admin.com',
+                'phone' => '123456789',
                 'password' => Hash::make('password'),
                 'permissions' => [
                     'platform.index' => true,
@@ -89,8 +101,6 @@ class MikhailPeretyatkoSeeder extends Seeder
                 ]
             ]
         );
-
-        return $user->id;
     }
 
     private function makeCategories()
@@ -462,8 +472,8 @@ class MikhailPeretyatkoSeeder extends Seeder
         $discount = Discount::create(
             [
                 'slug' => Str::slug('portable and stationary discount'),
-                'title' => 'Купи портативную и стационарную игровую консоль - получи скидку 10%',
-                'value' => '50',
+                'title' => 'Купи портативную и стационарную игровую консоль - получи скидку 20%',
+                'value' => '20',
                 'begin_at' => now()->addDays(-20),
                 'end_at' => now()->addDays(+150),
                 'unit_type' => Discount::UNIT_PERCENT,
@@ -507,5 +517,26 @@ class MikhailPeretyatkoSeeder extends Seeder
         $unit = DiscountUnit::create(['discount_id' => $discount->id]);
 
         $unit->products()->saveMany($sony);
+    }
+
+    private function fillCart(User $user, Collection $products): void
+    {
+        Cart::factory([
+            'visitor_id' => Visitor::factory([
+                'user_id' => $user->id,
+            ])
+        ])
+            ->create()
+            ->products()->attach(
+                $products
+                    ->mapWithKeys(fn($item) => [
+                        $item->id => [
+                            'seller_id' => $item->sellers->random()->id,
+                            'amount' => 1,
+                        ]
+                    ])
+            )
+        ;
+
     }
 }
