@@ -28,4 +28,12 @@ interface OrderPaymentService
      * @return bool
      */
     public function isPaid(Order $order);
+
+    /**
+     * Текст ошибки, если заказ не оплачен.
+     *
+     * @param Order $order
+     * @return string
+     */
+    public function getErrorMessage(Order $order);
 }

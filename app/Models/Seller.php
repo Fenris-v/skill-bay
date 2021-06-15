@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\Models\Sluggable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -34,6 +35,14 @@ class Seller extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class)->using(\App\Models\Pivots\ProductSeller::class)->withPivot('price');
+    }
+
+    public function topProducts()
+    {
+        return $this->products()
+            ->withCount('payedOrders')
+            ->orderByDesc('payed_orders_count')
+            ->limit(8);
     }
 
     public function image()

@@ -66,7 +66,8 @@ class OrderService implements OrderServiceInterface
     /**
      * Сохраняет в Order данные о корзине
      *
-     * @param  CartRepository $cartRepository
+     * @param  CartRepository  $cartRepository
+     * @throws \App\Exceptions\OrderPaymentException
      * @return bool
      */
     public function saveCartToOrder(CartRepository $cartRepository): bool
