@@ -2,12 +2,12 @@
 
 namespace App\Repository;
 
+use App\Contracts\OrderPaymentService as OrderPaymentServiceContract;
 use App\Models\Cart;
 use App\Models\DeliveryType;
 use App\Models\Order;
 use App\Models\PaymentType;
 use App\Models\User;
-use App\Services\OrderPaymentService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -19,8 +19,9 @@ class OrdersRepository
 {
     const PER_PAGE = 5;
 
-    public function __construct(public OrderPaymentService $payments, public ConfigRepository $configs)
+    public function __construct(public OrderPaymentServiceContract $payment, public ConfigRepository $configs)
     {
+
     }
 
     /**
@@ -196,7 +197,8 @@ class OrdersRepository
     /**
      * Окончательное оформление заказа
      *
-     * @param Cart $cart
+     * @param  Cart  $cart
+     * @throws \App\Exceptions\OrderPaymentException
      * @return bool
      */
     public function saveCart(Cart $cart): bool
@@ -206,6 +208,6 @@ class OrdersRepository
         $order->save();
         Cache::tags([Order::class, Cart::class])->flush();
 
-        return $this->payments->pay($order);
+        return $this->payment->pay($order);
     }
 }

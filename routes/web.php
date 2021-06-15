@@ -211,6 +211,22 @@ Route::prefix('/order')
         }
     );
 
+Route::prefix('/order')
+    ->middleware(['auth'])
+    ->group(
+        function () {
+            Route::get('/pay', [OrderController::class, 'stepPay'])
+                ->name( 'order.pay')
+                ->breadcrumbs(
+                    fn(Trail $trail) => $trail
+                        ->parent('index')
+                        ->push(__('orderPage.title'), route('order.pay'))
+                );
+            Route::post('/pay', [OrderController::class, 'stepPayStore'])
+                ->name('order.pay-store');
+        }
+    );
+
 Route::get('/contacts', [InfoPageController::class, 'contacts'])
     ->name('contacts')
     ->breadcrumbs(
