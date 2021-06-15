@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Cart;
 
+use App\Services\DiscountService;
 use Illuminate\View\Component;
 use App\Services\ProductCartService;
 
@@ -12,11 +13,16 @@ class HeaderCart extends Component
     public float $price;
 
     public function __construct(
-        ProductCartService $productCartService
+        ProductCartService $productCartService,
+        DiscountService $discountService
     ) {
         $this->link = route('cart.show');
         $this->amount = $productCartService->count();
-        $this->price = (float) $productCartService->total()['current'];
+        $products = $productCartService->get();
+        $this->price = (float) $discountService->getCartTotal(
+            $products,
+            $discountService->getCartDiscount($products)
+        );
     }
 
     /**
