@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Contracts\OrderPaymentService as OrderPaymentServiceContract;
+use App\Events\FullNameInOrderSavedOrUpdated;
 use App\Models\Cart;
 use App\Models\DeliveryType;
 use App\Models\Order;
@@ -155,6 +156,8 @@ class OrdersRepository
         $order->save();
 
         Cache::tags([Order::class])->flush();
+
+        FullNameInOrderSavedOrUpdated::dispatch($order, $user);
 
         return $order;
     }
