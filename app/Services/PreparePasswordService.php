@@ -1,5 +1,6 @@
 <?php
 namespace App\Services;
+use Illuminate\Support\Facades\Hash;
 
 class PreparePasswordService{
     public function checkPassword($data)
