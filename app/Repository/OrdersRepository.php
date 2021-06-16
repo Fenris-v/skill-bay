@@ -198,12 +198,12 @@ class OrdersRepository
      * Окончательное оформление заказа
      *
      * @param  Cart  $cart
-     * @throws \App\Exceptions\OrderPaymentException
+     * @param  Order|null  $order
      * @return bool
      */
-    public function saveCart(Cart $cart): bool
+    public function saveCart(Cart $cart, Order $order = null): bool
     {
-        $order = $this->getCurrentOrder();
+        $order = $order ?? $this->getCurrentOrder();
         $order->cart()->associate($cart);
         $order->save();
         Cache::tags([Order::class, Cart::class])->flush();
