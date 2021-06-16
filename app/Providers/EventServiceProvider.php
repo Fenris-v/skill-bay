@@ -15,8 +15,6 @@ use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use App\Listeners\MergeGuestAndVisitorCarts;
 use Illuminate\Auth\Events\Login;
-use App\Events\FullNameInOrderSavedOrUpdated;
-use App\Listeners\SaveFullNameInUser;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -32,9 +30,6 @@ class EventServiceProvider extends ServiceProvider
         ],
         Login::class => [
             MergeGuestAndVisitorCarts::class,
-        ],
-        FullNameInOrderSavedOrUpdated::class => [
-            SaveFullNameInUser::class,
         ],
     ];
 

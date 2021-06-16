@@ -5,7 +5,7 @@ use App\Services\Handlers\{CreateUserHandler, UpdateUserHandler, DeleteUserHandl
 use Illuminate\Support\Facades\Hash;
 use App\Repository\EloquentUserRepository;
 
-class UserService{
+class UserService {
 	private $userRepository;
 
 	public function __construct
