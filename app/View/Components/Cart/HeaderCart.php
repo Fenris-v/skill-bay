@@ -18,11 +18,7 @@ class HeaderCart extends Component
     ) {
         $this->link = route('cart.show');
         $this->amount = $productCartService->count();
-        $products = $productCartService->get();
-        $this->price = (float) $discountService->getCartTotal(
-            $products,
-            $discountService->getCartDiscount($products)
-        );
+        $this->price = (float) $discountService->getCartTotal();
     }
 
     /**
