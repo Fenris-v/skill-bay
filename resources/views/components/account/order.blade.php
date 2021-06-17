@@ -143,7 +143,7 @@
 
                 @unless($isPaid)
                     <div class="Cart-block">
-                        <a class="btn btn_primary btn_lg" href="{{ route('order.pay') }}">{{ __('orders.history.pay') }}</a>
+                        <a class="btn btn_primary btn_lg" href="{{ route('order.pay', compact('order')) }}">{{ __('orders.history.pay') }}</a>
                     </div>
                 @endunless
             </div>
