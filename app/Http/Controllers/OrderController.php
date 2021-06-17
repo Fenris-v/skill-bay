@@ -128,9 +128,12 @@ public function stepPaymentStore(OrderPaymentRequest $request)
         return redirect()->route('order.pay');
     }
 
-    public function stepPay(CartRepository $cartRepository, OrderPaymentService $orderPaymentService)
-    {
-        $order = $this->ordersRepository->getCurrentOrder();
+    public function stepPay(
+        CartRepository $cartRepository,
+        OrderPaymentService $orderPaymentService,
+        Order $order = null
+    ) {
+        $order = $order ?? $this->ordersRepository->getCurrentOrder();
 
         if ($orderPaymentService->isPaid($order)) {
             throw new OrderPaymentException(__('payment.already_payed'));
@@ -154,9 +157,10 @@ public function stepPaymentStore(OrderPaymentRequest $request)
 
     public function stepPayStore(
         Request $request,
-        OrderPaymentService $orderPaymentService
+        OrderPaymentService $orderPaymentService,
+        Order $order = null
     ) {
-        $order = $this->ordersRepository->getCurrentOrder();
+        $order = $order ?? $this->ordersRepository->getCurrentOrder();
 
         if ($orderPaymentService->isPaid($order)) {
             throw new OrderPaymentException(__('payment.already_payed'));
@@ -178,7 +182,7 @@ public function stepPaymentStore(OrderPaymentRequest $request)
         $order->payment_card = $cardNumber;
         $order->save();
 
-        if ($this->orderService->saveCartToOrder($cartRepository)) {
+        if ($this->orderService->saveCartToOrder($cartRepository, $order)) {
             $result = 'success';
         } else {
             $result = 'error';
