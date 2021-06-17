@@ -16,7 +16,8 @@ use App\Repository\OrdersRepository;
 class OrderService implements OrderServiceInterface
 {
     public function __construct(
-        public OrdersRepository $ordersRepository
+        protected OrdersRepository $ordersRepository,
+        protected UserService $userService
     ) {}
 
     /**
@@ -27,13 +28,25 @@ class OrderService implements OrderServiceInterface
      */
     public function savePersonalDataToOrder(OrderPersonalRequest $request): Order
     {
-        return $this
-            ->ordersRepository
+
+        $user = auth()->user();
+        $order = $this->ordersRepository
             ->savePersonal(
                 $request->only(['name', 'phone', 'email']),
-                auth()->user()
+                $user
             )
         ;
+
+        if (!$user->name) {
+            $this->userService->updateUser(
+                [
+                    'name' => $order->name,
+                ],
+                $user->id,
+            );
+        }
+
+        return $order;
     }
 
     /**
