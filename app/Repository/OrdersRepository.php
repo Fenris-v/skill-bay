@@ -19,10 +19,10 @@ class OrdersRepository
 {
     const PER_PAGE = 5;
 
-    public function __construct(public OrderPaymentServiceContract $payment, public ConfigRepository $configs)
-    {
-
-    }
+    public function __construct(
+        public OrderPaymentServiceContract $payment,
+        public ConfigRepository $configs
+    ) {}
 
     /**
      * Возвращает объект заказа
