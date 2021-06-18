@@ -11,12 +11,14 @@ use App\Services\Calculator\CurencyDiscount;
 use App\Services\Calculator\PercentDiscount;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Collection;
+use App\Contracts\ProductCartService;
 
 class DiscountService implements Discountable
 {
-    public function __construct(public DiscountRepository $repository)
-    {
-    }
+    public function __construct(
+        protected DiscountRepository $repository,
+        protected ProductCartService $productCartService
+    ) {}
 
     /**
      * Возвращает все скидки
@@ -68,14 +70,12 @@ class DiscountService implements Discountable
 
     /**
      * Возвращает итоговую сумму корзины
-     * @param Product|Collection|Paginator $products
-     * @param Collection $discounts
      * @return float
      */
-    public function getCartTotal(
-        Product|Collection|Paginator $products,
-        Collection $discounts
-    ): float {
+    public function getCartTotal(): float {
+        $products = $this->productCartService->get();
+        $discounts = $this->getCartDiscount($products);
+
         if ($discounts->first()?->type === Discount::GROUP) {
             $total = $products->reduce(
                 function ($accum, $product) use ($discounts) {
