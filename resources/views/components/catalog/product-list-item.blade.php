@@ -8,7 +8,7 @@
         </strong>
         <div class="Card-description">
             <div class="Card-cost">
-                @if($price)
+                @if($discount)
                     <span class="Card-priceOld">
                         @price($product->avg_price ?? 0)
                     </span>

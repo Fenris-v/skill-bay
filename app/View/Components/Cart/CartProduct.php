@@ -35,7 +35,7 @@ class CartProduct extends Component
         $this->productLink = route('products.show', $product->slug);
         $this->priceOld = $product->price;
 
-        if ($this->discount) {
+        if ($this->discount?->type === Discount::PRODUCT) {
             $this->price = $service->calculateDiscountPrice(
                 $product,
                 $this->discount,

@@ -64,7 +64,7 @@ class FilterRepository
                             return $query->whereHas(
                                 'products',
                                 function ($query) use ($category) {
-                                    return $query->where('category_id', $category->id);
+                                    $this->withChildrenCategoriesFilter($query, $category);
                                 }
                             );
                         }
