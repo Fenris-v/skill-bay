@@ -21,5 +21,7 @@ return [
     'placeholder_password' => 'Выберите пароль',
     'placeholder_password_reply' => 'Введите пароль повторно',
     'placeholder_phone' => '+70000000000',
-    'placeholder_password_login' => 'Введите пароль'
+    'placeholder_password_login' => 'Введите пароль',
+    'save' => 'Сохранить',
+    'delete_avatar' => "Удалить аватар"
 ];

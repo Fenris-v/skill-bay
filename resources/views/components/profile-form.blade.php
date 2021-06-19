@@ -1,7 +1,7 @@
 <form action="{{route('profile.avatar.delete')}}" method="post">
 	@method("DELETE")
 	@csrf
-	<button class="btn" type="submit">Удалить аватар</button>
+	<button class="btn" type="submit">{{__('user_messages.delete_avatar')}}</button>
 </form>
 <form class="form Profile-form" action="{{route('profile.edit')}}" method="post" enctype="multipart/form-data">
 	@csrf
@@ -28,7 +28,7 @@
 			<x-user-field type="password"  name="password_confirmation" title="{{__('user_messages.placeholder_password_reply')}}" id="passwordReply" placeholder="{{__('user_messages.placeholder_password_reply')}}">{{__('user_messages.password_confirm')}}</x-user-field>
 			<div class="form-group">
 				<div class="Profile-btn">
-					<button class="btn btn_success" type="submit">Сохранить</button>
+					<button class="btn btn_success" type="submit">{{__('user_messages.save')}}</button>
 				</div>
 				@if ($message = Session::get('success'))
 					<div class="Profile-success">{{$message}}</div>
