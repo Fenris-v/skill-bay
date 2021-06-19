@@ -12,7 +12,7 @@
 				<label class="form-label" for="avatar">Аватар
 				</label>
 				<div class="Profile-avatar Profile-avatar_noimg">
-					<div @if($user->attachments->where("original_name", "avatar")->first() == null) class="Profile-img" @endif >@if($user->attachments->where("original_name", "avatar")->first() != null) <img width="200" style="z-index:2;position: relative;" src="{{$user->attachments->first()->name}}" alt="avatar"/>@else <img src="" alt="avatar"/> @endif
+					<div @if($user->attachment == null) class="Profile-img" @endif >@if($user->attachment!= null) <img width="200" style="z-index:2;position: relative;" src="{{$user->attachment->name}}" alt="avatar"/>@else <img src="" alt="avatar"/> @endif
 					</div>
 					<label class="Profile-fileLabel" for="avatar">Выберите аватар
 					</label>

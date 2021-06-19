@@ -46,7 +46,7 @@ class AccountController extends Controller
     public function show(): View
     {
         $user = auth()->user();
-        return view('pages.account.profile',["user" => $user]); //$user->attachments->path
+        return view('pages.account.profile',["user" => $user]);
     }
     
     public function editProfile(AccountRequest $request, UserService $userService, PreparePasswordService $passwordService, AvatarService $avatarService)
