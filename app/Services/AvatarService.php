@@ -5,7 +5,8 @@ use App\Http\Requests\AccountRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Repository\AvatarRepository;
 
-class AvatarService{
+class AvatarService
+{
     public $avatarRepository;
 
     public function __construct(AvatarRepository $avatarRepository)
