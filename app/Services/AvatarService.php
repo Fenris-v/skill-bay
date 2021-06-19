@@ -15,11 +15,12 @@ class AvatarService{
 
     public function createAvatar(AccountRequest $request, User $user)
     {
+        $file_name = $user->id . '.'. $request->file('avatar')->extension();
         $path = $request->file('avatar')->storeAs(
-            'public/avatars', $user->id . '.'. $request->file('avatar')->extension()
+            'public/avatars', $file_name
         );
-        $full_path = Storage::path("public/avatars/".$user->id . '.'. $request->file('avatar')->extension());
-        $name = Storage::url('avatars/'. $user->id . '.'. $request->file('avatar')->extension());
+        $full_path = Storage::disk("avatars")->path($file_name);
+        $name = Storage::disk("avatars")->url($file_name);
         $imageArr = [
             'name' => $name,
             'original_name' => "avatar",
