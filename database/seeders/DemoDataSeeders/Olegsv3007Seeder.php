@@ -4,6 +4,8 @@ namespace Database\Seeders\DemoDataSeeders;
 
 use App\Models\Attachment;
 use App\Models\Category;
+use App\Models\Discount;
+use App\Models\DiscountUnit;
 use App\Models\Product;
 use App\Models\Seller;
 use App\Models\Specification;
@@ -50,11 +52,10 @@ class Olegsv3007Seeder extends Seeder
         $categories = Category::all();
         $sellers = Seller::all();
 
-
         $this->makeSmartphones($sellers, $categories, $userId);
         $this->makeSmartWatches($sellers, $categories, $userId);
 
-
+        $this->makeDiscounts($userId);
     }
 
     private function makeUser()
@@ -580,6 +581,61 @@ class Olegsv3007Seeder extends Seeder
                     ->attach($specId, ['value' => $val]);
             }
         }
+    }
+
+    private function makeDiscounts($userId)
+    {
+        $this->cartDiscount($userId);
+        $this->groupDiscount($userId);
+    }
+
+    private function groupDiscount($userId)
+    {
+        $image = $this->makeImage('group.jpg', 'resources/olegsv/discounts/', $userId);
+
+        $discount = Discount::create(
+            [
+                'slug' => 'group_discount',
+                'title' => 'Купи ллюбые часы и смартфон и получи скидку 10%',
+                'value' => '10',
+                'begin_at' => now()->addDays(-20),
+                'end_at' => now()->addDays(+150),
+                'unit_type' => Discount::UNIT_PERCENT,
+                'priority' => 1200,
+                'type' => Discount::GROUP,
+                'image_id' => $image->id
+            ],
+        );
+
+        $unit = DiscountUnit::create(['discount_id' => $discount->id]);
+
+        $categories = Category::where('slug', 'smartphones')
+            ->orWhere('slug', 'smartwatches')
+            ->get();
+
+        $unit->categories()->saveMany($categories);
+    }
+
+    private function cartDiscount($userId)
+    {
+        $image = $this->makeImage('cart.png', 'resources/olegsv/discounts/', $userId);
+
+        $discount['image_id'] = $image->id;
+
+        $discount = Discount::create(
+            [
+                'slug' => 'cart_discount',
+                'title' => 'Купи 3 любых товара за 100.000 рублей',
+                'value' => '100000',
+                'begin_at' => now()->addDays(-30),
+                'end_at' => now()->addDays(120),
+                'unit_type' => Discount::UNIT_FIXED,
+                'priority' => 1100,
+                'type' => Discount::CART,
+                'image_id' => $image->id,
+                'conditions' => json_encode(['min_amount' => 3]),
+            ]
+        );
     }
 
     private function makeImage($mainImage, $imgDir, $userId)
