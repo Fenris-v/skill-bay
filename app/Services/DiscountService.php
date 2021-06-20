@@ -8,13 +8,15 @@ use App\Models\Discount;
 use App\Models\Product;
 use App\Repository\DiscountRepository;
 use App\Services\Calculator\CurencyDiscount;
+use App\Services\Calculator\FixedDiscount;
 use App\Services\Calculator\PercentDiscount;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Collection;
+use App\Repository\CartRepository;
 
 class DiscountService implements Discountable
 {
-    public function __construct(public DiscountRepository $repository)
+    public function __construct(public DiscountRepository $repository, public CartRepository $cartRepository)
     {
     }
 
@@ -74,6 +76,10 @@ class DiscountService implements Discountable
      */
     public function getCartTotal($products, $discounts): float
     {
+        if ($discounts->first() && $discounts->first()->type == Discount::CART) {
+            return $discounts->first()->value;
+        }
+
         return $products->reduce(
             function ($accum, $product) use ($discounts) {
                 if ($discounts->get($product->slug)) {
@@ -105,6 +111,12 @@ class DiscountService implements Discountable
 
         if (!$groupDiscounts->isEmpty()) {
             return $this->getGroupDiscount($groupDiscounts, $discountUnits, $products);
+        }
+
+        $cartDiscount = $this->getSuccessCartDiscount();
+
+        if ($cartDiscount) {
+            return collect()->push($cartDiscount);
         }
 
         return $this->getPriorityDiscount($products);
@@ -227,8 +239,43 @@ class DiscountService implements Discountable
      */
     private function createCalculator($discountType): DiscountCalculator
     {
-        return $discountType === Discount::UNIT_CURRENCY
-            ? new CurencyDiscount
-            : new PercentDiscount;
+        return match ($discountType) {
+            Discount::UNIT_PERCENT => new PercentDiscount(),
+            Discount::UNIT_CURRENCY => new CurencyDiscount(),
+            Discount::UNIT_FIXED => new FixedDiscount(),
+        };
     }
+
+    private function getSuccessCartDiscount()
+    {
+        $discounts = $this->repository->getActiveDiscounts(Discount::CART);
+        foreach ($discounts as $discount) {
+            if ($this->checkCartDiscount($discount)){
+                return $discount;
+            }
+        }
+
+        return null;
+    }
+
+    private function checkCartDiscount(Discount $discount)
+    {
+        $conditions = $discount->conditions;
+        $cart = $this->cartRepository->getCart();
+
+        if (!$conditions) {
+            return false;
+        }
+
+        $totalAmount = $cart->products->reduce(function ($carry, $product) {
+            return $carry += $product->amount;
+        });
+
+        return
+            (!isset($conditions['min_price']) || $cart->oldPrice > $conditions['min_price']) &&
+            (!isset($conditions['max_price']) || $cart->oldPrice < $conditions['max_price']) &&
+            (!isset($conditions['min_amount']) || $totalAmount >= $conditions['min_amount']) &&
+            (!isset($conditions['max_amount']) || $totalAmount <= $conditions['max_amount']);
+    }
+
 }

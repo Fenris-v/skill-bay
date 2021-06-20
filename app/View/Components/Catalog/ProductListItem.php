@@ -18,9 +18,9 @@ class ProductListItem extends Component
      *
      * @return void
      */
-    public function __construct(DiscountService $service, public Product $product, ?Discount $discount)
+    public function __construct(DiscountService $service, public Product $product)
     {
-        $this->discount = $discount ?? null;
+        $this->discount = $service->getPriorityDiscount($this->product)->first();
 
         if ($this->discount) {
             $this->price = $service->calculateDiscountPrice(

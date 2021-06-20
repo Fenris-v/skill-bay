@@ -114,4 +114,14 @@ class DiscountRepository
 
         return array_unique($categoriesId);
     }
+
+    public function getActiveDiscounts($type = null)
+    {
+        return Discount::when($type, function($query) use($type) {
+            return $query->where('type', $type);
+        })
+            ->active()
+            ->orderBy('priority', 'DESC')
+            ->get();
+    }
 }
