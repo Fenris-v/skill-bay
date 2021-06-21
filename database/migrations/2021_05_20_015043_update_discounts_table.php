@@ -15,6 +15,7 @@ class UpdateDiscountsTable extends Migration
     {
         Schema::table('discounts', function (Blueprint $table) {
             $table->unsignedBigInteger('image_id');
+            $table->json('conditions')->nullable();
             $table->foreign('image_id')
                 ->references('id')
                 ->on('attachments');
