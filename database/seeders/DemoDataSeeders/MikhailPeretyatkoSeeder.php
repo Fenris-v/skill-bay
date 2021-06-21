@@ -503,11 +503,11 @@ class MikhailPeretyatkoSeeder extends Seeder
         $discount = Discount::create(
             [
                 'slug' => 'sony-discount',
-                'title' => 'Скидка на игровые консоли SONY',
-                'value' => '10',
+                'title' => 'Скидка на игровые консоли SONY - 9%',
+                'value' => '9',
                 'begin_at' => now()->addDays(-30),
                 'end_at' => now()->addDays(120),
-                'unit_type' => Discount::UNIT_CURRENCY,
+                'unit_type' => Discount::UNIT_PERCENT,
                 'priority' => 1100,
                 'type' => Discount::PRODUCT,
                 'image_id' => $image->id
