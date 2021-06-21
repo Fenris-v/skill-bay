@@ -196,7 +196,7 @@ class Olegsv3007Seeder extends Seeder
                 'title' => 'Super comp',
                 'slug' => 'super_comp',
                 'phone' => '+79999999999',
-                'email' => 'super@store.com',
+                'email' => 'super_comp@store.com',
                 'description' => 'Лучший магазин техники',
                 'address' => 'Санкт-Петербург',
             ],
@@ -219,19 +219,20 @@ class Olegsv3007Seeder extends Seeder
     {
         $specifications = [
             [
-                'title' => 'Версия ОС на начало продаж',
                 'slug' => 'os',
+                'title' => 'Версия ОС на начало продаж',
                 'type' => Specification::SELECT,
             ],
             [
-                'title' => 'Материал корпуса',
                 'slug' => 'material',
+                'title' => 'Материал корпуса',
                 'type' => Specification::SELECT,
             ],
             [
                 'title' => 'Количество SIM-карт',
-                'slug' => 'sim_amount',
                 'type' => Specification::SELECT,
+                'slug' => 'sim_amount',
+
             ],
             [
                 'title' => 'Бесконтактная оплата',
@@ -256,7 +257,10 @@ class Olegsv3007Seeder extends Seeder
         ];
 
         foreach ($specifications as $specification) {
-            Specification::create($specification);
+            Specification::firstOrCreate(
+                [
+                    'slug' => $specification['slug']
+                ], $specification);
         }
     }
 
@@ -633,7 +637,10 @@ class Olegsv3007Seeder extends Seeder
                 'priority' => 1100,
                 'type' => Discount::CART,
                 'image_id' => $image->id,
-                'conditions' => json_encode(['min_amount' => 3]),
+                'conditions' => [
+                    "min_amount" => 3,
+                    "max_amount" => 3
+                ],
             ]
         );
     }
