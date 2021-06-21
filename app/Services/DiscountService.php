@@ -6,18 +6,21 @@ use App\Contracts\Discountable;
 use App\Contracts\DiscountCalculator;
 use App\Models\Discount;
 use App\Models\Product;
+use App\Repository\CartRepository;
 use App\Repository\DiscountRepository;
 use App\Services\Calculator\CurencyDiscount;
+use App\Services\Calculator\FixedDiscount;
 use App\Services\Calculator\PercentDiscount;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Collection;
+
 use App\Contracts\ProductCartService;
 
 class DiscountService implements Discountable
 {
     public function __construct(
         protected DiscountRepository $repository,
-        protected ProductCartService $productCartService
+        protected ProductCartService $productCartService,
     ) {}
 
     /**
@@ -72,6 +75,7 @@ class DiscountService implements Discountable
      * Возвращает итоговую сумму корзины
      * @return float
      */
+
     public function getCartTotal(): float {
         $products = $this->productCartService->get();
         $discounts = $this->getCartDiscount($products);
@@ -83,7 +87,13 @@ class DiscountService implements Discountable
                 },
                 0
             );
+
             return $total - $this->calculateGroupDiscount($discounts->first(), $total);
+        }
+
+        if ($discounts->first()?->type == Discount::CART) {
+            return $discounts->first()->value;
+
         }
 
         return $products->reduce(
@@ -118,6 +128,12 @@ class DiscountService implements Discountable
 
         if (!$groupDiscounts->isEmpty()) {
             return $this->getGroupDiscount($groupDiscounts, $discountUnits, $products);
+        }
+
+        $cartDiscount = $this->getSuccessCartDiscount();
+
+        if ($cartDiscount) {
+            return collect()->push($cartDiscount);
         }
 
         return $this->getPriorityDiscount($products);
@@ -253,8 +269,43 @@ class DiscountService implements Discountable
      */
     private function createCalculator($discountType): DiscountCalculator
     {
-        return $discountType === Discount::UNIT_CURRENCY
-            ? new CurencyDiscount
-            : new PercentDiscount;
+        return match ($discountType) {
+            Discount::UNIT_PERCENT => new PercentDiscount(),
+            Discount::UNIT_CURRENCY => new CurencyDiscount(),
+            Discount::UNIT_FIXED => new FixedDiscount(),
+        };
     }
+
+    private function getSuccessCartDiscount()
+    {
+        $discounts = $this->repository->getActiveDiscounts(Discount::CART);
+        foreach ($discounts as $discount) {
+            if ($this->checkCartDiscount($discount)){
+                return $discount;
+            }
+        }
+
+        return null;
+    }
+
+    private function checkCartDiscount(Discount $discount)
+    {
+        $conditions = $discount->conditions;
+        $products = $this->productCartService->get();
+
+        if (!$conditions) {
+            return false;
+        }
+
+        $totalAmount = $products->reduce(function ($carry, $product) {
+            return $carry += $product->amount;
+        });
+
+        return
+            (!isset($conditions['min_price']) || $this->productCartService->total()['old'] > $conditions['min_price']) &&
+            (!isset($conditions['max_price']) || $this->productCartService->total()['old'] < $conditions['max_price']) &&
+            (!isset($conditions['min_amount']) || $totalAmount >= $conditions['min_amount']) &&
+            (!isset($conditions['max_amount']) || $totalAmount <= $conditions['max_amount']);
+    }
+
 }

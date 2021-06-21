@@ -22,13 +22,14 @@ class ProductListItem extends Component
      * @param  Discount|null  $discount
      * @param  bool  $hideDetails
      */
+
     public function __construct(
         DiscountService $service,
         public Product $product,
         ?Discount $discount,
         bool $hideDetails = false,
     ) {
-        $this->discount = $discount ?? null;
+        $this->discount = $discount ?? $service->getPriorityDiscount($this->product)->first();
 
         if ($this->discount) {
             $this->price = $service->calculateDiscountPrice(
