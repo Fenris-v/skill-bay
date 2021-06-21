@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use App\Contracts\ProductCartService;
+use App\Repository\DiscountRepository;
 use App\Services\DiscountService;
+use Illuminate\Support\ServiceProvider;
 
 class DiscountServiceProvider extends ServiceProvider
 {
@@ -12,10 +14,15 @@ class DiscountServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
-    {
-        $this->app->bind(DiscountService::class, function () {
-            return new DiscountService();
-        });
+    public function boot(
+        DiscountRepository $repository,
+        ProductCartService $productCartService
+    ) {
+        $this->app->bind(
+            DiscountService::class,
+            function () use ($repository, $productCartService) {
+                return new DiscountService($repository, $productCartService);
+            }
+        );
     }
 }

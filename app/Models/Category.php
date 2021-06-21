@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Pivots\ProductSeller;
+use App\Traits\CacheFlushableAfterCRUDModelTrait;
 use App\Traits\Models\Sluggable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,6 +19,7 @@ class Category extends Model
     use AsSource;
     use Sluggable;
     use SoftDeletes;
+    use CacheFlushableAfterCRUDModelTrait;
 
     public $timestamps = false;
 
@@ -33,6 +35,8 @@ class Category extends Model
     protected $casts = [
         'is_hot' => 'boolean',
     ];
+
+    const CATEGORY_CACHE_TAGS = 'category';
 
     public function getRouteKeyName()
     {

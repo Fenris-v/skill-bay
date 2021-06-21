@@ -30,6 +30,7 @@ class EloquentUserRepository implements RepositoryContract
         $user->update($data);
         return $user;
     }
+
     //update several records
     public function updateSeveral(array $data, array $id){
         $records = $this->model->find($id);
@@ -50,7 +51,7 @@ class EloquentUserRepository implements RepositoryContract
     {
         return $this->model->findOrFail($id);
     }
-    
+
     public function getById(int $id, array $columns = ['*']): User
     {
         return $this->model->where('id', $id)->first($columns);

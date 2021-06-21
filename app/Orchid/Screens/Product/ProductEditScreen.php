@@ -33,21 +33,21 @@ class ProductEditScreen extends Screen
     /**
      * @var bool
      */
-    public $exists = false;
+    public bool $exists = false;
 
     /**
      * Query data.
      *
-     * @param string $product
+     * @param string|null $product
      * @return array
      */
-    public function query(string $product): array
+    public function query(?string $product): array
     {
         $product = Product::where('slug', $product)
             ->with(['sellers', 'specifications'])
             ->first();
 
-        $this->exists = $product->exists;
+        $this->exists = (bool)$product;
 
         if ($this->exists) {
             $this->name = __(
@@ -114,9 +114,13 @@ class ProductEditScreen extends Screen
 
         $product->images()->syncWithoutDetaching($request->input('product.attachment'));
 
-        $this->syncPrices($product, $request->get('product')['price']);
+        if (isset($request->get('product')['price'])) {
+            $this->syncPrices($product, $request->get('product')['price']);
+        }
 
-        $this->syncSpecifications($product, $request->get('product')['specification']);
+        if (isset($request->get('product')['specification'])) {
+            $this->syncSpecifications($product, $request->get('product')['specification']);
+        }
 
         Alert::info(
             __(
@@ -161,7 +165,7 @@ class ProductEditScreen extends Screen
     public function saveSpecifications(Product $product, Request $request): void
     {
         $specifications = collect($request->get('product')['specifications'])
-               ->keyBy(fn($item) => $item);
+            ->keyBy(fn($item) => $item);
 
         $syncIds = [];
 

@@ -7,6 +7,8 @@ use Illuminate\Support\Collection;
 
 class ProductViewHistoryRepository
 {
+    public int $historySize;
+
     public function __construct(public ConfigRepository $configs)
     {
     }

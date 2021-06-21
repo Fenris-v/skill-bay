@@ -3,17 +3,21 @@
 namespace App\Providers;
 
 use App\Contracts\HotProductCategoriesService as HotProductCategoriesServiceContract;
+use App\Contracts\OrderThirdPartyPaymentService as OrderThirdPartyPaymentServiceContract;
 use App\Contracts\ProductViewHistoryService as ProductViewHistoryServiceContract;
 use App\Contracts\OrderPaymentService as OrderPaymentServiceContract;
 use App\Contracts\ProductReviewService as ProductReviewServiceContract;
 use App\Services\CompareProductsService;
+use App\Services\FakeOrderThirdPartyPaymentService;
 use App\Services\HotProductCategoriesService;
+use App\Services\LimitedEditionProductService;
 use App\Services\OrderPaymentService;
 use App\Services\ProductCartService;
 use App\Contracts\ProductCartService as ProductCartServiceContract;
 use App\Services\ProductReviewService;
 use App\Services\ProductViewHistoryService;
 use App\Services\VisitorService;
+use App\Contracts\VisitorService as VisitorServiceInterface;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -67,7 +71,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Сервис для получения объекта Visitor
         $this->app->singleton(
-            VisitorService::class,
+            VisitorServiceInterface::class,
             VisitorService::class
         );
 
@@ -75,6 +79,18 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(
             AlertFlashServiceContract::class,
             AlertFlashService::class
+        );
+
+        //Сервис для получения списка товаров с ограничееным тиражем
+        $this->app->singleton(
+            LimitedEditionProductService::class,
+            LimitedEditionProductService::class
+        );
+
+        // Сервис для оплаты заказа с помощью сторонней системы.
+        $this->app->bind(
+            OrderThirdPartyPaymentServiceContract::class,
+            FakeOrderThirdPartyPaymentService::class
         );
     }
 
@@ -86,7 +102,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Blade::directive('price', function ($expression) {
-            return "$<?= number_format($expression, 2, '.', ' ') ?>";
+            return "<?= number_format($expression, 2, '.', ' ') ?> Руб.";
         });
 
         Paginator::defaultView('layouts.pagination.index');

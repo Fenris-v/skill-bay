@@ -1,5 +1,9 @@
 <?php
 
+use App\Orchid\Layouts\Discount\ProductTypeDiscountLayout;
+use App\Orchid\Layouts\Discount\GroupTypeDiscountLayout;
+use App\Orchid\Layouts\Discount\CartTypeDiscountLayout;
+
 /**
  * Языковые константы админ панели
  */
@@ -89,6 +93,7 @@ return [
             'labels' => [
                 'title' => 'Название',
                 'vendor' => 'Производитель',
+                'limited' => 'Ограниченный тираж',
             ],
             'description' => 'Описание',
             'category' => 'Категория',
@@ -286,4 +291,63 @@ return [
     ],
     'actions' => 'Действия',
     'users' => 'Пользователи',
+    'discount' => [
+        'title' => 'Скидки',
+        'group' => 'Набор №:number',
+        'chooseProducts' => 'Выберите товары',
+        'chooseCategories' => 'Выберите категории',
+        'changeAmountGroup' => 'Изменить количество наборов',
+        'requiredTab' => 'Обязательные параметры',
+        'relationTab' => 'Связи',
+        'optionalTab' => 'Необязательные параметры',
+        'types' => [
+            '1' => 'На товары',
+            '2' => 'На наборы',
+            '3' => 'На корзину',
+        ],
+        'unit_types' => [
+            '1' => '%',
+            '2' => '$',
+        ],
+        'list' => [
+            'title' => 'Список скидок',
+            'description' => 'Просмотр и управление скидками',
+            'table' => [
+                'id' => 'ID',
+                'title' => 'Название',
+                'value' => 'Размер',
+                'description' => 'Описание',
+                'begin_at' => 'Действует с',
+                'end_at' => 'Заканчивается с',
+                'type' => 'Тип',
+                'priority' => 'Приоритет',
+            ],
+            'buttons' => [
+                'add' => 'Добавить скидку',
+            ]
+        ],
+        'edit' => [
+            'title_edit' => 'Редактирование скидки :name',
+            'title_create' => 'Создание новой скидки',
+            'remove_edit' => 'Скидка :name успешно удалена',
+            'success_create' => 'Скидка :name создана',
+            'success_edit' => 'Вы успешно изменили информацию о скидке :name',
+            'buttons' => [
+                'save' => 'Сохранить',
+                'remove' => 'Удалить скидку',
+                'create' => 'Создать',
+            ],
+            'labels' => [
+                'title' => 'Название',
+                'value' => 'Размер',
+                'description' => 'Описание',
+                'begin_at' => 'Действует с',
+                'end_at' => 'Заканчивается с',
+                'type' => 'Тип',
+                'unit_type' => 'Способ расчета',
+                'priority' => 'Приоритет',
+                'image' => 'Изображение',
+            ],
+        ],
+    ],
 ];

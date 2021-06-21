@@ -4,11 +4,12 @@ namespace App\Orchid\Layouts\Product;
 
 use App\Models\Category;
 use Orchid\Screen\Field;
+use Orchid\Screen\Fields\CheckBox;
 use Orchid\Screen\Fields\Cropper;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
-use Orchid\Screen\Fields\Quill;
 use Orchid\Screen\Fields\Select;
+use Orchid\Screen\Fields\SimpleMDE;
 use Orchid\Screen\Fields\Upload;
 use Orchid\Screen\Layouts\Rows;
 
@@ -41,7 +42,12 @@ class ProductGeneralLayout extends Rows
                 ]
             ),
 
-            Quill::make('product.description')
+            CheckBox::make('product.limited')
+                ->value(0)
+                ->placeholder(__('admin.product.edit.labels.limited'))
+                ->sendTrueOrFalse(),
+
+            SimpleMDE::make('product.description')
                 ->title(__('admin.product.edit.description')),
 
             Group::make(
@@ -64,7 +70,7 @@ class ProductGeneralLayout extends Rows
                 ->title(__('admin.product.edit.image')),
 
             Upload::make('product.attachment')
-                ->title(__('admin.product.edit.images'))
+                ->title(__('admin.product.edit.images')),
         ];
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Discount;
+
 return [
 
     /*
@@ -180,7 +182,6 @@ return [
         App\Providers\DiscountServiceProvider::class,
         App\Providers\CartServiceProvider::class,
         App\Providers\ProductsReviewServiceProvider::class,
-        App\Providers\PaymentServiceProvider::class,
         App\Providers\ProductViewHistoryServiceProvider::class,
         App\Providers\Repositories\ConfigServiceProvider::class,
         App\Providers\Repositories\CatalogServiceProvider::class,
@@ -191,6 +192,8 @@ return [
         App\Providers\Repositories\CartServiceProvider::class,
         App\Providers\Repositories\SellerServiceProvider::class,
         App\Providers\Repositories\OrderServiceProvider::class,
+        App\Providers\Repositories\DiscountServiceProvider::class,
+        App\Providers\OrderServiceProvider::class,
     ],
 
     /*
@@ -227,6 +230,7 @@ return [
         'Lang' => Illuminate\Support\Facades\Lang::class,
         'Log' => Illuminate\Support\Facades\Log::class,
         'Mail' => Illuminate\Support\Facades\Mail::class,
+        'Markdown' => Illuminate\Mail\Markdown::class,
         'Notification' => Illuminate\Support\Facades\Notification::class,
         'Password' => Illuminate\Support\Facades\Password::class,
         'Queue' => Illuminate\Support\Facades\Queue::class,
@@ -243,6 +247,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        'Discount' => Discount::class,
     ],
 
 ];

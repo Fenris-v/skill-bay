@@ -2,19 +2,27 @@
 
 namespace App\Repository;
 
+use App\Contracts\OrderPaymentService as OrderPaymentServiceContract;
+use App\Models\Cart;
+use App\Models\DeliveryType;
 use App\Models\Order;
-use App\Services\OrderPaymentService;
+use App\Models\PaymentType;
+use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Cache;
 
 class OrdersRepository
 {
     const PER_PAGE = 5;
 
-    public function __construct(public OrderPaymentService $payment)
-    {
-    }
+    public function __construct(
+        public OrderPaymentServiceContract $payment,
+        public ConfigRepository $configs
+    ) {}
 
     /**
      * Возвращает объект заказа
@@ -102,5 +110,104 @@ class OrdersRepository
         return Order::with(['deliveryType', 'paymentType'])
             ->where('user_id', $userId)
             ->latest();
+    }
+
+    /**
+     * Возвращает текущий (неоформленный) заказ.
+     *
+     * @return Order
+     */
+    public function getCurrentOrder()
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return Order::make();
+        }
+
+        return Cache::tags([
+            ConfigRepository::GLOBAL_CACHE_TAG,
+            Order::class,
+            User::class
+        ])->remember(
+            'current_order_of_user_' . $user->id,
+            $this->configs->getCacheLifetime(now()->addDay()),
+            fn() => Order::whereHas(
+                    'user',
+                    fn(Builder $query) => $query->where('id', $user->id)
+                )
+                ->whereDoesntHave('cart')
+                ->firstOrNew()
+        );
+    }
+
+    /**
+     * Сохраняет персональные данные пользователя.
+     *
+     * @param array $params
+     * @param User $user
+     * @return Order
+     */
+    public function savePersonal(array $params, User $user): Order
+    {
+        $order = $this->getCurrentOrder();
+        $order->fill($params);
+        $order->user()->associate($user);
+        $order->save();
+
+        Cache::tags([Order::class])->flush();
+
+        return $order;
+    }
+
+    /**
+     * Сохраняет данные доставки.
+     *
+     * @param array $params
+     * @param DeliveryType $deliveryType
+     * @return Order
+     */
+    public function saveDelivery(array $params, DeliveryType $deliveryType): Order
+    {
+        $order = $this->getCurrentOrder();
+        $order->deliveryType()->associate($deliveryType);
+        $order->update($params);
+
+        Cache::tags([Order::class])->flush();
+
+        return $order;
+    }
+
+    /**
+     * Сохраняет способ оплаты.
+     *
+     * @param PaymentType $paymentType
+     * @return Order
+     */
+    public function savePayment(PaymentType $paymentType): Order
+    {
+        $order = $this->getCurrentOrder();
+        $order->paymentType()->associate($paymentType);
+        $order->save();
+
+        Cache::tags([Order::class])->flush();
+
+        return $order;
+    }
+
+    /**
+     * Окончательное оформление заказа
+     *
+     * @param  Cart  $cart
+     * @param  Order|null  $order
+     * @return bool
+     */
+    public function saveCart(Cart $cart, Order $order = null): bool
+    {
+        $order = $order ?? $this->getCurrentOrder();
+        $order->cart()->associate($cart);
+        $order->save();
+        Cache::tags([Order::class, Cart::class])->flush();
+
+        return $this->payment->pay($order);
     }
 }

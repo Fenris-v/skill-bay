@@ -26,7 +26,6 @@
             class="form Cart"
             action="{{ $changeProductAmountUrl }}"
             method="patch"
-            class="form Cart"
         >
             <div class="Cart-amount">
                 <x-amount

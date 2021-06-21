@@ -7,8 +7,10 @@
         <div class="Cart-block Cart-block_amount">
             {{ $amountBlockSlot }}
         </div>
-        <div class="Cart-block Cart-block_delete">
-            {{ $deleteBlockSlot }}
-        </div>
+        @if($deleteBlockSlot)
+            <div class="Cart-block Cart-block_delete">
+                {{ $deleteBlockSlot }}
+            </div>
+        @endif
     </div>
 </div>

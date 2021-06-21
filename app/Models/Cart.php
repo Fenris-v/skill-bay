@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\Pivots\ProductSeller;
-use App\Models\Order;
+use App\Models\Visitor;
 use App\Traits\CacheFlushableAfterCRUDModelTrait;
 
 class Cart extends Model
@@ -29,8 +29,7 @@ class Cart extends Model
                     ->on('cart_product_seller.seller_id', '=', 'product_seller.seller_id')
                 )
             ->select('products.*', 'product_seller.price', 'cart_product_seller.amount')
-            ->using(ProductSeller::class)
-            ->withPivot('seller_id')
+            ->withPivot(['seller_id'])
         ;
     }
 
@@ -43,9 +42,9 @@ class Cart extends Model
         ;
     }
 
-    public function user(): BelongsTo
+    public function visitor(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Visitor::class);
     }
 
     public function order(): HasOne

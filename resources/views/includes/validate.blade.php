@@ -1,8 +1,8 @@
 @if(count($errors) > 0)
-	@foreach($errors->all() as $error)
-		<div class="alert alert-danger errors">{{$error}}</div>
-	@endforeach
+    @foreach($errors->all() as $error)
+        <div class="form-error">{{ $error }}</div>
+    @endforeach
 @endif
 @if ($message = Session::get('success'))
-		<div class="alert alert-success">{{ $message }}</div>
+    <div class="form-error">{{ $message }}</div>
 @endif

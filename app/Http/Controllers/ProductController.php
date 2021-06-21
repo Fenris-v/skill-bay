@@ -10,16 +10,11 @@ use App\Repository\CatalogRepository;
 use App\Repository\ProductRepository;
 use App\Repository\SellerRepository;
 use App\Models\Product;
-use App\Models\ProductReview;
-use App\Models\Seller;
-use App\Models\Attachment;
-use App\Models\Specification;
-use App\Repository\ConfigRepository;
+use App\Services\DiscountService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use App\Services\ProductCartService;
 use App\Services\CompareProductsService;
@@ -27,10 +22,7 @@ use App\Services\ProductViewHistoryService;
 
 class ProductController extends Controller
 {
-    public function __construct(
-        protected ProductRepository $productRepository
-    ) {
-        //
+    public function __construct(protected ProductRepository $productRepository) {
     }
 
     /**
@@ -38,6 +30,7 @@ class ProductController extends Controller
      * @param CatalogRepository $catalog
      * @param FilterRepository $filters
      * @param Request $request
+     * @param DiscountService $discountService
      * @param string|null $slug
      * @return View
      */
@@ -45,12 +38,15 @@ class ProductController extends Controller
         CatalogRepository $catalog,
         FilterRepository $filters,
         Request $request,
+        DiscountService $discountService,
         ?string $slug = null
     ): View {
         $category = Category::where('slug', $slug)->first(['id', 'slug']);
 
         $params = $request->only(['filter', 'sort', 'page']);
         $products = $catalog->getPaginateProducts($params, $category ?? null);
+
+        $discounts = $discountService->getPriorityDiscount($products);
 
         $sellers = $filters->getSellers($category);
         $specifications = $filters->getSpecifications($category);
@@ -67,7 +63,8 @@ class ProductController extends Controller
                 'sellers',
                 'specifications',
                 'minMaxPrice',
-                'specificationsValues'
+                'specificationsValues',
+                'discounts'
             )
         );
     }
@@ -109,7 +106,7 @@ class ProductController extends Controller
             $product, $name, $email, $comment
         );
 
-        return back()->withInput();
+        return back()->withInput(['review' => 1])->with('success', __('productPage.review_form.success'));
     }
 
     /**

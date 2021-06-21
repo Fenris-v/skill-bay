@@ -50,7 +50,8 @@ class Product extends Model
         'vendor',
         'rating_sort',
         'main_image_id',
-        'category_id'
+        'category_id',
+        'limited',
     ];
 
     /**
@@ -146,6 +147,29 @@ class Product extends Model
     public function image(): BelongsTo
     {
         return $this->belongsTo(Attachment::class, 'main_image_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function orders()
+    {
+        return $this->hasManyThrough(
+            Order::class,
+            CartProductSeller::class,
+            'product_id',
+            'cart_id',
+            'id',
+            'cart_id'
+        );
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function payedOrders()
+    {
+        return $this->orders()->payed();
     }
 
     /**
