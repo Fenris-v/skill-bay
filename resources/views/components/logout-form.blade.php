@@ -1,1 +1,1 @@
-<a class="ControlPanel-title" href="{{route('profile')}}">@if(!empty(auth()->user()->name)) {{auth()->user()->name}} @else {{auth()->user()->phone}} @endif</a>&nbsp;/&nbsp;<a href="{{route('logout')}}" class="ControlPanel-title" class="ControlPanel-title">{{__('user_messages.logout')}}</a>
+<a class="ControlPanel-title" href="{{route('account')}}">@if(!empty(auth()->user()->name)) {{auth()->user()->name}} @else {{auth()->user()->phone}} @endif</a>&nbsp;/&nbsp;<a href="{{route('logout')}}" class="ControlPanel-title" class="ControlPanel-title">{{__('user_messages.logout')}}</a>

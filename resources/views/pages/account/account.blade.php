@@ -4,7 +4,7 @@
 
 @section('meta_description', '')
 
-@section('middle-header-h1', __('navigation.history'))
+@section('middle-header-h1', __('navigation.account'))
 
 @section('content')
     <div class="Section Section_column Section_columnLeft">
