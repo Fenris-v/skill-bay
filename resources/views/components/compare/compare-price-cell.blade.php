@@ -10,7 +10,7 @@
             <strong class="Compare-price">@price($discountPrice)
             </strong>
         @else
-            <strong class="Compare-priceOld">@price($price)
+            <strong class="Compare-price">@price($price)
             </strong>
         @endif
     </div>
