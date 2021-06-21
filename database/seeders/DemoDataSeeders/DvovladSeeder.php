@@ -4,6 +4,7 @@ namespace Database\Seeders\DemoDataSeeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class DvovladSeeder extends Seeder
 {
