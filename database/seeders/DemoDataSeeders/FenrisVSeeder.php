@@ -3,9 +3,12 @@
 namespace Database\Seeders\DemoDataSeeders;
 
 use App\Models\Attachment;
+use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Discount;
 use App\Models\DiscountUnit;
+use App\Models\HistoryView;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\Seller;
 use App\Models\Specification;
@@ -75,6 +78,10 @@ class FenrisVSeeder extends Seeder
         $this->makeAccessories($sellers, $userId);
 
         $this->makeDiscounts($userId);
+
+        $this->makeViewHistory($userId);
+
+        $this->makeOrders($userId);
     }
 
     private function makeUser()
@@ -693,7 +700,7 @@ class FenrisVSeeder extends Seeder
 
     private function makeImage($mainImage, $imgDir, $userId)
     {
-        File::move($imgDir . $mainImage, $this->fullPath . $mainImage);
+        File::copy($imgDir . $mainImage, $this->fullPath . $mainImage);
 
         $img = [
             'name' => pathinfo($this->fullPath . $mainImage)['filename'],
@@ -784,5 +791,47 @@ class FenrisVSeeder extends Seeder
         $unit = DiscountUnit::create(['discount_id' => $discount->id]);
 
         $unit->products()->saveMany($stels);
+    }
+
+    private function makeViewHistory($userId)
+    {
+        $products = Product::inRandomOrder()->limit(5)->get('id');
+
+        foreach ($products as $product) {
+            HistoryView::create(
+                [
+                    'product_id' => $product->id,
+                    'user_id' => $userId,
+                    'created_at' => now()->subDays(rand(31, 60)),
+                    'updated_at' => now()->subDays(rand(1, 30))
+                ]
+            );
+        }
+    }
+
+    private function makeOrders($userId)
+    {
+        $products = Product::all();
+
+        for ($i = 0; $i < 5; $i++) {
+            $products = $products->shuffle();
+
+            $cart = Cart::factory()
+                ->create();
+
+            $cart->products()->attach(
+                $products->take(5)
+                    ->mapWithKeys(
+                        fn($item) => [
+                            $item->id => [
+                                'seller_id' => $item->sellers->random()->id,
+                                'amount' => rand(1, 10)
+                            ]
+                        ]
+                    )
+            );
+
+            Order::factory()->create(['user_id' => $userId, 'cart_id' => $cart->id]);
+        }
     }
 }
