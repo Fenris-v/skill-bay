@@ -131,6 +131,22 @@ Route::prefix('/account')
                             ->push(__('navigation.account'), route('profile'));
                     }
                 );
+            Route::put('/profile', [AccountController::class, 'editProfile'])
+                ->name('profile.edit')
+                ->breadcrumbs(
+                    function (Trail $trail) {
+                        $trail->parent('account')
+                            ->push(__('navigation.account'), route('profile'));
+                    }
+                );
+            Route::delete('/profile/avatar', [AccountController::class, 'deleteAvatar'])
+                ->name('profile.avatar.delete')
+                ->breadcrumbs(
+                    function (Trail $trail) {
+                        $trail->parent('account')
+                            ->push(__('navigation.account'), route('profile'));
+                    }
+                );
 
             Route::get('/views', [HistoryProductController::class, 'index'])
                 ->name('viewed_history')

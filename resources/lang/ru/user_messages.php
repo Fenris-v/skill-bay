@@ -7,10 +7,12 @@ return [
 	'registation' => 'Регистрация',
     'auth_fail' => 'Неверный телефон или пароль',
     'registration_success' => 'Вы успешно зарегистрированы!',
+    'profile_edit_success' => 'Профиль успешно сохранен',
     'email' => 'E-mail',
     'password'=>'Пароль',
     'password_confirm' => 'Подтверждение пароля',
     'phone' => 'Телефон',
+    'name' => 'ФИО',
     'register' => 'Зарегистрироваться',
     'reset_password'=>'Сбросить пароль',
     'forgot_password' => 'Забыли пароль',
@@ -19,5 +21,7 @@ return [
     'placeholder_password' => 'Выберите пароль',
     'placeholder_password_reply' => 'Введите пароль повторно',
     'placeholder_phone' => '+70000000000',
-    'placeholder_password_login' => 'Введите пароль'
+    'placeholder_password_login' => 'Введите пароль',
+    'save' => 'Сохранить',
+    'delete_avatar' => "Удалить аватар"
 ];

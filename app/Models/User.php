@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Orchid\Platform\Models\User as Authenticatable;
+use App\Models\Attachment;
 use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
@@ -96,5 +97,10 @@ class User extends Authenticatable
     public function historyViews(): HasMany
     {
         return $this->HasMany(HistoryView::class);
+    }
+    
+    public function attachment():HasOne
+    {
+        return $this->HasOne(Attachment::class);
     }
 }

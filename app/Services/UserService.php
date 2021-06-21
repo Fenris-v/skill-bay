@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Services\Handlers\{CreateUserHandler, UpdateUserHandler, DeleteUserHandler, GiveMeUserHandler, GiveMeAllUserHandler};
 use Illuminate\Support\Facades\Hash;
 use App\Repository\EloquentUserRepository;
+use App\Models\User;
 
 class UserService {
 	private $userRepository;
@@ -19,9 +20,9 @@ class UserService {
 	    return $this->userRepository->create($data);
 	}
 	
-	public function updateUser($data, $id)
+	public function updateUser($data, User $user)
 	{
-		return $this->userRepository->update($data, $id);
+		return $this->userRepository->update($data, $user);
 	}
 	
 	public function deleteUser($id)
