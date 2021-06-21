@@ -28,9 +28,9 @@
                         {{ __('orders.history.total_price') }}:
                     </div>
                     <div class="Order-infoContent">
-                        <span class="Order-price">@price($order->price)</span>
-                        @if($order->discount)
-                            <span class="Order-price_old">@price($order->price_without_discount)</span>
+                        <span class="Order-price">@price($order->used_price)</span>
+                        @if($order->used_discount)
+                            <span class="Order-price_old">@price($order->used_price + $order->used_discount)</span>
                         @endif
                     </div>
                 </div>

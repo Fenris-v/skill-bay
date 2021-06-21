@@ -257,4 +257,70 @@ class DiscountService implements Discountable
             ? new CurencyDiscount
             : new PercentDiscount;
     }
+
+    public function getAppliedDiscountAndPrice()
+    {
+        $products = $this->productCartService->get();
+        $discounts = $this->getCartDiscount($products);
+
+        $discountFirst = $discounts->first();
+        $total = $products->reduce(
+            function ($accum, $product) use ($discounts) {
+                return $accum + $product->price * $product->amount;
+            },
+            0
+        );
+
+        return match($discountFirst?->type) {
+            Discount::GROUP => [
+                'type' => Discount::GROUP,
+                'applied' => [
+                    'used_discount' => $usedDiscount = $this->calculateGroupDiscount($discounts->first(), $total),
+                    'used_price' => $usedPrice = $total - $usedDiscount,
+                ],
+                'total' => [
+                    'used_discount' => $usedDiscount,
+                    'used_price' => $usedPrice,
+                ],
+            ],
+            Discount::CART => [
+                'type' => Discount::CART,
+                'applied' => [
+                    'used_discount' => $usedDiscount = $discountFirst->value,
+                    'used_price' => $usedPrice = $total - $usedDiscount,
+                ],
+                'total' => [
+                    'used_discount' => $usedDiscount,
+                    'used_price' => $usedPrice,
+                ],
+            ],
+            default => [
+                'type' => Discount::PRODUCT,
+                'applied' => $result = collect($products->mapWithKeys(
+                    fn($product) => [
+                        $product->id => [
+                            'used_price' => $currentPrice = $discounts->get($product->slug)
+                                ? $this->calculateDiscountPrice(
+                                    $product,
+                                    $discounts->get($product->slug),
+                                    $product->price
+                                )
+                                : $product->price
+                            ,
+                            'used_discount' => $product->price - $currentPrice,
+                            'amount' => $product->amount,
+                            'seller_id' => $product->pivot->seller_id,
+                        ]
+                    ]
+                )),
+                'total' => [
+                    'used_discount' => $usedDiscount = $result->reduce(
+                        fn($accum, $item) => $accum + $item['used_discount'] * $item['amount'],
+                        0
+                    ),
+                    'used_price' => $total - $usedDiscount,
+                ],
+            ],
+        };
+    }
 }

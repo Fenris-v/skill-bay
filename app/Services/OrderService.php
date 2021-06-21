@@ -90,4 +90,15 @@ class OrderService implements OrderServiceInterface
             $order->cart ?? $cartRepository->getCart(), $order
         );
     }
+
+    /**
+     * Сохраняет итоговую цену и примененную скидку на заказ.
+     *
+     * @param array $data
+     * @return void
+     */
+    public function savePriceAndDiscount(array $data)
+    {
+        $this->ordersRepository->savePriceAndDiscount($data['total']);
+    }
 }

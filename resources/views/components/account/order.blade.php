@@ -112,8 +112,13 @@
                             </div>
                         </div>
                         <div class="Cart-block Cart-block_price">
+                            @if($product->pivot->used_discount)
+                                <div class="Cart-price Cart-price_old">
+                                    <nobr>@price($product->pivot->used_discount + $product->pivot->used_price)</nobr>
+                                </div>
+                            @endif
                             <div class="Cart-price">
-                                80.00$
+                                <nobr>@price($product->pivot->used_price)</nobr>
                             </div>
                         </div>
                     </div>
@@ -127,7 +132,7 @@
                             </div>
                         </div>
                         <div class="Cart-block Cart-block_amount">
-                            {{ $product->pivot->amount }} {{ __('orders.history.unit') }}
+                            {{ $product->amount }} {{ __('orders.history.unit') }}
                         </div>
                     </div>
                 </div>
@@ -136,8 +141,10 @@
             <div class="Cart-total">
                 <div class="Cart-block Cart-block_total">
                     <strong class="Cart-title">{{ __('orders.history.total') }}:
-                        <span class="Cart-price">@price($order->price)</span>
-                        <span class="Cart-price_old">@price($order->price_without_discount)</span>
+                        <span class="Cart-price">@price($order->used_price)</span>
+                        @if($order->used_discount)
+                            <span class="Cart-price_old">@price($order->used_discount + $order->used_price)</span>
+                        @endif
                     </strong>
                 </div>
 
