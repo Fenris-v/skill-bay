@@ -12,15 +12,24 @@ class ProductListItem extends Component
 {
     public ?Discount $discount;
     public ?float $price = null;
+    public bool $hideDetails = false;
 
     /**
      * Create a new component instance.
      *
-     * @return void
+     * @param  DiscountService  $service
+     * @param  Product  $product
+     * @param  Discount|null  $discount
+     * @param  bool  $hideDetails
      */
-    public function __construct(DiscountService $service, public Product $product)
-    {
-        $this->discount = $service->getPriorityDiscount($this->product)->first();
+
+    public function __construct(
+        DiscountService $service,
+        public Product $product,
+        ?Discount $discount,
+        bool $hideDetails = false,
+    ) {
+        $this->discount = $discount ?? $service->getPriorityDiscount($this->product)->first();
 
         if ($this->discount) {
             $this->price = $service->calculateDiscountPrice(
@@ -28,7 +37,11 @@ class ProductListItem extends Component
                 $this->discount,
                 $product->avg_price
             );
+        } else {
+            $this->price = $product->avg_price;
         }
+
+        $this->hideDetails = $hideDetails;
     }
 
     /**

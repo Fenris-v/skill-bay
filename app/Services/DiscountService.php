@@ -6,19 +6,22 @@ use App\Contracts\Discountable;
 use App\Contracts\DiscountCalculator;
 use App\Models\Discount;
 use App\Models\Product;
+use App\Repository\CartRepository;
 use App\Repository\DiscountRepository;
 use App\Services\Calculator\CurencyDiscount;
 use App\Services\Calculator\FixedDiscount;
 use App\Services\Calculator\PercentDiscount;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Collection;
-use App\Repository\CartRepository;
+
+use App\Contracts\ProductCartService;
 
 class DiscountService implements Discountable
 {
-    public function __construct(public DiscountRepository $repository, public CartRepository $cartRepository)
-    {
-    }
+    public function __construct(
+        protected DiscountRepository $repository,
+        protected ProductCartService $productCartService,
+    ) {}
 
     /**
      * Возвращает все скидки
@@ -70,14 +73,27 @@ class DiscountService implements Discountable
 
     /**
      * Возвращает итоговую сумму корзины
-     * @param $products
-     * @param $discounts
      * @return float
      */
-    public function getCartTotal($products, $discounts): float
-    {
-        if ($discounts->first() && $discounts->first()->type == Discount::CART) {
+
+    public function getCartTotal(): float {
+        $products = $this->productCartService->get();
+        $discounts = $this->getCartDiscount($products);
+
+        if ($discounts->first()?->type === Discount::GROUP) {
+            $total = $products->reduce(
+                function ($accum, $product) use ($discounts) {
+                    return $accum + $product->price * $product->amount;
+                },
+                0
+            );
+
+            return $total - $this->calculateGroupDiscount($discounts->first(), $total);
+        }
+
+        if ($discounts->first()?->type == Discount::CART) {
             return $discounts->first()->value;
+
         }
 
         return $products->reduce(
@@ -105,7 +121,8 @@ class DiscountService implements Discountable
      */
     public function getCartDiscount(Collection $products): Collection
     {
-        $discountUnits = $this->repository->getProductDiscounts($products);
+        $discountUnits = $this->repository
+            ->getProductDiscounts($products, [Discount::PRODUCT, Discount::GROUP]);
 
         $groupDiscounts = $this->getGroupsDiscounts($discountUnits);
 
@@ -182,10 +199,10 @@ class DiscountService implements Discountable
 
     /**
      * Возвращает скидки на группы
-     * @param $discounts
+     * @param Collection $discounts
      * @return mixed
      */
-    private function getGroupsDiscounts($discounts): Collection
+    private function getGroupsDiscounts(Collection $discounts): Collection
     {
         $groupDiscounts = $discounts
             ->where('discount.type', Discount::GROUP)
@@ -193,9 +210,22 @@ class DiscountService implements Discountable
 
         return $groupDiscounts->filter(
             function ($group) {
-                return $group->count() > 1;
+                return $group->count() > 1 || $group[0]->categories->count() > 1;
             }
         );
+    }
+
+    /**
+     * Рассчитывает скидку на группу в корзине
+     * @param Discount $discount
+     * @param float $price
+     * @return float
+     */
+    private function calculateGroupDiscount(Discount $discount, float $price): float
+    {
+        $calculator = $this->createCalculator($discount->unit_type);
+
+        return $calculator->getGroupDiscount($discount, $price);
     }
 
     /**
@@ -261,19 +291,19 @@ class DiscountService implements Discountable
     private function checkCartDiscount(Discount $discount)
     {
         $conditions = $discount->conditions;
-        $cart = $this->cartRepository->getCart();
+        $products = $this->productCartService->get();
 
         if (!$conditions) {
             return false;
         }
 
-        $totalAmount = $cart->products->reduce(function ($carry, $product) {
+        $totalAmount = $products->reduce(function ($carry, $product) {
             return $carry += $product->amount;
         });
 
         return
-            (!isset($conditions['min_price']) || $cart->oldPrice > $conditions['min_price']) &&
-            (!isset($conditions['max_price']) || $cart->oldPrice < $conditions['max_price']) &&
+            (!isset($conditions['min_price']) || $this->productCartService->total()['old'] > $conditions['min_price']) &&
+            (!isset($conditions['max_price']) || $this->productCartService->total()['old'] < $conditions['max_price']) &&
             (!isset($conditions['min_amount']) || $totalAmount >= $conditions['min_amount']) &&
             (!isset($conditions['max_amount']) || $totalAmount <= $conditions['max_amount']);
     }
