@@ -225,6 +225,6 @@ class OrdersRepository
 
         $order->save();
 
-        Cache::tags([Cart::class])->flush();
+        Cache::tags([Order::class])->flush();
     }
 }

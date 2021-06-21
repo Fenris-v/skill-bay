@@ -118,7 +118,7 @@
                                 </div>
                             @endif
                             <div class="Cart-price">
-                                <nobr>@price($product->pivot->used_price)</nobr>
+                                <nobr>@price($product->pivot->used_price ?? $product->price)</nobr>
                             </div>
                         </div>
                     </div>

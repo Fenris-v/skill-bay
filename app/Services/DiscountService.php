@@ -274,24 +274,16 @@ class DiscountService implements Discountable
         return match($discountFirst?->type) {
             Discount::GROUP => [
                 'type' => Discount::GROUP,
-                'applied' => [
-                    'used_discount' => $usedDiscount = $this->calculateGroupDiscount($discounts->first(), $total),
-                    'used_price' => $usedPrice = $total - $usedDiscount,
-                ],
                 'total' => [
-                    'used_discount' => $usedDiscount,
-                    'used_price' => $usedPrice,
+                    'used_discount' => $usedDiscount = $this->calculateGroupDiscount($discounts->first(), $total),
+                    'used_price' => $total - $usedDiscount,
                 ],
             ],
             Discount::CART => [
                 'type' => Discount::CART,
-                'applied' => [
-                    'used_discount' => $usedDiscount = $discountFirst->value,
-                    'used_price' => $usedPrice = $total - $usedDiscount,
-                ],
                 'total' => [
-                    'used_discount' => $usedDiscount,
-                    'used_price' => $usedPrice,
+                    'used_discount' => $usedDiscount = $discountFirst->value,
+                    'used_price' => $total - $usedDiscount,
                 ],
             ],
             default => [
