@@ -175,15 +175,4 @@ class ProductCartService implements ProductCartServiceContract
     {
         $this->cartRepository->mergeGuestAndUserCarts($guest, $user);
     }
-
-    /**
-     * Сохраняет текущую цену и примененную скидку в отношении каждой позиции товара в корзине.
-     *
-     * @param array $appliedDiscounts
-     * @return void
-     */
-    public function saveProductsPriceAndDiscount(array $appliedDiscounts)
-    {
-        $this->cartRepository->saveProductsPriceAndDiscount($appliedDiscounts['applied']->toArray());
-    }
 }

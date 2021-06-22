@@ -95,7 +95,7 @@
             </div>
         </div>
         <div class="Cart Cart_order">
-            @foreach($order->cart->products as $product)
+            @foreach($products as $product)
                 <div class="Cart-product">
                     <div class="Cart-block Cart-block_row">
                         <div class="Cart-block Cart-block_pict">
@@ -112,13 +112,13 @@
                             </div>
                         </div>
                         <div class="Cart-block Cart-block_price">
-                            @if($product->pivot->used_discount)
+                            @if($product->priceOld > $product->price)
                                 <div class="Cart-price Cart-price_old">
-                                    <nobr>@price($product->pivot->used_discount + $product->pivot->used_price)</nobr>
+                                    <nobr>@price($product->priceOld)</nobr>
                                 </div>
                             @endif
                             <div class="Cart-price">
-                                <nobr>@price($product->pivot->used_price ?? $product->price)</nobr>
+                                <nobr>@price($product->price)</nobr>
                             </div>
                         </div>
                     </div>
@@ -141,9 +141,9 @@
             <div class="Cart-total">
                 <div class="Cart-block Cart-block_total">
                     <strong class="Cart-title">{{ __('orders.history.total') }}:
-                        <span class="Cart-price">@price($order->used_price)</span>
-                        @if($order->used_discount)
-                            <span class="Cart-price_old">@price($order->used_discount + $order->used_price)</span>
+                        <span class="Cart-price">@price($price)</span>
+                        @if($priceOld > $price)
+                            <span class="Cart-price_old">@price($priceOld)</span>
                         @endif
                     </strong>
                 </div>

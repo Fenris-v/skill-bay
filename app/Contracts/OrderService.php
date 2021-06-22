@@ -46,12 +46,4 @@ interface OrderService
      * @return bool
      */
     public function saveCartToOrder(CartRepository $cartRepository): bool;
-
-    /**
-     * Сохраняет итоговую цену и примененную скидку на заказ.
-     *
-     * @param array $data
-     * @return void
-     */
-    public function savePriceAndDiscount(array $data);
 }

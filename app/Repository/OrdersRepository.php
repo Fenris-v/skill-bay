@@ -210,21 +210,4 @@ class OrdersRepository
 
         return $this->payment->pay($order);
     }
-
-    /**
-     * Сохраняет итоговую цену и примененную скидку на заказ.
-     *
-     * @param array $data
-     * @return void
-     */
-    public function savePriceAndDiscount(array $data)
-    {
-        $order = $this->getCurrentOrder();
-        $order->used_price = $data['used_price'];
-        $order->used_discount = $data['used_discount'];
-
-        $order->save();
-
-        Cache::tags([Order::class])->flush();
-    }
 }

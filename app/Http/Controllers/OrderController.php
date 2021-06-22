@@ -121,8 +121,7 @@ public function stepPaymentStore(OrderPaymentRequest $request)
 
     public function stepAcceptStore(
         DiscountService $discountService,
-        ProductCartService $productCartService,
-        OrderService $orderService
+        ProductCartService $productCartService
     ) {
         if (!$this->isEnoughProgress(['personal', 'delivery', 'payment'])) {
             $this->alert->danger();
@@ -130,20 +129,13 @@ public function stepPaymentStore(OrderPaymentRequest $request)
             return back();
         }
 
-        $appliedDiscount = $discountService->getAppliedDiscountAndPrice();
-
-        if ($appliedDiscount['type'] === Discount::PRODUCT) {
-            $productCartService->saveProductsPriceAndDiscount($appliedDiscount);
-        }
-
-        $orderService->savePriceAndDiscount($appliedDiscount);
-
         return redirect()->route('order.pay');
     }
 
     public function stepPay(
         CartRepository $cartRepository,
         OrderPaymentService $orderPaymentService,
+        DiscountService $service,
         Order $order = null
     ) {
         $order = $order ?? $this->ordersRepository->getCurrentOrder();
@@ -153,7 +145,7 @@ public function stepPaymentStore(OrderPaymentRequest $request)
         }
 
         $cart = $cartRepository->getCart();
-        $price = $order->used_price;
+        $price = $service->getCartTotal($cart->products);
 
         // Оплата рандомной картой.
         if ($order->payment_type_id === PaymentType::BY_RANDOM_ACCOUNT) {

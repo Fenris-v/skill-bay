@@ -283,17 +283,4 @@ class CartRepository
 
         return true;
     }
-
-    /**
-     * Сохраняет текущую цену и примененную скидку в отношении каждой позиции товара в корзине.
-     *
-     * @param array $appliedDiscounts
-     * @return void
-     */
-    public function saveProductsPriceAndDiscount(array $appliedDiscounts)
-    {
-        $this->getCart()->products()->sync($appliedDiscounts);
-
-        Cache::tags([Cart::class])->flush();
-    }
 }
