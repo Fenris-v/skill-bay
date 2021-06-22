@@ -165,7 +165,7 @@ class FenrisVSeeder extends Seeder
             $shuffledSellers = $sellers->shuffle();
             $props = array_pop($product);
             $mainImage = $props['main_image'];
-            $mainImage = $this->makeImage($mainImage, $imgDir, $userId);
+            $mainImage = $this->makeImage($mainImage, $imgDir);
 
             $product['main_image_id'] = $mainImage->id;
             $product = Product::create($product);
@@ -673,10 +673,10 @@ class FenrisVSeeder extends Seeder
             $shuffledSellers = $sellers->shuffle();
             $props = array_pop($product);
             $mainImage = $props['main_image'];
-            $mainImage = $this->makeImage($mainImage, $imgDir, $userId);
+            $mainImage = $this->makeImage($mainImage, $imgDir);
 
             $images = $props['images'] ?? [];
-            $images = $this->makeImages($images, $imgDir, $userId);
+            $images = $this->makeImages($images, $imgDir);
 
             $product['main_image_id'] = $mainImage->id;
             $product = Product::factory()->create($product);
@@ -698,7 +698,7 @@ class FenrisVSeeder extends Seeder
         }
     }
 
-    private function makeImage($mainImage, $imgDir, $userId)
+    private function makeImage($mainImage, $imgDir)
     {
         File::copy($imgDir . $mainImage, $this->fullPath . $mainImage);
 
@@ -708,7 +708,7 @@ class FenrisVSeeder extends Seeder
             'mime' => mime_content_type($this->fullPath . $mainImage),
             'extension' => pathinfo($this->fullPath . $mainImage)['extension'],
             'path' => $this->path,
-            'user_id' => $userId,
+            'user_id' => 1,
             'size' => filesize($this->fullPath . $mainImage),
             'hash' => sha1_file($this->fullPath . $mainImage),
         ];
@@ -716,11 +716,11 @@ class FenrisVSeeder extends Seeder
         return Attachment::create($img);
     }
 
-    private function makeImages($images, $imgDir, $userId)
+    private function makeImages($images, $imgDir)
     {
         $attachments = [];
         foreach ($images as $image) {
-            $attachments[] = $this->makeImage($image, $imgDir, $userId);
+            $attachments[] = $this->makeImage($image, $imgDir);
         }
 
         return $attachments;
@@ -741,7 +741,7 @@ class FenrisVSeeder extends Seeder
 
     private function fatbikeDiscount($userId)
     {
-        $image = $this->makeImage('sale.png', 'resources/fenris/', $userId);
+        $image = $this->makeImage('sale.png', 'resources/fenris/');
 
         $discount = Discount::create(
             [
@@ -770,7 +770,7 @@ class FenrisVSeeder extends Seeder
     {
         $stels = Product::where('slug', 'like', '%stels%')->get();
 
-        $image = $this->makeImage('15.png', 'resources/fenris/', $userId);
+        $image = $this->makeImage('15.png', 'resources/fenris/');
 
         $discount['image_id'] = $image->id;
 
