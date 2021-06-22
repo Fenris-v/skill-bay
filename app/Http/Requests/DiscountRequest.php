@@ -56,4 +56,24 @@ class DiscountRequest extends FormRequest
             'discount.conditions.min_amount' => 'numeric|min:1|required_without_all:discount.conditions.max_price,discount.conditions.min_price,discount.conditions.max_amount',
         ];
     }
+
+    public function all($keys = null)
+    {
+        $attributes = parent::all();
+        $attributes['discount']['conditions'] = collect($attributes['discount']['conditions'])
+            ->reduceWithKeys(
+                function ($accum, $value, $key) {
+                    if ($value !== null) {
+                        $accum[$key] = $value;
+                    }
+                    return $accum;
+                },
+                []
+            )
+        ;
+
+        $this->replace($attributes);
+
+        return parent::all();
+    }
 }
