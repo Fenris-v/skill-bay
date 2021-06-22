@@ -5,9 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Discount;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use App\Orchid\Layouts\Discount\ProductTypeDiscountLayout;
-use App\Orchid\Layouts\Discount\GroupTypeDiscountLayout;
-use App\Orchid\Layouts\Discount\CartTypeDiscountLayout;
+use Illuminate\Http\Request;
 
 class DiscountRequest extends FormRequest
 {
@@ -16,8 +14,20 @@ class DiscountRequest extends FormRequest
         return true;
     }
 
-    public function rules()
+    public function rules(Request $request)
     {
+        $conditionsFn = function() use ($request) {
+            return $request->discount['type'] === (string) Discount::CART
+                && empty($request->discount['conditions'])
+            ;
+        };
+
+        $conditionsRule = [
+            'numeric',
+            'min:1',
+            Rule::requiredIf($conditionsFn),
+        ];
+
         return [
             'discount.title' => 'required|min:3|max:255',
             'discount.description' => 'required|min:3|max:65535',
@@ -50,10 +60,31 @@ class DiscountRequest extends FormRequest
                 'required_if:discount.type,' . Discount::CART,
                 'array',
             ],
-            'discount.conditions.max_price' => 'numeric|min:1|required_without_all:discount.conditions.min_price,discount.conditions.max_amount,discount.conditions.min_amount',
-            'discount.conditions.min_price' => 'numeric|min:1|required_without_all:discount.conditions.max_price,discount.conditions.max_amount,discount.conditions.min_amount',
-            'discount.conditions.max_amount' => 'numeric|min:1|required_without_all:discount.conditions.max_price,discount.conditions.min_price,discount.conditions.min_amount',
-            'discount.conditions.min_amount' => 'numeric|min:1|required_without_all:discount.conditions.max_price,discount.conditions.min_price,discount.conditions.max_amount',
+            'discount.conditions.max_price' => $conditionsRule,
+            'discount.conditions.min_price' => $conditionsRule,
+            'discount.conditions.max_amount' => $conditionsRule,
+            'discount.conditions.min_amount' => $conditionsRule,
         ];
+    }
+
+    public function all($keys = null)
+    {
+        $attributes = parent::all();
+        if (isset($attributes['discount']['conditions']))
+        $attributes['discount']['conditions'] = collect($attributes['discount']['conditions'])
+            ->reduceWithKeys(
+                function ($accum, $value, $key) {
+                    if ($value !== null) {
+                        $accum[$key] = $value;
+                    }
+                    return $accum;
+                },
+                []
+            )
+        ;
+
+        $this->replace($attributes);
+
+        return parent::all();
     }
 }
