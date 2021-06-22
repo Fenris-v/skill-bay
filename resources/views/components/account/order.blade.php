@@ -95,7 +95,7 @@
             </div>
         </div>
         <div class="Cart Cart_order">
-            @foreach($order->cart->products as $product)
+            @foreach($products as $product)
                 <div class="Cart-product">
                     <div class="Cart-block Cart-block_row">
                         <div class="Cart-block Cart-block_pict">
@@ -112,8 +112,13 @@
                             </div>
                         </div>
                         <div class="Cart-block Cart-block_price">
+                            @if($product->priceOld > $product->price)
+                                <div class="Cart-price Cart-price_old">
+                                    <nobr>@price($product->priceOld)</nobr>
+                                </div>
+                            @endif
                             <div class="Cart-price">
-                                80.00$
+                                <nobr>@price($product->price)</nobr>
                             </div>
                         </div>
                     </div>
@@ -127,7 +132,7 @@
                             </div>
                         </div>
                         <div class="Cart-block Cart-block_amount">
-                            {{ $product->pivot->amount }} {{ __('orders.history.unit') }}
+                            {{ $product->amount }} {{ __('orders.history.unit') }}
                         </div>
                     </div>
                 </div>
@@ -136,14 +141,16 @@
             <div class="Cart-total">
                 <div class="Cart-block Cart-block_total">
                     <strong class="Cart-title">{{ __('orders.history.total') }}:
-                        <span class="Cart-price">@price($order->price)</span>
-                        <span class="Cart-price_old">@price($order->price_without_discount)</span>
+                        <span class="Cart-price">@price($price)</span>
+                        @if($priceOld > $price)
+                            <span class="Cart-price_old">@price($priceOld)</span>
+                        @endif
                     </strong>
                 </div>
 
                 @unless($isPaid)
                     <div class="Cart-block">
-                        <a class="btn btn_primary btn_lg" href="#">{{ __('orders.history.pay') }}</a>
+                        <a class="btn btn_primary btn_lg" href="{{ route('order.pay', compact('order')) }}">{{ __('orders.history.pay') }}</a>
                     </div>
                 @endunless
             </div>

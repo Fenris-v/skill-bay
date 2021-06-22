@@ -13,8 +13,8 @@ use App\Services\Calculator\FixedDiscount;
 use App\Services\Calculator\PercentDiscount;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Collection;
-
 use App\Contracts\ProductCartService;
+
 
 class DiscountService implements Discountable
 {
@@ -73,11 +73,11 @@ class DiscountService implements Discountable
 
     /**
      * Возвращает итоговую сумму корзины
+     * @param Collection $products
      * @return float
      */
-
-    public function getCartTotal(): float {
-        $products = $this->productCartService->get();
+    public function getCartTotal(Collection $products = null): float {
+        $products = $products ?? $this->productCartService->get();
         $discounts = $this->getCartDiscount($products);
 
         if ($discounts->first()?->type === Discount::GROUP) {
@@ -231,12 +231,16 @@ class DiscountService implements Discountable
     /**
      * Рассчитывает цену со скидкой
      * @param Product $product
-     * @param Discount $discount
+     * @param Discount|null $discount
      * @param float|null $price
      * @return float
      */
-    public function calculateDiscountPrice(Product $product, Discount $discount, ?float $price = null): float
+    public function calculateDiscountPrice(Product $product, ?Discount $discount, ?float $price = null): float
     {
+        if (!$discount) {
+            return $product->sellers->sortByDesc('pivot.price')->first()->pivot->price;
+        }
+
         if (!$price) {
             $price = $product->sellers->sortByDesc('pivot.price')->first()->pivot->price ?? 0;
         }

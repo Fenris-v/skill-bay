@@ -22,7 +22,6 @@ class ProductListItem extends Component
      * @param  Discount|null  $discount
      * @param  bool  $hideDetails
      */
-
     public function __construct(
         DiscountService $service,
         public Product $product,

@@ -16,7 +16,8 @@ use App\Repository\OrdersRepository;
 class OrderService implements OrderServiceInterface
 {
     public function __construct(
-        public OrdersRepository $ordersRepository
+        protected OrdersRepository $ordersRepository,
+        protected UserService $userService
     ) {}
 
     /**
@@ -27,13 +28,25 @@ class OrderService implements OrderServiceInterface
      */
     public function savePersonalDataToOrder(OrderPersonalRequest $request): Order
     {
-        return $this
-            ->ordersRepository
+
+        $user = auth()->user();
+        $order = $this->ordersRepository
             ->savePersonal(
                 $request->only(['name', 'phone', 'email']),
-                auth()->user()
+                $user
             )
         ;
+
+        if (!$user->name) {
+            $this->userService->updateUser(
+                [
+                    'name' => $order->name,
+                ],
+                $user->id,
+            );
+        }
+
+        return $order;
     }
 
     /**
@@ -66,13 +79,15 @@ class OrderService implements OrderServiceInterface
     /**
      * Сохраняет в Order данные о корзине
      *
-     * @param  CartRepository $cartRepository
+     * @param  CartRepository  $cartRepository
+     * @param  Order|null  $order
+     * @throws \App\Exceptions\OrderPaymentException
      * @return bool
      */
-    public function saveCartToOrder(CartRepository $cartRepository): bool
+    public function saveCartToOrder(CartRepository $cartRepository, Order $order = null): bool
     {
         return $this->ordersRepository->saveCart(
-            $cartRepository->getCart()
+            $order->cart ?? $cartRepository->getCart(), $order
         );
     }
 }

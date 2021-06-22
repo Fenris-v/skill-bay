@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Repository\DeliveryRepository;
 use App\Repository\PaymentRepository;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,11 +19,20 @@ class Order extends Model
         AsSource;
 
     /**
+     * Статусы оплаты заказа.
+     */
+    public const PAYMENT_STATUS_NOT_PAYED = 0; // Не оплачен.
+    public const PAYMENT_STATUS_PAYED = 1; // Оплачен.
+    public const PAYMENT_STATUS_ERROR = -1; // Ошибка оплаты.
+
+    /**
      * @var string[]
      */
     protected $fillable = [
         'cart_id', 'user_id', 'delivery_type_id',
-        'city', 'address', 'payment_type_id', 'phone', 'email', 'name',
+        'city', 'address', 'payment_type_id',
+        'phone', 'email', 'name', 'payment_card',
+        'payment_status',  'payment_error_message',
     ];
 
     /**
@@ -67,6 +77,17 @@ class Order extends Model
     }
 
     /**
+     * Оплаченные заказы.
+     *
+     * @param  Builder  $query
+     * @return Builder
+     */
+    public function scopePayed(Builder $query)
+    {
+        return $query->where('payment_status', self::PAYMENT_STATUS_PAYED);
+    }
+
+    /**
      * Получение способов доставки
      *
      * @return Collection|DeliveryType[]
@@ -75,7 +96,7 @@ class Order extends Model
     {
         return app(DeliveryRepository::class)->getDeliveryTypes()
                 ->map(fn($item) => [
-                    'title' => $item->name . ($item->price ? " ($item->price$)" : ''),
+                    'title' => $item->name,
                     'value' => $item->id,
                     'checked' => $this->delivery_type_id === $item->id,
             ])

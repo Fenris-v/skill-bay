@@ -1917,6 +1917,9 @@ a.Cart-title {
   justify-content: center;
   align-items: center;
 }
+.CategoriesButton-icon svg {
+  height: 18px;
+}
 .CategoriesButton-content {
   position: absolute;
   top: 100%;

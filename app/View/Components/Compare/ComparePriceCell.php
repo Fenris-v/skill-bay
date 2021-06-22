@@ -4,11 +4,12 @@ namespace App\View\Components\Compare;
 
 use App\Models\Product;
 use App\Services\DiscountService;
+use App\Models\Discount;
 use Illuminate\View\Component;
 
 class ComparePriceCell extends Component
 {
-    public $discountService;
+    public $discount;
     public $product;
     public $price;
     public $discountPrice;
@@ -16,14 +17,18 @@ class ComparePriceCell extends Component
     public function __construct(Product $product, DiscountService $discountService)
     {
         $this->product = $product;
-        $this->discountService = $discountService;
+        $this->discount = $discountService->getPriorityDiscount($product)->first();
+
+        $this->price = $product->averagePrice;
+        $this->discountPrice = $discountService->calculateDiscountPrice(
+            $product,
+            $this->discount,
+            $product->averagePrice
+        );
     }
 
     public function render()
     {
-        $this->price = $this->product->averagePrice;
-        $this->discountPrice = $this->discountService->getDiscountPrice($this->product);
-
         return view('components.compare.compare-price-cell');
     }
 }

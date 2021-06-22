@@ -21,12 +21,5 @@ class ConfigServiceProvider extends ServiceProvider
                 return new ConfigRepository();
             }
         );
-
-        $this->app->singleton(
-            ProductRepository::class,
-            function () {
-                return new ProductRepository();
-            }
-        );
     }
 }

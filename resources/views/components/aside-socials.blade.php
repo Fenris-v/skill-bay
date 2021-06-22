@@ -7,19 +7,19 @@
             <div>
                 <a href="{{ $configs->getFacebook() }}"
                    target="_blank" rel="nofollow noopener">
-                    <img src="assets/img/icons/socialContent/fb.png" alt="fb.png"/>
+                    <img src="{{ asset('assets/img/icons/socialContent/fb.png') }}" alt="fb.png"/>
                 </a>
             </div>
             <div>
                 <a href="{{ $configs->getTwitter() }}"
                    target="_blank" rel="nofollow noopener">
-                    <img src="assets/img/icons/socialContent/tw.png" alt="tw.png"/>
+                    <img src="{{ asset('assets/img/icons/socialContent/tw.png') }}" alt="tw.png"/>
                 </a>
             </div>
             <div>
                 <a href="{{ $configs->getLinkedin() }}"
                    target="_blank" rel="nofollow noopener">
-                    <img src="assets/img/icons/socialContent/in.png" alt="in.png"/>
+                    <img src="{{ asset('assets/img/icons/socialContent/in.png') }}" alt="in.png"/>
                 </a>
             </div>
         </div>

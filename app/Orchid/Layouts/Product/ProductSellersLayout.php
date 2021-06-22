@@ -6,7 +6,6 @@ use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Field;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Layouts\Rows;
-use Orchid\Support\Facades\Layout;
 
 class ProductSellersLayout extends Rows
 {
@@ -24,6 +23,10 @@ class ProductSellersLayout extends Rows
      */
     protected function fields(): array
     {
+        if (!$this->query->get('product.sellers')) {
+            return [];
+        }
+
         $fields[] = ModalToggle::make(__('admin.product.sellers_edit'))
             ->modal('sellerModal')
             ->method('saveSellers')

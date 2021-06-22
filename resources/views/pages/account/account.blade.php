@@ -4,7 +4,7 @@
 
 @section('meta_description', '')
 
-@section('middle-header-h1', __('navigation.history'))
+@section('middle-header-h1', __('navigation.account'))
 
 @section('content')
     <div class="Section Section_column Section_columnLeft">
@@ -16,7 +16,9 @@
                     <div class="Account-group">
                         <div class="Account-column">
                             <div class="Account-avatar">
-                                <img src="{{ asset('assets/img/content/home/card.jpg') }}" alt="card.jpg"/>
+                            @if($user->attachment != null) 
+                                <img src="{{$user->attachment->name}}" alt="avatar"/>
+                            @endif
                             </div>
                         </div>
                         <div class="Account-column">

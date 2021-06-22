@@ -4,9 +4,14 @@
     <div class="Compare-nameProduct">{{ $product->title }}
     </div>
     <div class="Compare-feature">
-        <strong class="Compare-priceOld">@price($price)
-        </strong>
-        <strong class="Compare-price">@price($discountPrice)
-        </strong>
+        @if($discount)
+            <strong class="Compare-priceOld">@price($price)
+            </strong>
+            <strong class="Compare-price">@price($discountPrice)
+            </strong>
+        @else
+            <strong class="Compare-price">@price($price)
+            </strong>
+        @endif
     </div>
 </div>

@@ -11,18 +11,24 @@ use Illuminate\View\Component;
 class ProductList extends Component
 {
     public string $class;
+    public bool $hideDetails = false;
 
     /**
      * Create a new component instance.
      *
-     * @return void
+     * @param  Paginator|Collection  $products
+     * @param  Collection  $discounts
+     * @param  string  $class
+     * @param  bool  $hideDetails
      */
     public function __construct(
         public Paginator|Collection $products,
         public Collection $discounts,
-        string $class = ''
+        string $class = '',
+        bool $hideDetails = false,
     ) {
         $this->class = $class;
+        $this->hideDetails = $hideDetails;
     }
 
     /**
