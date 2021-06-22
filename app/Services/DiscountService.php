@@ -215,12 +215,16 @@ class DiscountService implements Discountable
     /**
      * Рассчитывает цену со скидкой
      * @param Product $product
-     * @param Discount $discount
+     * @param Discount|null $discount
      * @param float|null $price
      * @return float
      */
-    public function calculateDiscountPrice(Product $product, Discount $discount, ?float $price = null): float
+    public function calculateDiscountPrice(Product $product, ?Discount $discount, ?float $price = null): float
     {
+        if (!$discount) {
+            return $product->sellers->sortByDesc('pivot.price')->first()->pivot->price;
+        }
+
         if (!$price) {
             $price = $product->sellers->sortByDesc('pivot.price')->first()->pivot->price ?? 0;
         }
