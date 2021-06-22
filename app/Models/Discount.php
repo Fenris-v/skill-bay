@@ -20,6 +20,7 @@ class Discount extends Model
 
     const UNIT_PERCENT = 1;
     const UNIT_CURRENCY = 2;
+    const UNIT_FIXED = 3;
 
     protected $dates = ['begin_at', 'end_at'];
     protected $fillable = [
