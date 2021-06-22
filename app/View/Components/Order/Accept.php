@@ -2,7 +2,9 @@
 
 namespace App\View\Components\Order;
 
+use App\Models\Discount;
 use App\Repository\OrdersRepository;
+use App\Services\DiscountService;
 use App\Services\ProductCartService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\View\Component;
@@ -15,10 +17,25 @@ class Accept extends Component
 
     public function __construct(
         OrdersRepository $ordersRepository,
-        ProductCartService $productCartService
+        ProductCartService $productCartService,
+        DiscountService $service
     ) {
         $this->order = $ordersRepository->getCurrentOrder();
         $this->products = $productCartService->get();
+        $discounts = $service->getCartDiscount($this->products);
+        $this->products->map(
+            function($product) use ($discounts, $service) {
+                $product->priceOld = $product->price;
+                $discount = $discounts->get($product->slug);
+                if ($discount?->type === Discount::PRODUCT) {
+                    $product->price = $service->calculateDiscountPrice(
+                        $product,
+                        $discount,
+                        $product->price
+                    );
+                }
+            }
+        );
     }
 
     /**

@@ -70,10 +70,11 @@ class DiscountService implements Discountable
 
     /**
      * Возвращает итоговую сумму корзины
+     * @param Collection $products
      * @return float
      */
-    public function getCartTotal(): float {
-        $products = $this->productCartService->get();
+    public function getCartTotal(Collection $products = null): float {
+        $products = $products ?? $this->productCartService->get();
         $discounts = $this->getCartDiscount($products);
 
         if ($discounts->first()?->type === Discount::GROUP) {
