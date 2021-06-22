@@ -286,12 +286,12 @@
                     $line.ionRangeSlider({
                         onStart: function (data) {
                             $('.rangePrice').text(
-                                '$' + data.from + ' - $' + data.to
+                                data.from + ' - ' + data.to
                             )
                         },
                         onChange: function (data) {
                             $('.rangePrice').text(
-                                '$' + data.from + ' - $' + data.to
+                                data.from + ' - ' + data.to
                             )
                         }
                     });
