@@ -30,7 +30,7 @@ class AccountController extends Controller
 
         $order = $orders->getLast($userId);
 
-        $user = $usersRepository->getById($userId, ['name']);
+        $user = auth()->user();
 
         $history = $historyRepository->get($userId, 3);
 
