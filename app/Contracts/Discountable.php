@@ -38,4 +38,11 @@ interface Discountable
      * @return float
      */
     public function calculateDiscountPrice(Product $product, Discount $discount, ?float $price = null): float;
+
+    /**
+     * Возвращает итоговую сумму корзины
+     * @param Collection $products
+     * @return float
+     */
+    public function getCartTotal(Collection $products = null): float;
 }

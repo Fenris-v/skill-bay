@@ -32,6 +32,10 @@ class Discount extends Model
         'type',
         'priority',
         'image_id',
+        'conditions',
+    ];
+    protected $casts = [
+        'conditions' => 'json',
     ];
 
     /**

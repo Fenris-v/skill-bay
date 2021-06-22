@@ -128,6 +128,22 @@ Route::prefix('/account')
                 ->breadcrumbs(
                     function (Trail $trail) {
                         $trail->parent('account')
+                            ->push(__('navigation.profile'), route('profile'));
+                    }
+                );
+            Route::put('/profile', [AccountController::class, 'editProfile'])
+                ->name('profile.edit')
+                ->breadcrumbs(
+                    function (Trail $trail) {
+                        $trail->parent('account')
+                            ->push(__('navigation.account'), route('profile'));
+                    }
+                );
+            Route::delete('/profile/avatar', [AccountController::class, 'deleteAvatar'])
+                ->name('profile.avatar.delete')
+                ->breadcrumbs(
+                    function (Trail $trail) {
+                        $trail->parent('account')
                             ->push(__('navigation.account'), route('profile'));
                     }
                 );
@@ -208,6 +224,22 @@ Route::prefix('/order')
                 );
             Route::post('/accept', [OrderController::class, 'stepAcceptStore'])
                 ->name('order.accept.store');
+        }
+    );
+
+Route::prefix('/order')
+    ->middleware(['auth'])
+    ->group(
+        function () {
+            Route::get('/pay/{order?}', [OrderController::class, 'stepPay'])
+                ->name( 'order.pay')
+                ->breadcrumbs(
+                    fn(Trail $trail) => $trail
+                        ->parent('index')
+                        ->push(__('orderPage.title'), route('order.pay'))
+                );
+            Route::post('/pay/{order?}', [OrderController::class, 'stepPayStore'])
+                ->name('order.pay-store');
         }
     );
 

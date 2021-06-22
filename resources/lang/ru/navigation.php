@@ -22,4 +22,5 @@ return [
     'account' => 'Личный кабинет',
     'profile' => 'Профиль',
     'edit_profile' => 'Редактировать профиль',
+    'order_pay' => 'Оплата заказа №:orderId',
 ];

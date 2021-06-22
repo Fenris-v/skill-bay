@@ -170,14 +170,6 @@
                                         error = true;
                                     }
                                     break;
-                                case 'pay':
-                                    var val = $this.val().replace(' ', '');
-                                    val = val + '';
-                                    if (parseFloat(val) % 2 !== 0) {
-                                        message += 'Номер должен быть четным. ';
-                                        error = true;
-                                    }
-                                    break;
 
                             }
                             if (error) {
@@ -294,12 +286,12 @@
                     $line.ionRangeSlider({
                         onStart: function (data) {
                             $('.rangePrice').text(
-                                '$' + data.from + ' - $' + data.to
+                                data.from + ' - ' + data.to
                             )
                         },
                         onChange: function (data) {
                             $('.rangePrice').text(
-                                '$' + data.from + ' - $' + data.to
+                                data.from + ' - ' + data.to
                             )
                         }
                     });

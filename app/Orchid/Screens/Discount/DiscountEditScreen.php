@@ -5,9 +5,6 @@ namespace App\Orchid\Screens\Discount;
 use App\Models\Discount;
 use App\Models\DiscountUnit;
 use App\Orchid\Layouts\Discount\TypeDiscountListener;
-use App\Orchid\Layouts\Discount\ProductTypeDiscountLayout;
-use App\Orchid\Layouts\Discount\GroupTypeDiscountLayout;
-use App\Orchid\Layouts\Discount\CartTypeDiscountLayout;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Cropper;
 use Orchid\Screen\Fields\DateTimer;
@@ -20,7 +17,6 @@ use App\Http\Requests\DiscountRequest;
 use Illuminate\Http\Request;
 use Orchid\Support\Facades\Layout;
 use Illuminate\Support\Facades\Validator;
-use PHPUnit\Util\Type;
 
 class DiscountEditScreen extends Screen
 {
@@ -208,13 +204,15 @@ class DiscountEditScreen extends Screen
     public function createOrUpdate(Discount $discount, DiscountRequest $request)
     {
         $discount->fill($request->discount)->save();
-        if ($discount->type !== Discount::CART) {
+        if ((int) $discount->type !== Discount::CART) {
             $this->saveGroups($discount, $request->discount['discountUnit']);
 
             if ($discount->discountUnit->count() === 1 && (int) $discount->type === Discount::GROUP) {
                 $discount->type = Discount::PRODUCT;
                 $discount->save();
             }
+        } else {
+            $discount->save();
         }
 
         Alert::info(

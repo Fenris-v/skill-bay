@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Contracts\HotProductCategoriesService as HotProductCategoriesServiceContract;
+use App\Contracts\OrderThirdPartyPaymentService as OrderThirdPartyPaymentServiceContract;
 use App\Contracts\ProductViewHistoryService as ProductViewHistoryServiceContract;
 use App\Contracts\OrderPaymentService as OrderPaymentServiceContract;
 use App\Contracts\ProductReviewService as ProductReviewServiceContract;
 use App\Services\CompareProductsService;
+use App\Services\FakeOrderThirdPartyPaymentService;
 use App\Services\HotProductCategoriesService;
 use App\Services\LimitedEditionProductService;
 use App\Services\OrderPaymentService;
@@ -83,6 +85,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(
             LimitedEditionProductService::class,
             LimitedEditionProductService::class
+        );
+
+        // Сервис для оплаты заказа с помощью сторонней системы.
+        $this->app->bind(
+            OrderThirdPartyPaymentServiceContract::class,
+            FakeOrderThirdPartyPaymentService::class
         );
     }
 

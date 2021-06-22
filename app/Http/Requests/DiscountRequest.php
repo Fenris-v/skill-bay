@@ -28,7 +28,7 @@ class DiscountRequest extends FormRequest
                 Rule::in(Discount::unitTypes()),
             ],
             'discount.type' => [
-                Rule::in(Discount::types()),
+                Rule::in(collect(Discount::types())->map(fn($item) => (string) $item)),
             ],
             'discount.priority' => 'required|numeric|min:1|max:999',
             'discount.image_id' => 'required|numeric|exists:attachments,id',
@@ -46,6 +46,14 @@ class DiscountRequest extends FormRequest
                 'array',
             ],
             'discount.discountUnit.*.categories.*' => 'numeric|exists:categories,id',
+            'discount.conditions' => [
+                'required_if:discount.type,' . Discount::CART,
+                'array',
+            ],
+            'discount.conditions.max_price' => 'numeric|min:1|required_without_all:discount.conditions.min_price,discount.conditions.max_amount,discount.conditions.min_amount',
+            'discount.conditions.min_price' => 'numeric|min:1|required_without_all:discount.conditions.max_price,discount.conditions.max_amount,discount.conditions.min_amount',
+            'discount.conditions.max_amount' => 'numeric|min:1|required_without_all:discount.conditions.max_price,discount.conditions.min_price,discount.conditions.min_amount',
+            'discount.conditions.min_amount' => 'numeric|min:1|required_without_all:discount.conditions.max_price,discount.conditions.min_price,discount.conditions.max_amount',
         ];
     }
 }

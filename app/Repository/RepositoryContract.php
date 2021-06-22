@@ -1,13 +1,14 @@
 <?php
 namespace App\Repository;
+use App\Models\User;
 
-interface RepositoryInterface
+interface RepositoryContract
 {
     public function all();
 
     public function create(array $data);
 
-    public function update(array $data, int $id);
+    public function update(array $data, User $user);
 
     public function delete($id);
 
