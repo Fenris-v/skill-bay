@@ -64,11 +64,6 @@ class BannerEditScreen extends Screen
                 ->icon('note')
                 ->method('createOrUpdate')
                 ->canSee($this->exists),
-
-            Button::make(__('admin.banner.edit.buttons.remove'))
-                ->icon('trash')
-                ->method('remove')
-                ->canSee($this->exists),
         ];
     }
 
@@ -113,24 +108,6 @@ class BannerEditScreen extends Screen
                     : 'admin.banner.edit.success_edit',
                 ['title' => $banner->title]
             )
-        );
-
-        return redirect()->route('platform.banner.list');
-    }
-
-    /**
-     * @param Banner $banner
-     *
-     * @throws \Exception
-     *@return \Illuminate\Http\RedirectResponse
-     */
-    public function remove(Banner $banner)
-    {
-        $banner->delete();
-
-        Alert::info(
-            __('admin.banner.edit.success_delete',
-                ['title' => $banner->title])
         );
 
         return redirect()->route('platform.banner.list');

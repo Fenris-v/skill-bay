@@ -8,6 +8,8 @@ use App\Orchid\Layouts\Discount\CartTypeDiscountLayout;
  * Языковые константы админ панели
  */
 return [
+    'change' => 'Изменить',
+    'delete' => 'Удалить',
     'lists' => 'Списки',
     'save' => 'Сохранить',
     'config' => [
@@ -103,6 +105,7 @@ return [
         ],
     ],
     'product-review' => [
+        'was_deleted' => 'Отзыв был удален',
         'product-reviews' => 'Отзывы к товарам',
         'list' => [
             'title' => 'Список отзывов к товарам',
@@ -110,6 +113,7 @@ return [
             'table' => [
                 'id' => 'ID',
                 'comment' => 'Отзыв',
+                'product' => 'Товар',
             ],
             'buttons' => [
                 'add' => 'Добавить отзыв',
@@ -134,6 +138,7 @@ return [
         ],
     ],
     'banner' => [
+        'was_deleted' => 'Баннер был удален',
         'banners' => 'Баннеры',
         'list' => [
             'title' => 'Список баннеров',
@@ -153,8 +158,8 @@ return [
             'success_edit' => 'Вы успешно изменили баннер ":title"',
             'success_delete' => 'Вы успешно удалили баннер ":title"',
             'buttons' => [
-                'create' => 'Создать баннер',
-                'edit' => 'Редактировать баннер',
+                'create' => 'Сохранить',
+                'edit' => 'Сохранить',
                 'remove' => 'Удалить баннер',
             ],
             'labels' => [
@@ -201,6 +206,7 @@ return [
         ],
     ],
     'category' => [
+        'was_deleted' => 'Категория была удалена',
         'categories' => 'Категории товаров',
         'list' => [
             'title' => 'Список категорий товаров',
