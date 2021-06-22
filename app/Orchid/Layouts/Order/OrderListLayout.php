@@ -26,7 +26,6 @@ class OrderListLayout extends Table
      */
     protected function columns(): array
     {
-
         return [
             TD::make('id', __('admin.order.list.table.id')),
             TD::make('user', __('admin.order.list.table.supplier'))
