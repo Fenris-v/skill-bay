@@ -19,7 +19,7 @@ class CreateDeliveryTypesTable extends Migration
             $table->decimal('price', 10)->nullable();
         });
 
-        Artisan::call('db:seed', array('--class' => 'DeliveryTypeSeeder'));
+        Artisan::call('db:seed', array('--class' => 'DeliveryTypeSeeder', '--force' => true));
     }
 
     /**
