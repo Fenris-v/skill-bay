@@ -35,8 +35,11 @@ class Order extends Component
         }
 
         $products = $order->cart->products;
+        $this->price = $service->getCartTotal($products);
+        $this->priceOld = $order->cart->oldPrice;
+
         $discounts = $service->getCartDiscount($products);
-        $this->products = $order->cart->products->map(
+        $this->products = $products->map(
             function($product) use ($discounts, $service) {
                 $product->priceOld = $product->price;
                 $discount = $discounts->get($product->slug);
@@ -50,9 +53,6 @@ class Order extends Component
                 return $product;
             }
         );
-
-        $this->price = $service->getCartTotal($products);
-        $this->priceOld = $order->cart->oldPrice;
     }
 
     /**
