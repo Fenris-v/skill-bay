@@ -21,7 +21,9 @@
                 <div class="ProductCard-info">
                     <div class="ProductCard-cost">
                         <div class="ProductCard-price">@price($price)</div>
-                        <div class="ProductCard-priceOld">@price($priceOld)</div>
+                        @if($discount)
+                            <div class="ProductCard-priceOld">@price($priceOld)</div>
+                        @endif
                     </div>
                     <div class="ProductCard-compare">
                         <x-wrappers.form

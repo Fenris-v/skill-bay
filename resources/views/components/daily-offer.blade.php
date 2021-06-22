@@ -11,8 +11,10 @@
                 <strong class="Card-title"><a href="{{ route('products.show', [$product]) }}">{{ $product->title }}</a></strong>
                 <div class="Card-description">
                     <div class="Card-cost">
-                        <span class="Card-priceOld">@price($product->averagePrice)</span>
-                        <span class="Card-price">@price($product->averagePrice)</span>
+                        @if($product->priceOld > $product->price)
+                            <span class="Card-priceOld">@price($product->priceOld)</span>
+                        @endif
+                        <span class="Card-price">@price($product->price)</span>
                     </div>
                     <div class="Card-category">{{ $product->category->name }}</div>
                 </div>
