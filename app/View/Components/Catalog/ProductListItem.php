@@ -28,7 +28,7 @@ class ProductListItem extends Component
         ?Discount $discount,
         bool $hideDetails = false,
     ) {
-        $this->discount = $discount ?? null;
+        $this->discount = $discount ?? $service->getPriorityDiscount($this->product)->first();
 
         if ($this->discount) {
             $this->price = $service->calculateDiscountPrice(

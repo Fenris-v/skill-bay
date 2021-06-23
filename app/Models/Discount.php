@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Orchid\Screen\AsSource;
 use DateTimeInterface;
 use Illuminate\Support\Str;
@@ -35,6 +36,7 @@ class Discount extends Model
         'image_id',
         'conditions',
     ];
+
     protected $casts = [
         'conditions' => 'json',
     ];
@@ -99,5 +101,19 @@ class Discount extends Model
     {
         $this->attributes['slug'] = Str::slug($title, '-');
         $this->attributes['title'] = $title;
+    }
+
+    public function scopeActive($query)
+    {
+        $query->where(function($query) {
+            return $query
+                ->where('begin_at', null)
+                ->orWhere('begin_at', '<', now());
+        })
+        ->where(function($query) {
+            return $query
+                ->where('end_at', null)
+                ->orWhere('end_at', '>', now());
+        });
     }
 }
