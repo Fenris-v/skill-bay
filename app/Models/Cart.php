@@ -19,9 +19,9 @@ class Cart extends Model
         CacheFlushableAfterCRUDModelTrait
     ;
 
-    public function products(): BelongsToMany
+    public function products($withPivot = true): BelongsToMany
     {
-        return $this
+        $products = $this
             ->belongsToMany(Product::class, 'cart_product_seller')
             ->join('product_seller', fn ($join) =>
                 $join
@@ -30,8 +30,12 @@ class Cart extends Model
                 )
             ->select('products.*', 'product_seller.price', 'cart_product_seller.amount')
             ->withPivot(['seller_id'])
-            ->using(\App\Models\Pivots\ProductSeller::class)
         ;
+        if ($withPivot) {
+            return $products->using(ProductSeller::class);
+        } else {
+            return $products;
+        }
     }
 
     public function sellers(): BelongsToMany

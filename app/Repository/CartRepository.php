@@ -211,7 +211,7 @@ class CartRepository
     public function remove(Product $product): bool
     {
         $this->getCart()
-            ->products()->detach($product)
+            ->products(false)->detach($product)
         ;
         Cache::tags([Cart::class])->flush();
 
