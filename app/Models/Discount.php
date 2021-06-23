@@ -89,6 +89,7 @@ class Discount extends Model
         return [
             self::UNIT_PERCENT,
             self::UNIT_CURRENCY,
+            self::UNIT_FIXED,
         ];
     }
 
