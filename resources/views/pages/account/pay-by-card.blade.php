@@ -25,7 +25,7 @@
                     @csrf
 
                     <button class="btn btn_primary" type="submit">
-                        {{ __('orderPage.buttons.toPay') }} {{ $price }}$
+                        {{ __('orderPage.buttons.toPay') }} @price($price)
                     </button>
                 </div>
             </form>

@@ -3,6 +3,8 @@
 namespace App\Orchid\Layouts\Banner;
 
 use App\Models\Banner;
+use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Actions\DropDown;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
@@ -33,6 +35,43 @@ class BannerListLayout extends Table
                     return Link::make($banner->title)
                         ->route('platform.banner.edit', $banner);
                 }),
+            TD::make(__('admin.actions'))
+                ->align(TD::ALIGN_CENTER)
+                ->width('100px')
+                ->render(
+                    function (Banner $banner) {
+                        return $this->renderDropDown($banner);
+                    }
+                ),
         ];
+    }
+
+    /**
+     * Отрисовывает выпадающее меню.
+     *
+     * @param  Banner  $banner
+     * @return DropDown
+     */
+    private function renderDropDown(Banner $banner): DropDown
+    {
+        return DropDown::make()
+            ->icon('options-vertical')
+            ->list(
+                [
+                    Link::make(__('admin.change'))
+                        ->route('platform.banner.edit', $banner->getRouteKey())
+                        ->icon('pencil'),
+
+                    Button::make(__('admin.delete'))
+                        ->icon('trash')
+                        ->method('remove')
+                        ->confirm(' ')
+                        ->parameters(
+                            [
+                                'id' => $banner->id,
+                            ]
+                        ),
+                ]
+            );
     }
 }

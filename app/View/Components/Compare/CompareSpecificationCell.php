@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Compare;
 
+use App\Models\Specification;
 use Illuminate\View\Component;
 
 class CompareSpecificationCell extends Component
@@ -9,6 +10,8 @@ class CompareSpecificationCell extends Component
     public $product;
     public $specificationTitle;
     public $specificationValue;
+    public bool $isCheckbox;
+
     /**
      * Create a new component instance.
      *
@@ -35,6 +38,12 @@ class CompareSpecificationCell extends Component
                 ->first()
                 ->pivot
                 ->value ?? '-';
+
+        $this->isCheckbox = $this->product
+                ->specifications
+                ->where('title', $this->specificationTitle)
+                ->first()
+                ->type === Specification::CHECKBOX;
 
         return view('components.compare.compare-product');
     }

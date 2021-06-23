@@ -7,11 +7,13 @@ use App\Exceptions\OrderPaymentException;
 use App\Http\Requests\OrderDeliveryRequest;
 use App\Http\Requests\OrderPaymentRequest;
 use App\Http\Requests\OrderPersonalRequest;
+use App\Models\Discount;
 use App\Models\Order;
 use App\Models\PaymentType;
 use App\Repository\CartRepository;
 use App\Repository\OrdersRepository;
 use App\Services\AlertFlashService;
+use App\Services\DiscountService;
 use App\Services\FakeBankCardNumberGenerator;
 use App\Services\OrderService;
 use App\Services\ProductCartService;
@@ -117,8 +119,10 @@ public function stepPaymentStore(OrderPaymentRequest $request)
         ]);
     }
 
-    public function stepAcceptStore()
-    {
+    public function stepAcceptStore(
+        DiscountService $discountService,
+        ProductCartService $productCartService
+    ) {
         if (!$this->isEnoughProgress(['personal', 'delivery', 'payment'])) {
             $this->alert->danger();
             $this->alert->lang('orderMessages.notEnoughProgress');
@@ -131,6 +135,7 @@ public function stepPaymentStore(OrderPaymentRequest $request)
     public function stepPay(
         CartRepository $cartRepository,
         OrderPaymentService $orderPaymentService,
+        DiscountService $service,
         Order $order = null
     ) {
         $order = $order ?? $this->ordersRepository->getCurrentOrder();
@@ -140,7 +145,7 @@ public function stepPaymentStore(OrderPaymentRequest $request)
         }
 
         $cart = $cartRepository->getCart();
-        $price = $cart->currentPrice;
+        $price = $service->getCartTotal($cart->products);
 
         // Оплата рандомной картой.
         if ($order->payment_type_id === PaymentType::BY_RANDOM_ACCOUNT) {

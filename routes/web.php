@@ -128,7 +128,7 @@ Route::prefix('/account')
                 ->breadcrumbs(
                     function (Trail $trail) {
                         $trail->parent('account')
-                            ->push(__('navigation.account'), route('profile'));
+                            ->push(__('navigation.profile'), route('profile'));
                     }
                 );
             Route::put('/profile', [AccountController::class, 'editProfile'])

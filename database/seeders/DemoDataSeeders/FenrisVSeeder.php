@@ -3,9 +3,12 @@
 namespace Database\Seeders\DemoDataSeeders;
 
 use App\Models\Attachment;
+use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Discount;
 use App\Models\DiscountUnit;
+use App\Models\HistoryView;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\Seller;
 use App\Models\Specification;
@@ -75,6 +78,10 @@ class FenrisVSeeder extends Seeder
         $this->makeAccessories($sellers, $userId);
 
         $this->makeDiscounts($userId);
+
+        $this->makeViewHistory($userId);
+
+        $this->makeOrders($userId);
     }
 
     private function makeUser()
@@ -158,7 +165,7 @@ class FenrisVSeeder extends Seeder
             $shuffledSellers = $sellers->shuffle();
             $props = array_pop($product);
             $mainImage = $props['main_image'];
-            $mainImage = $this->makeImage($mainImage, $imgDir, $userId);
+            $mainImage = $this->makeImage($mainImage, $imgDir);
 
             $product['main_image_id'] = $mainImage->id;
             $product = Product::create($product);
@@ -666,10 +673,10 @@ class FenrisVSeeder extends Seeder
             $shuffledSellers = $sellers->shuffle();
             $props = array_pop($product);
             $mainImage = $props['main_image'];
-            $mainImage = $this->makeImage($mainImage, $imgDir, $userId);
+            $mainImage = $this->makeImage($mainImage, $imgDir);
 
             $images = $props['images'] ?? [];
-            $images = $this->makeImages($images, $imgDir, $userId);
+            $images = $this->makeImages($images, $imgDir);
 
             $product['main_image_id'] = $mainImage->id;
             $product = Product::factory()->create($product);
@@ -691,9 +698,9 @@ class FenrisVSeeder extends Seeder
         }
     }
 
-    private function makeImage($mainImage, $imgDir, $userId)
+    private function makeImage($mainImage, $imgDir)
     {
-        File::move($imgDir . $mainImage, $this->fullPath . $mainImage);
+        File::copy($imgDir . $mainImage, $this->fullPath . $mainImage);
 
         $img = [
             'name' => pathinfo($this->fullPath . $mainImage)['filename'],
@@ -701,7 +708,7 @@ class FenrisVSeeder extends Seeder
             'mime' => mime_content_type($this->fullPath . $mainImage),
             'extension' => pathinfo($this->fullPath . $mainImage)['extension'],
             'path' => $this->path,
-            'user_id' => $userId,
+            'user_id' => 1,
             'size' => filesize($this->fullPath . $mainImage),
             'hash' => sha1_file($this->fullPath . $mainImage),
         ];
@@ -709,11 +716,11 @@ class FenrisVSeeder extends Seeder
         return Attachment::create($img);
     }
 
-    private function makeImages($images, $imgDir, $userId)
+    private function makeImages($images, $imgDir)
     {
         $attachments = [];
         foreach ($images as $image) {
-            $attachments[] = $this->makeImage($image, $imgDir, $userId);
+            $attachments[] = $this->makeImage($image, $imgDir);
         }
 
         return $attachments;
@@ -734,7 +741,7 @@ class FenrisVSeeder extends Seeder
 
     private function fatbikeDiscount($userId)
     {
-        $image = $this->makeImage('sale.png', 'resources/fenris/', $userId);
+        $image = $this->makeImage('sale.png', 'resources/fenris/');
 
         $discount = Discount::create(
             [
@@ -763,7 +770,7 @@ class FenrisVSeeder extends Seeder
     {
         $stels = Product::where('slug', 'like', '%stels%')->get();
 
-        $image = $this->makeImage('15.png', 'resources/fenris/', $userId);
+        $image = $this->makeImage('15.png', 'resources/fenris/');
 
         $discount['image_id'] = $image->id;
 
@@ -784,5 +791,47 @@ class FenrisVSeeder extends Seeder
         $unit = DiscountUnit::create(['discount_id' => $discount->id]);
 
         $unit->products()->saveMany($stels);
+    }
+
+    private function makeViewHistory($userId)
+    {
+        $products = Product::inRandomOrder()->limit(5)->get('id');
+
+        foreach ($products as $product) {
+            HistoryView::create(
+                [
+                    'product_id' => $product->id,
+                    'user_id' => $userId,
+                    'created_at' => now()->subDays(rand(31, 60)),
+                    'updated_at' => now()->subDays(rand(1, 30))
+                ]
+            );
+        }
+    }
+
+    private function makeOrders($userId)
+    {
+        $products = Product::all();
+
+        for ($i = 0; $i < 5; $i++) {
+            $products = $products->shuffle();
+
+            $cart = Cart::factory()
+                ->create();
+
+            $cart->products()->attach(
+                $products->take(5)
+                    ->mapWithKeys(
+                        fn($item) => [
+                            $item->id => [
+                                'seller_id' => $item->sellers->random()->id,
+                                'amount' => rand(1, 10)
+                            ]
+                        ]
+                    )
+            );
+
+            Order::factory()->create(['user_id' => $userId, 'cart_id' => $cart->id]);
+        }
     }
 }

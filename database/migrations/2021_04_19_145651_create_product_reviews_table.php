@@ -18,7 +18,7 @@ class CreateProductReviewsTable extends Migration
             $table->string('name')->comment('Имя автора');
             $table->string('email')->comment('Email автора');
             $table->text('comment')->comment('Тело отзыва');
-            $table->foreignId('product_id')->constrained();
+            $table->foreignId('product_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
         });

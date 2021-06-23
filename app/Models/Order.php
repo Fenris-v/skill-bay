@@ -96,7 +96,7 @@ class Order extends Model
     {
         return app(DeliveryRepository::class)->getDeliveryTypes()
                 ->map(fn($item) => [
-                    'title' => $item->name . ($item->price ? " ($item->price$)" : ''),
+                    'title' => $item->name,
                     'value' => $item->id,
                     'checked' => $this->delivery_type_id === $item->id,
             ])

@@ -61,11 +61,6 @@ class ProductReviewEditScreen extends Screen
                 ->icon('note')
                 ->method('createOrUpdate')
                 ->canSee($this->exists),
-
-            Button::make(__('admin.product-review.edit.buttons.remove'))
-                ->icon('trash')
-                ->method('remove')
-                ->canSee($this->exists),
         ];
     }
 
@@ -112,24 +107,6 @@ class ProductReviewEditScreen extends Screen
                     : 'admin.product-review.edit.success_edit',
                 ['product' => $productReview->product->title]
             )
-        );
-
-        return redirect()->route('platform.product-review.list');
-    }
-
-    /**
-     * @param  ProductReview  $productReview
-     *
-     * @throws \Exception
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function remove(ProductReview $productReview)
-    {
-        $productReview->delete();
-
-        Alert::info(
-            __('admin.product-review.edit.success_delete',
-                ['product' => $productReview->product->title])
         );
 
         return redirect()->route('platform.product-review.list');

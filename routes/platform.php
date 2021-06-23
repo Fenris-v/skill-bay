@@ -140,24 +140,24 @@ Route::screen('products', ProductListScreen::class)
     ->name('platform.product.list');
 
 // Отзывы к товарам.
+Route::screen('product-reviews', ProductReviewListScreen::class)
+    ->name('platform.product-review.list');
+
 Route::screen('product-reviews/create', ProductReviewEditScreen::class)
     ->name('platform.product-review.create');
 
 Route::screen('product-reviews/{productReview}', ProductReviewEditScreen::class)
     ->name('platform.product-review.edit');
 
-Route::screen('product-reviews', ProductReviewListScreen::class)
-    ->name('platform.product-review.list');
-
 // Баннеры.
+Route::screen('banners', BannerListScreen::class)
+    ->name('platform.banner.list');
+
 Route::screen('banners/create', BannerEditScreen::class)
     ->name('platform.banner.create');
 
 Route::screen('banners/{banner}', BannerEditScreen::class)
     ->name('platform.banner.edit');
-
-Route::screen('banners', BannerListScreen::class)
-    ->name('platform.banner.list');
 
 // Заказы.
 Route::screen('orders/create', OrderEditScreen::class)
@@ -170,14 +170,14 @@ Route::screen('orders', OrderListScreen::class)
     ->name('platform.order.list');
 
 // Категории товаров.
+Route::screen('categories', CategoryListScreen::class)
+    ->name('platform.category.list');
+
 Route::screen('categories/create', CategoryEditScreen::class)
     ->name('platform.category.create');
 
 Route::screen('categories/{category}', CategoryEditScreen::class)
     ->name('platform.category.edit');
-
-Route::screen('categories', CategoryListScreen::class)
-    ->name('platform.category.list');
 
 // Обратная связь
 Route::screen('callbacks', CallbackListScreen::class)

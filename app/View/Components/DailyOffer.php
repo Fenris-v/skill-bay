@@ -2,6 +2,7 @@
 
 namespace App\View\Components;
 
+use App\Services\DiscountService;
 use App\Services\LimitedEditionProductService;
 use Carbon\Carbon;
 use Illuminate\View\Component;
@@ -13,6 +14,11 @@ class DailyOffer extends Component
      * @var LimitedEditionProductService
      */
     private $limitedEditionProductService;
+
+    /**
+     * @var DiscountService
+     */
+    private $discountService;
 
     /**
      * @var \App\Models\Product
@@ -29,9 +35,12 @@ class DailyOffer extends Component
      *
      * @return void
      */
-    public function __construct(LimitedEditionProductService $limitedEditionProductService)
-    {
+    public function __construct(
+        LimitedEditionProductService $limitedEditionProductService,
+        DiscountService $discountService
+    ) {
         $this->limitedEditionProductService = $limitedEditionProductService;
+        $this->discountService = $discountService;
     }
 
     /**
@@ -42,7 +51,22 @@ class DailyOffer extends Component
     public function render()
     {
         $this->time = Carbon::tomorrow();
-        $this->product = $this->limitedEditionProductService->getDailyOffer();
+        $this->product = $product = $this->limitedEditionProductService->getDailyOffer();
+
+        $discount = $this->discountService->getPriorityDiscount($product)->first();
+
+        $this->product->price = $discount
+            ? $this->discountService
+                ->calculateDiscountPrice(
+                    $product,
+                    $discount,
+                    $product->averagePrice
+                )
+            : $product->averagePrice
+        ;
+
+        $this->product->priceOld = $product->averagePrice;
+
         return view('components.daily-offer');
     }
 }

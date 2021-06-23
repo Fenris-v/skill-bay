@@ -17,7 +17,7 @@ class AccountController extends Controller
 {
     /**
      * @param OrdersRepository $orders
-     * @param UserRepository $users
+     * @param EloquentUserRepository $usersRepository
      * @param ProductViewHistoryRepository $historyRepository
      * @return View
      */
@@ -30,7 +30,7 @@ class AccountController extends Controller
 
         $order = $orders->getLast($userId);
 
-        $user = $usersRepository->getById($userId, ['name']);
+        $user = auth()->user();
 
         $history = $historyRepository->get($userId, 3);
 
@@ -48,7 +48,7 @@ class AccountController extends Controller
         $user = auth()->user();
         return view('pages.account.profile',["user" => $user]);
     }
-    
+
     public function editProfile(AccountRequest $request, UserService $userService, PreparePasswordService $passwordService, AvatarService $avatarService)
     {
         $user = auth()->user();
@@ -63,7 +63,7 @@ class AccountController extends Controller
         $userService->updateUser($data, $user);
         return back()->with('success', __('user_messages.profile_edit_success'));
     }
-    
+
     public function deleteAvatar(AvatarService $avatarService)
     {
         $user = auth()->user();

@@ -48,7 +48,7 @@
                         :product="$product"
                         :productLink="route('products.show', $product->slug)"
                         :price="$product->price"
-                        :priceOld="$product->price"
+                        :priceOld="$product->priceOld"
                     />
                 </x-slot>
                 <x-slot name="sellerBlockSlot">
