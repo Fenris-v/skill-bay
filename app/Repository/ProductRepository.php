@@ -52,8 +52,10 @@ class ProductRepository
                         'image',
                         'category',
                     ])
+                    ->withCount('payedOrders')
+                    ->orderByDesc('payed_orders_count')
                     ->selectRaw(
-                        '*, (SELECT AVG(price) FROM product_seller WHERE products.id = product_id) as avg_price'
+                        '(SELECT AVG(price) FROM product_seller WHERE products.id = product_id) as avg_price'
                     )->get();
             }
         );

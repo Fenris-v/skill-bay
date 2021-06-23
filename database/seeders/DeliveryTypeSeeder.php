@@ -19,7 +19,7 @@ class DeliveryTypeSeeder extends Seeder
         ]);
 
         DeliveryType::create([
-           'name' => 'Экспресс доставка',
+           'name' => 'Экспресс доставка (пока бесплатно)',
            'price' => '500.00',
         ]);
     }

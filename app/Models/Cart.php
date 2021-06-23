@@ -30,6 +30,7 @@ class Cart extends Model
                 )
             ->select('products.*', 'product_seller.price', 'cart_product_seller.amount')
             ->withPivot(['seller_id'])
+            ->using(\App\Models\Pivots\ProductSeller::class)
         ;
     }
 

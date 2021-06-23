@@ -206,7 +206,7 @@ class DiscountEditScreen extends Screen
         $discount->fill($request->discount)->save();
         if ((int) $discount->type !== Discount::CART) {
             $this->saveGroups($discount, $request->discount['discountUnit']);
-
+            $discount->refresh();
             if ($discount->discountUnit->count() === 1 && (int) $discount->type === Discount::GROUP) {
                 $discount->type = Discount::PRODUCT;
                 $discount->save();

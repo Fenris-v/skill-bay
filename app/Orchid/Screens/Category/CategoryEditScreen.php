@@ -67,10 +67,6 @@ class CategoryEditScreen extends Screen
                 ->icon('note')
                 ->method('createOrUpdate')
                 ->canSee($this->exists),
-            Button::make(__('admin.category.edit.buttons.remove'))
-                ->icon('trash')
-                ->method('remove')
-                ->canSee($this->exists),
         ];
     }
 
@@ -99,13 +95,14 @@ class CategoryEditScreen extends Screen
                         }),'name')
                     ->title(__('admin.category.edit.labels.parent')),
                 CheckBox::make('category.is_hot')
-                    ->required()
                     ->sendTrueOrFalse()
                     ->placeholder(__('admin.category.edit.labels.is_hot')),
                 Input::make('category.hot_order')
                     ->title(__('admin.category.edit.labels.hot_order'))
                     ->type('number')
-                    ->min(0)->max(2)
+                    ->min(0)->max(100)
+                    ->value(0)
+                    ->required()
                     ->help(__('admin.category.edit.labels.hot_order_tip')),
                 Cropper::make('category.image_id')
                     ->targetId()
@@ -131,17 +128,6 @@ class CategoryEditScreen extends Screen
                     : 'admin.category.edit.success_edit',
                 ['name' => $category->name]
             )
-        );
-
-        return redirect()->route('platform.category.list');
-    }
-
-    public function remove(Category $category)
-    {
-        $category->delete();
-
-        Alert::info(
-            __('admin.category.edit.remove_edit', ['name' => $category->name])
         );
 
         return redirect()->route('platform.category.list');

@@ -89,9 +89,9 @@ class OrderEditScreen extends Screen
                 TD::make('seller', __('admin.product.list.table.seller'))
                     ->render(fn (Product $product) => optional($product->pivot->seller)->title),
                 TD::make('amount', __('admin.product.list.table.amount'))
-                    ->render(fn (Product $product) => $product->pivot->amount),
+                    ->render(fn (Product $product) => $product->amount),
                 TD::make('total_price', __('admin.product.list.table.total_price'))
-                    ->render(fn (Product $product) => round($product->current_price * $product->pivot->amount)),
+                    ->render(fn (Product $product) => round($product->price * $product->amount)),
             ]);
         }
 

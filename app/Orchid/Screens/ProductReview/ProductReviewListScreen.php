@@ -4,8 +4,10 @@ namespace App\Orchid\Screens\ProductReview;
 
 use App\Models\ProductReview;
 use App\Orchid\Layouts\ProductReview\ProductReviewListLayout;
+use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Toast;
 
 class ProductReviewListScreen extends Screen
 {
@@ -31,7 +33,7 @@ class ProductReviewListScreen extends Screen
     public function query(): array
     {
         return [
-            'productReviews' => ProductReview::latest()->paginate(),
+            'productReviews' => ProductReview::with('product')->latest()->paginate(),
         ];
     }
 
@@ -59,5 +61,18 @@ class ProductReviewListScreen extends Screen
         return [
             ProductReviewListLayout::class,
         ];
+    }
+
+    /**
+     * Удаление отзыва.
+     *
+     * @param Request $request
+     */
+    public function remove(Request $request): void
+    {
+        ProductReview::findOrFail($request->get('id'))
+            ->delete();
+
+        Toast::error(__('admin.product-review.was_deleted'));
     }
 }

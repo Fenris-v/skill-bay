@@ -4,8 +4,10 @@ namespace App\Orchid\Screens\Banner;
 
 use App\Models\Banner;
 use App\Orchid\Layouts\Banner\BannerListLayout;
+use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Toast;
 
 class BannerListScreen extends Screen
 {
@@ -59,5 +61,18 @@ class BannerListScreen extends Screen
         return [
             BannerListLayout::class,
         ];
+    }
+
+    /**
+     * Удаление баннера.
+     *
+     * @param Request $request
+     */
+    public function remove(Request $request): void
+    {
+        Banner::findOrFail($request->get('id'))
+            ->delete();
+
+        Toast::error(__('admin.banner.was_deleted'));
     }
 }

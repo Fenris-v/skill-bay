@@ -12,7 +12,10 @@
             route='products.addToCart'
             :product='$product'
             :formId='uniqid()'
-        />
+        >
+            <input type="hidden" name="amount" value="1"/>
+        </x-wrappers.icon-form>
+
         <x-wrappers.icon-form
             icon='icons.catalog.delete'
             method='post'
